@@ -1,0 +1,20 @@
+
+prerequisites:
+- libmysqlclient (only needed to build a collector which 
+                  stores results data into a mysql database)
+- libpcap (only needed to build the IPFIX probe)
+
+To build libipfix, run "./configure" (a shell script). The configure
+script will determine your system attributes and generate
+appropriate makefiles from Makefile.in. Next run "make". If everything
+goes well you can run "make install". 
+
+example:
+          ./configure --enable-ipv6 --prefix=/usr/local
+          make
+          make install
+
+To compile the example programs:
+          cd examples
+          make
+
