@@ -1,3 +1,5 @@
+# format of lines in this file:
+# IE number, constant_name, length in bytes, coding type, table column name, description
 
 176, IPFIX_FT_REVOCTETDELTACOUNT,   8, IPFIX_CODING_UINT, "revOctetDeltaCount", "FOKUS reverse delta octet count"
 177, IPFIX_FT_REVPACKETDELTACOUNT,  8, IPFIX_CODING_UINT, "revPacketDeltaCount", "FOKUS reverse delta packet count"
