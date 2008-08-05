@@ -20,7 +20,7 @@ mandir = ${datarootdir}/man
 includedir = ${prefix}/include
 top_builddir = .
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/bin/install -c -p
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL}
@@ -44,10 +44,10 @@ CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 TARGETS = libmisc.a libipfix.a
 OBJS = ipfix.o ipfix_col.o ipfix_print.o \
        ipfix_col_files.o ipfix_col_db.o ipfix_db.o 
-DEPHDR = ipfix.h ipfix_def.h
+DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
 MISCOBJS = mpoll.o mlog.o
 DHPARAMS = dh512.pem dh1024.pem
-CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS)
+CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
 
 all: $(TARGETS)
 
@@ -113,3 +113,9 @@ dhparams.c: $(DHPARAMS) Makefile
 
 dhparam.o: dhparams.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c dhparams.c
+
+ipfix_def_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_DEF_FOKUS_H.awk
+	awk -f make-IPFIX_DEF_FOKUS_H.awk ipfix_FOKUS_IEs.txt > ipfix_def_fokus.h
+
+ipfix_fields_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_FIELDS_FOKUS_H.awk
+	awk -f make-IPFIX_FIELDS_FOKUS_H.awk ipfix_FOKUS_IEs.txt > ipfix_fields_fokus.h
