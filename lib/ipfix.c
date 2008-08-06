@@ -181,8 +181,8 @@ static int do_writen( ipfix_collector_t *col, char *ptr, int nbytes )
     int     i;
 
     for ( i=0; i<nbytes; i++ )
-        fprintf( stderr, "[%02x]", (ptr[i]&0xFF) ); 
-    fprintf( stderr, "\n" ); 
+        fprintf( stderr, "[%02x]", (ptr[i]&0xFF) );
+    fprintf( stderr, "\n" );
 #endif
 
     nleft = nbytes;
@@ -247,7 +247,7 @@ int _adapt_sndbuf( int sock )
 }
 #endif
 
-static int _connect_nonb( int sockfd, struct sockaddr *saptr, 
+static int _connect_nonb( int sockfd, struct sockaddr *saptr,
                           socklen_t salen, int sec)
 {
     int                     flags, n, error;
@@ -349,17 +349,17 @@ int ipfix_encode_int( void *in, void *out, size_t len )
           break;
       case 2:
           memcpy( &tmp16, i, len );
-          tmp16 = htons( tmp16 ); 
+          tmp16 = htons( tmp16 );
           memcpy( out, &tmp16, len );
           break;
       case 4:
           memcpy( &tmp32, i, len );
-          tmp32 = htonl( tmp32 ); 
+          tmp32 = htonl( tmp32 );
           memcpy( out, &tmp32, len );
           break;
       case 8:
           memcpy( &tmp64, i, len );
-          tmp64 = HTONLL( tmp64 ); 
+          tmp64 = HTONLL( tmp64 );
           memcpy( out, &tmp64, len );
           break;
       default:
@@ -384,17 +384,17 @@ int ipfix_decode_int( void *in, void *out, size_t len )
           break;
       case 2:
           memcpy( &tmp16, i, len );
-          tmp16 = ntohs( tmp16 ); 
+          tmp16 = ntohs( tmp16 );
           memcpy( out, &tmp16, len );
           break;
       case 4:
           memcpy( &tmp32, i, len );
-          tmp32 = ntohl( tmp32 ); 
+          tmp32 = ntohl( tmp32 );
           memcpy( out, &tmp32, len );
           break;
       case 8:
           memcpy( &tmp64, i, len );
-          tmp64 = NTOHLL( tmp64 ); 
+          tmp64 = NTOHLL( tmp64 );
           memcpy( out, &tmp64, len );
           break;
       default:
@@ -417,15 +417,15 @@ int ipfix_snprint_int( char *str, size_t size, void *data, size_t len )
           return snprintf( str, size, "%d", tmp8 );
       case 2:
           memcpy( &tmp16, data, len );
-          tmp16 = ntohs( tmp16 ); 
+          tmp16 = ntohs( tmp16 );
           return snprintf( str, size, "%d", tmp16 );
       case 4:
           memcpy( &tmp32, data, len );
-          tmp32 = ntohl( tmp32 ); 
+          tmp32 = ntohl( tmp32 );
           return snprintf( str, size, "%d", (int)tmp32 );
       case 8:
           memcpy( &tmp64, data, len );
-          tmp64 = NTOHLL( tmp64 ); 
+          tmp64 = NTOHLL( tmp64 );
           return snprintf( str, size, "%lld", (long long int)tmp64 );
       default:
           break;
@@ -446,15 +446,15 @@ int ipfix_snprint_uint( char *str, size_t size, void *data, size_t len )
           return snprintf( str, size, "%u", tmp8 );
       case 2:
           memcpy( &tmp16, data, len );
-          tmp16 = htons( tmp16 ); 
+          tmp16 = htons( tmp16 );
           return snprintf( str, size, "%u", tmp16 );
       case 4:
           memcpy( &tmp32, data, len );
-          tmp32 = htonl( tmp32 ); 
+          tmp32 = htonl( tmp32 );
           return snprintf( str, size, "%u", (unsigned int)tmp32 );
       case 8:
           memcpy( &tmp64, data, len );
-          tmp64 = HTONLL( tmp64 ); 
+          tmp64 = HTONLL( tmp64 );
           return snprintf( str, size, "%llu", (long long unsigned int)tmp64 );
       default:
           break;
@@ -524,7 +524,7 @@ int ipfix_snprint_ipaddr( char *str, size_t size, void *data, size_t len )
 
     switch ( len ) {
       case 4:
-          return snprintf( str, size, "%u.%u.%u.%u", 
+          return snprintf( str, size, "%u.%u.%u.%u",
                            in[0], in[1], in[2], in[3] );
       case 16:
       {
@@ -534,7 +534,7 @@ int ipfix_snprint_ipaddr( char *str, size_t size, void *data, size_t len )
 
           for( i=0, *tmpbuf=0; i<16; i+=2 ) {
               memcpy( &tmp16, (char*)data+i, 2 );
-              tmp16 = htons( tmp16 ); 
+              tmp16 = htons( tmp16 );
               sprintf( tmpbuf+strlen(tmpbuf), "%s%x", i?":":"", tmp16 );
           }
           return snprintf( str, size, "%s", tmpbuf );
@@ -553,12 +553,12 @@ int ipfix_encode_float( void *in, void *out, size_t len )
     switch ( len ) {
       case 4:
           memcpy( &tmp32, in, len );
-          tmp32 = htonl( tmp32 ); 
+          tmp32 = htonl( tmp32 );
           memcpy( out, &tmp32, len );
           break;
       case 8:
           memcpy( &tmp64, in, len );
-          tmp64 = HTONLL( tmp64 ); 
+          tmp64 = HTONLL( tmp64 );
           memcpy( out, &tmp64, len );
           break;
       default:
@@ -576,18 +576,16 @@ int ipfix_decode_float( void *in, void *out, size_t len )
 
 int ipfix_snprint_float( char *str, size_t size, void *data, size_t len )
 {
-    uint32_t tmp32;
-    uint64_t tmp64;
+    float tmp32;
+    double tmp64;
 
     switch ( len ) {
       case 4:
-          memcpy( &tmp32, data, len );
-          tmp32 = htonl( tmp32 ); 
-          return snprintf( str, size, "%f", (float)tmp32 );
+          ipfix_decode_float( data, &tmp32, 4);
+          return snprintf( str, size, "%f", tmp32 );
       case 8:
-          memcpy( &tmp64, data, len );
-          tmp64 = HTONLL( tmp64 ); 
-          return snprintf( str, size, "%lf", (double)tmp64 );
+          ipfix_decode_float( data, &tmp64, 8);
+          return snprintf( str, size, "%lf", tmp64);
       default:
           break;
     }
@@ -651,7 +649,7 @@ ipfix_field_t *ipfix_create_unknown_ftinfo( int eno, int type )
  */
 ipfix_field_t *ipfix_get_ftinfo( int eno, int type )
 {
-    ipfix_field_t *elems = g_ipfix_fields; 
+    ipfix_field_t *elems = g_ipfix_fields;
 
     while( elems ) {
         if( (elems->ft->ftype == type) && (elems->ft->eno==eno) )
@@ -665,7 +663,7 @@ ipfix_field_t *ipfix_get_ftinfo( int eno, int type )
 
 int ipfix_get_eno_ieid( char *field, int *eno, int *ieid )
 {
-    ipfix_field_t *elems = g_ipfix_fields; 
+    ipfix_field_t *elems = g_ipfix_fields;
 
     while( elems ) {
         if( strcasecmp( field, elems->ft->name) ==0) {
@@ -703,7 +701,7 @@ int ipfix_init ( void )
 
     /** init list of field types
      ** - from field_types.h
-     ** - in future from config files 
+     ** - in future from config files
      */
     if ( ipfix_add_vendor_information_elements( ipfix_field_types ) <0 ) {
         return -1;
@@ -851,40 +849,40 @@ int _ipfix_connect ( ipfix_collector_t *col )
         return 0;
 
 #ifdef INET6
-    /** Get host address. Any type of address will do. 
-     */ 
+    /** Get host address. Any type of address will do.
+     */
     memset( &hints, 0, sizeof (hints));
     hints.ai_socktype = socktype;
     hints.ai_family   = PF_UNSPEC;
     sprintf( portstr, "%d", port );
 #ifdef SCTPSUPPORT
-    if ( col->protocol==IPFIX_PROTO_SCTP ) {       /* work around bug in linux libc (1) */ 
+    if ( col->protocol==IPFIX_PROTO_SCTP ) {       /* work around bug in linux libc (1) */
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = 0;
     }
 #endif
     error = getaddrinfo(server, portstr, &hints, &res);
-    if (error != 0) { 
-        mlogf( 0, "[ipfix] getaddrinfo( %s, %s ) failed: %s\n", 
+    if (error != 0) {
+        mlogf( 0, "[ipfix] getaddrinfo( %s, %s ) failed: %s\n",
                server, portstr, gai_strerror(error) );
         return -1;
-    } 
+    }
 
-    for (aip = res; aip != NULL; aip = aip->ai_next) { 
-        /** Open socket. The address type depends on what 
-         ** getaddrinfo() gave us. 
+    for (aip = res; aip != NULL; aip = aip->ai_next) {
+        /** Open socket. The address type depends on what
+         ** getaddrinfo() gave us.
          */
 #ifdef SCTPSUPPORT
-        if ( col->protocol==IPFIX_PROTO_SCTP ) {   /* work around bug in linux libc (2) */ 
+        if ( col->protocol==IPFIX_PROTO_SCTP ) {   /* work around bug in linux libc (2) */
             aip->ai_socktype = socktype;
             aip->ai_protocol = sockproto;
         }
 #endif
-        sock = socket(aip->ai_family, aip->ai_socktype, aip->ai_protocol); 
-        if (sock == -1) { 
+        sock = socket(aip->ai_family, aip->ai_socktype, aip->ai_protocol);
+        if (sock == -1) {
             mlogf( 0, "[ipfix] socket() failed: %s\n", strerror(errno) );
-            freeaddrinfo(res); 
-            return (-1); 
+            freeaddrinfo(res);
+            return (-1);
         }
 #ifdef INCR_RXTX_BUFSIZE
         (void)_adapt_sndbuf( sock );
@@ -894,11 +892,11 @@ int _ipfix_connect ( ipfix_collector_t *col )
             if ( _connect_nonb( sock, aip->ai_addr, aip->ai_addrlen, 2) <0) {
                 mlogf( 2, "[ipfix] %scannot connect to %s: %s\n",
                        (aip->ai_family==AF_INET6)?"IPv6 "
-                       :(aip->ai_family==AF_INET)?"IPv4 ":"", 
+                       :(aip->ai_family==AF_INET)?"IPv4 ":"",
                        server, strerror(errno) );
-                close(sock); 
-                sock = -1; 
-                continue; 
+                close(sock);
+                sock = -1;
+                continue;
             }
 #ifdef DEBUG
             else {
@@ -913,8 +911,8 @@ int _ipfix_connect ( ipfix_collector_t *col )
              */
             if ( (col->to=calloc( 1, aip->ai_addrlen )) ==NULL) {
                 close(sock);
-                freeaddrinfo(res); 
-                return (-1); 
+                freeaddrinfo(res);
+                return (-1);
             }
             memcpy( col->to, aip->ai_addr, aip->ai_addrlen );
             col->tolen = aip->ai_addrlen;
@@ -926,8 +924,8 @@ int _ipfix_connect ( ipfix_collector_t *col )
             /** remember address */
             if ( (col->to=calloc( 1, aip->ai_addrlen )) ==NULL) {
                 close(sock);
-                freeaddrinfo(res); 
-                return (-1); 
+                freeaddrinfo(res);
+                return (-1);
             }
             memcpy( col->to, aip->ai_addr, aip->ai_addrlen );
             col->tolen = aip->ai_addrlen;
@@ -940,16 +938,16 @@ int _ipfix_connect ( ipfix_collector_t *col )
                 mlogf( 0, "[ipfix] setsockopt() failed: %s\n",
                        strerror(errno) );
                 close(sock);
-                freeaddrinfo(res); 
-                return -1; 
+                freeaddrinfo(res);
+                return -1;
             }
         }
 #endif
-        break; 
+        break;
     }
-    freeaddrinfo(res); 
+    freeaddrinfo(res);
 #else
-    /** get address 
+    /** get address
      */
     if ( (h=gethostbyname(server)) ==NULL) {
         mlogf( 0, "[ipfix] cannot get address of host '%s': %s\n",
@@ -977,7 +975,7 @@ int _ipfix_connect ( ipfix_collector_t *col )
         if ( _connect_nonb( sock, (struct sockaddr *)&serv_addr,
                             sizeof(serv_addr), 2 /*s*/ ) < 0) {
             close( sock );
-            sock = -1; 
+            sock = -1;
         }
     }
     else if ( col->protocol==IPFIX_PROTO_UDP ) {
@@ -985,7 +983,7 @@ int _ipfix_connect ( ipfix_collector_t *col )
          */
         if ( (col->to=calloc( 1, sizeof(serv_addr) )) ==NULL) {
             close(sock);
-            return -1; 
+            return -1;
         }
         memcpy( col->to, &serv_addr, sizeof(serv_addr) );
         col->tolen = sizeof(serv_addr);
@@ -997,7 +995,7 @@ int _ipfix_connect ( ipfix_collector_t *col )
         /** remember address */
         if ( (col->to=calloc( 1, sizeof(serv_addr) )) ==NULL) {
             close(sock);
-            return -1; 
+            return -1;
         }
         memcpy( col->to, &serv_addr, sizeof(serv_addr) );
         col->tolen = sizeof(serv_addr);
@@ -1009,16 +1007,16 @@ int _ipfix_connect ( ipfix_collector_t *col )
                          &events, sizeof(events) ) <0 ) {
             mlogf( 0, "[ipfix] setsockopt() failed: %s\n", strerror(errno) );
             close(sock);
-            return -1; 
+            return -1;
         }
     }
 #endif
 #endif
 
     if (sock <0 ) {
-        mlogf( 1, "[ipfix] cannot connect to %s: %s\n", 
+        mlogf( 1, "[ipfix] cannot connect to %s: %s\n",
                server, strerror(errno) );
-        return (-1); 
+        return (-1);
     }
 #ifdef SSLSUPPORT
     else if ( col->ssl_flag ) {
@@ -1080,10 +1078,10 @@ int _ipfix_connect ( ipfix_collector_t *col )
         ipfix_template_t  *tnode;
 
         for( node=g_ipfixlist; node!=NULL; node=node->next ) {
-            for( cnode=(ipfix_collector_t*)node->ifh->collectors; 
+            for( cnode=(ipfix_collector_t*)node->ifh->collectors;
                  cnode!=NULL; cnode=cnode->next ) {
                 if ( col == cnode ) {
-                    for( tnode=node->ifh->templates; 
+                    for( tnode=node->ifh->templates;
                          tnode!=NULL; tnode=tnode->next ) {
                         switch( col->protocol ) {
                           case IPFIX_PROTO_SCTP:
@@ -1156,7 +1154,7 @@ int _ipfix_send_msg_sctp( ipfix_t *ifh, ipfix_collector_t *col,
                           iobuf_t *buf, int stream )
 {
     if ( sctp_sendmsg( col->fd, buf->buffer, buf->buflen,
-                       col->to, col->tolen, 0, 0 /*flags*/, 
+                       col->to, col->tolen, 0, 0 /*flags*/,
                        stream, 0, 0 ) != buf->buflen ) {
         mlogf( 0, "[ipfix] sctp_sendmsg() failed: %s\n", strerror(errno) );
         return -1;
@@ -1201,7 +1199,7 @@ int _ipfix_send_message( ipfix_t *ifh, ipfix_collector_t *col, int flag,
           while( nleft>0 ) {
               if ( col->ssl_flag ==0 ) {
                   n=sendto( col->fd, p, nleft, 0, col->to, col->tolen );
-                  if ( n<=0 ) 
+                  if ( n<=0 )
                       goto errend;
               }
 #ifdef SSLSUPPORT
@@ -1279,7 +1277,7 @@ int _ipfix_send_msg( ipfix_t *ifh, ipfix_collector_t *col, iobuf_t *buf )
               }
 #endif
               /* send ipfix message */
-              if ( do_writen( col, buf->buffer, buf->buflen ) 
+              if ( do_writen( col, buf->buffer, buf->buflen )
                    != (int)buf->buflen ) {
                   if ( (errno == EPIPE) || (errno==ECONNRESET) )
                       goto reconnect;
@@ -1358,7 +1356,7 @@ int _ipfix_write_hdr( ipfix_t *ifh, iobuf_t *buf )
     else {
         buf->buflen = 0;
         INSERTU16( buf->buffer+buf->buflen, buf->buflen, ifh->version );
-        INSERTU16( buf->buffer+buf->buflen, buf->buflen, 
+        INSERTU16( buf->buffer+buf->buflen, buf->buflen,
                    ifh->offset + IPFIX_HDR_BYTES );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, now );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno );
@@ -1391,7 +1389,7 @@ int _ipfix_write_msghdr( ipfix_t *ifh, ipfix_message_t *msg, iobuf_t *buf )
     else {
         buf->buflen = 0;
         INSERTU16( buf->buffer+buf->buflen, buf->buflen, ifh->version );
-        INSERTU16( buf->buffer+buf->buflen, buf->buflen, 
+        INSERTU16( buf->buffer+buf->buflen, buf->buflen,
                    msg->offset + IPFIX_HDR_BYTES );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, now );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno );
@@ -1414,7 +1412,7 @@ int _ipfix_write_template( ipfix_t           *ifh,
     char              *buf;
     uint16_t          tmp16;
     int               i, n;
- 
+
     /** calc template size
      */
     if ( templ->type == OPTION_TEMPLATE ) {
@@ -1766,7 +1764,7 @@ static int _ipfix_add_collector( ipfix_t *ifh, char *host, int port,
     /* check if collector is already in use
      */
     for( col=g_collectors; col; col=col->next ) {
-        if ( (strcmp( col->chost, host ) ==0) 
+        if ( (strcmp( col->chost, host ) ==0)
              && (col->cport==port) && (col->protocol==prot) ) {
             /* collector found */
             col->usecount++;
@@ -1852,8 +1850,8 @@ int ipfix_add_collector_ssl( ipfix_t *ifh, char *host, int port,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_new_template( ipfix_t          *ifh, 
-                        ipfix_template_t **templ, 
+int ipfix_new_template( ipfix_t          *ifh,
+                        ipfix_template_t **templ,
                         int              nfields )
 {
     ipfix_template_t  *t;
@@ -1893,8 +1891,8 @@ int ipfix_new_template( ipfix_t          *ifh,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_new_data_template( ipfix_t          *ifh, 
-                             ipfix_template_t **templ, 
+int ipfix_new_data_template( ipfix_t          *ifh,
+                             ipfix_template_t **templ,
                              int              nfields )
 {
     if ( ipfix_new_template( ifh, templ, nfields ) <0 )
@@ -1909,8 +1907,8 @@ int ipfix_new_data_template( ipfix_t          *ifh,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_new_option_template( ipfix_t          *ifh, 
-                               ipfix_template_t **templ, 
+int ipfix_new_option_template( ipfix_t          *ifh,
+                               ipfix_template_t **templ,
                                int              nfields )
 {
     if ( ipfix_new_template( ifh, templ, nfields ) <0 )
@@ -1925,8 +1923,8 @@ int ipfix_new_option_template( ipfix_t          *ifh,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_add_field( ipfix_t          *ifh, 
-                     ipfix_template_t *templ, 
+int ipfix_add_field( ipfix_t          *ifh,
+                     ipfix_template_t *templ,
                      uint32_t         eno,
                      uint16_t         type,
                      uint16_t         length )
@@ -1961,8 +1959,8 @@ int ipfix_add_field( ipfix_t          *ifh,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_add_scope_field( ipfix_t          *ifh, 
-                           ipfix_template_t *templ, 
+int ipfix_add_scope_field( ipfix_t          *ifh,
+                           ipfix_template_t *templ,
                            uint32_t         eno,
                            uint16_t         type,
                            uint16_t         length )
@@ -1989,7 +1987,7 @@ int ipfix_add_scope_field( ipfix_t          *ifh,
         i = templ->nscopefields;
         templ->fields[i].flength = length;
 
-        if ((templ->fields[i].elem 
+        if ((templ->fields[i].elem
              = ipfix_get_ftinfo( eno, type))==NULL){
             errno = EINVAL;
             return -1;
@@ -2007,8 +2005,8 @@ int ipfix_add_scope_field( ipfix_t          *ifh,
  * parameters:
  * return:      0 = ok, -1 = error
  */
-int ipfix_get_template( ipfix_t          *ifh, 
-                        ipfix_template_t **templ, 
+int ipfix_get_template( ipfix_t          *ifh,
+                        ipfix_template_t **templ,
                         int              nfields, ... )
 {
     ipfix_template_t  *t;
@@ -2048,8 +2046,8 @@ int ipfix_get_template( ipfix_t          *ifh,
  * return:      0 = ok, -1 = error
  * todo: share code with ipfix_get_template()
  */
-int ipfix_get_template_array( ipfix_t          *ifh, 
-                              ipfix_template_t **templ, 
+int ipfix_get_template_array( ipfix_t          *ifh,
+                              ipfix_template_t **templ,
                               int              nfields,
                               int              *types,
                               int              *lengths )
@@ -2180,7 +2178,7 @@ int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
             g_data.lens = NULL;
             g_data.maxfields = 0;
             return -1;
-        }           
+        }
         g_data.maxfields = templ->nfields;
     }
 
@@ -2201,9 +2199,9 @@ int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
                                g_data.addrs, g_data.lens );
 }
 
-int ipfix_export_array( ipfix_t          *ifh, 
+int ipfix_export_array( ipfix_t          *ifh,
                         ipfix_template_t *templ,
-                        int              nfields, 
+                        int              nfields,
                         void             **fields,
                         uint16_t         *lengths )
 {
@@ -2226,7 +2224,7 @@ int ipfix_export_array( ipfix_t          *ifh,
         ipfix_collector_t *col = ifh->collectors;
 
         while ( col ) {
-            if ( _ipfix_write_template( ifh, col, templ ) <0 ) 
+            if ( _ipfix_write_template( ifh, col, templ ) <0 )
                 return -1;
             col = col->next;
         }
@@ -2239,7 +2237,7 @@ int ipfix_export_array( ipfix_t          *ifh,
 
         while ( col ) {
             if ( ( col->protocol==IPFIX_PROTO_UDP )
-                 && ((now-templ->tsend)>IPFIX_DFLT_TEMPLRESENDINT) ) { 
+                 && ((now-templ->tsend)>IPFIX_DFLT_TEMPLRESENDINT) ) {
                 if ( _ipfix_write_template( ifh, col, templ ) <0 ) {
                     return -1;
                 }
