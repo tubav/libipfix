@@ -5,9 +5,9 @@ $$LIC$$
  *
  *   Copyright Fraunhofer FOKUS
  *
- *   $Date: 2007/02/28 10:14:02 $
+ *   $Date$
  *
- *   $Revision: 1.4 $
+ *   $Revision$
  *
  */
 #include <stdio.h>
@@ -43,7 +43,7 @@ $$LIC$$
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id: ipfix_ssl.c,v 1.4 2007/02/28 10:14:02 luz Exp $";
+static const char cvsid[]="$Id$";
 
 /*----- globals ----------------------------------------------------------*/
  

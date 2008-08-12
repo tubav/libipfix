@@ -6,9 +6,9 @@ $$LIC$$
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Date: 2005/11/10 14:15:24 $
+** $Date$
 **
-** $Revision: 1.2 $
+** $Revision$
 **
 ** Remarks: 
 */
@@ -38,7 +38,7 @@ static char tmpbuf[4100];      /* !! */
 
 /*------ revision id -----------------------------------------------------*/
 
-static char const cvsid[]="$Id: mlog.c,v 1.2 2005/11/10 14:15:24 luz Exp $";
+static char const cvsid[]="$Id$";
 
 /*------ export funcs ----------------------------------------------------*/
 

@@ -3,7 +3,7 @@
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id: mlog.h,v 1.1 2004/12/22 15:13:03 luz Exp $
+** $Id$
 **
 ** Remarks: This is experimental code!
 **

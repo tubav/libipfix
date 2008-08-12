@@ -5,7 +5,7 @@ $$LIC$$
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Id: ipfix_ssl.h,v 1.3 2007/02/07 13:56:01 luz Exp $
+ * $Id$
  *
  */
 #ifndef IPFIX_SSL_H
