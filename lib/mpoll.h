@@ -3,7 +3,7 @@
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id: mpoll.h,v 1.2 2006/11/15 16:40:09 luz Exp $
+** $Id$
 **
 ** Remarks: This is experimental code!
 **

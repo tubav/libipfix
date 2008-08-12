@@ -3,9 +3,9 @@
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Date: 2006/11/15 16:39:45 $
+ * $Date$
  *
- * $Revision: 1.6 $
+ * $Revision$
  *
  * Remarks: timer funcs original version from linuxatm
  *          todo: replace timer funcs
@@ -75,7 +75,7 @@ static int          g_breakflag   =0;    /* flag, 1 => break mpoll_loop() */
 
 /*------ revision id -----------------------------------------------------*/
 
-static char const cvsid[]="$Id: mpoll.c,v 1.6 2006/11/15 16:39:45 luz Exp $";
+static char const cvsid[]="$Id$";
 
 /*------ export funcs ----------------------------------------------------*/
 
