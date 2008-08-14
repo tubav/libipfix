@@ -5,9 +5,9 @@ $$LIC$$
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Date: 2006/12/15 13:02:18 $
+ * $Date$
  *
- * $Revision: 1.7 $
+ * $Revision$
  *
  * Remarks: make this funcs mysql independent
  *
@@ -35,7 +35,7 @@ static char    query[MAXQUERYLEN+1];
 
 /*------ revision id -----------------------------------------------------*/
 
-static char const cvsid[]="$Id: ipfix_db.c,v 1.7 2006/12/15 13:02:18 luz Exp $";
+static char const cvsid[]="$Id$";
 
 /*------ static funcs ----------------------------------------------------*/
 

@@ -3,7 +3,7 @@
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id: ipfix_db.h,v 1.5 2006/09/05 15:44:30 luz Exp $
+** $Id$
 **
 ** Remarks:
 **

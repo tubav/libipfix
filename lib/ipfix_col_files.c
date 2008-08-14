@@ -6,9 +6,9 @@ $$LIC$$
 **
 **     Copyright Fraunhofer FOKUS
 **
-**     $Date: 2006/08/25 17:18:52 $
+**     $Date$
 **
-**     $Revision: 1.4 $
+**     $Revision$
 **
 */
 #include <stdio.h>
@@ -43,7 +43,7 @@ static ipfix_col_info_t *g_colinfo =NULL;
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id: ipfix_col_files.c,v 1.4 2006/08/25 17:18:52 luz Exp $";
+static const char cvsid[]="$Id$";
 
 /*----- static funcs -----------------------------------------------------*/
 

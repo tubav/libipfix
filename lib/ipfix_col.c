@@ -6,9 +6,9 @@ $$LIC$$
 **
 **     Copyright Fraunhofer FOKUS
 **
-**     $Date: 2007/02/28 10:13:49 $
+**     $Date$
 **
-**     $Revision: 1.26 $
+**     $Revision$
 **
 **     todo: 
 **     - check when to delete stored templates
@@ -117,7 +117,7 @@ typedef struct ipfix_col_ssl
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id: ipfix_col.c,v 1.26 2007/02/28 10:13:49 luz Exp $";
+static const char cvsid[]="$Id$";
 
 /*----- globals ----------------------------------------------------------*/
 
