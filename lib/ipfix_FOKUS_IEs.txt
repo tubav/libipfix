@@ -58,7 +58,7 @@
 423, IPFIX_FT_OR_terminal_id, 1, IPFIX_CODING_UINT, "OR_terminal_id", "terminal identifier"
 424, IPFIX_FT_OR_terminal_id_list, 65535, IPFIX_CODING_STRING, "OR_terminal_id_list", "terminal identifier list"
 425, IPFIX_FT_Infrastructure_network_id, 1, IPFIX_CODING_UINT, "Infrastructure_network_id", "network identifier"
-426, IPFIX_FT_Infrastructure_network_type, 1, IPFIX_CODING_UINT, "Infrastructure_network_type", "network type (GSM – 1, UMTS – 2, WiMAX – 3, WiFi – 4)" 
+426, IPFIX_FT_Infrastructure_network_type, 1, IPFIX_CODING_UINT, "Infrastructure_network_type", "network type (GSM - 1, UMTS - 2, WiMAX - 3, WiFi - 4)" 
 427, IPFIX_FT_Battery_lifetime_min, 1, IPFIX_CODING_UINT, "Battery_lifetime_min", "expected battery lifetime to provide requested services or functionalities, in minutes"
 428, IPFIX_FT_Battery_lifetime_h, 1, IPFIX_CODING_UINT, "Battery_lifetime_h", "expected battery lifetime to provide requested services or functionalities, in hours"
 429, IPFIX_FT_Battery_status, 1, IPFIX_CODING_UINT, "Battery_status", "expected battery lifetime to provide requested services or functionalities, 1 bit status flag, values 1 or 0"
