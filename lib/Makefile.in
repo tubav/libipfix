@@ -38,7 +38,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@ -lm
 CCOPT = -Wall -g
-INCLS = -I. -I.. -I../libmisc
+INCLS = -I. -I.. -I../.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 LIBMISCDIR = ../libmisc
 
