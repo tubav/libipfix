@@ -29,7 +29,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 #include "ipfix_ssl.h"
@@ -46,7 +46,7 @@ $$LIC$$
 static const char cvsid[]="$Id$";
 
 /*----- globals ----------------------------------------------------------*/
- 
+
 int openssl_is_init = 0;
 DH *dh512 = NULL;
 DH *dh1024 = NULL;
@@ -95,13 +95,13 @@ int ipfix_ssl_opts_new( ipfix_ssl_opts_t **ssl_opts,
 int ipfix_ssl_verify_callback(int ok, X509_STORE_CTX *store)
 {
     char data[256];
- 
+
     if (!ok)
     {
         X509 *cert = X509_STORE_CTX_get_current_cert(store);
         int  depth = X509_STORE_CTX_get_error_depth(store);
         int  err = X509_STORE_CTX_get_error(store);
- 
+
         mlogf( 1, "[%s] Error with certificate at depth: %i\n",
                __func__, depth);
         X509_NAME_oneline( X509_get_issuer_name(cert), data, 256);
@@ -110,7 +110,7 @@ int ipfix_ssl_verify_callback(int ok, X509_STORE_CTX *store)
         mlogf( 1, "  subject  = %s\n", data);
         mlogf( 1, "  err %i:%s\n", err, X509_verify_cert_error_string(err));
     }
- 
+
     return ok;
 }
 
@@ -121,24 +121,24 @@ long ipfix_ssl_post_connection_check(SSL *ssl, char *host)
     char      data[256];
     int       extcount;
     int       ok = 0;
- 
+
     /* Checking the return from SSL_get_peer_certificate here is not strictly
-     * necessary. 
+     * necessary.
      */
     if (!(cert = SSL_get_peer_certificate(ssl)) || !host)
         goto err_occured;
     if ((extcount = X509_get_ext_count(cert)) > 0)
     {
         int i;
- 
+
         for (i = 0;  i < extcount;  i++)
         {
             char              *extstr;
             X509_EXTENSION    *ext;
- 
+
             ext = X509_get_ext(cert, i);
             extstr = (char*) OBJ_nid2sn(OBJ_obj2nid(X509_EXTENSION_get_object(ext)));
- 
+
             if (!strcmp(extstr, "subjectAltName"))
             {
                 int                  j;
@@ -147,7 +147,7 @@ long ipfix_ssl_post_connection_check(SSL *ssl, char *host)
                 CONF_VALUE           *nval;
                 X509V3_EXT_METHOD    *meth;
                 void                 *ext_str = NULL;
- 
+
                 if (!(meth = X509V3_EXT_get(ext)))
                     break;
                 data = ext->value->data;
@@ -176,7 +176,7 @@ long ipfix_ssl_post_connection_check(SSL *ssl, char *host)
                 break;
         }
     }
- 
+
     if (!ok && (subj = X509_get_subject_name(cert)) &&
         X509_NAME_get_text_by_NID(subj, NID_commonName, data, 256) > 0)
     {
@@ -184,10 +184,10 @@ long ipfix_ssl_post_connection_check(SSL *ssl, char *host)
         if (strcasecmp(data, host) != 0)
             goto err_occured;
     }
- 
+
     X509_free(cert);
     return SSL_get_verify_result(ssl);
- 
+
 err_occured:
     if (cert)
         X509_free(cert);

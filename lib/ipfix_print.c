@@ -6,9 +6,9 @@ $$LIC$$
 **
 **     Copyright Fraunhofer FOKUS
 **
-**     $Date: 2006/11/14 15:39:48 $
+**     $Date: 2009-03-19 19:14:44 +0100 (Thu, 19 Mar 2009) $
 **
-**     $Revision: 1.5 $
+**     $Revision: 1.3 $
 **
 */
 #include <stdio.h>
@@ -28,13 +28,13 @@ $$LIC$$
 #include <time.h>
 #include <fcntl.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id: ipfix_print.c,v 1.5 2006/11/14 15:39:48 luz Exp $";
+static const char cvsid[]="$Id: ipfix_print.c 996 2009-03-19 18:14:44Z csc $";
 
 /*----- globals ----------------------------------------------------------*/
 

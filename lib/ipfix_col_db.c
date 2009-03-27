@@ -25,7 +25,7 @@ $$LIC$$
 #include <time.h>
 #include <fcntl.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 #ifdef DBSUPPORT

@@ -1884,7 +1884,7 @@ test -n "$target_alias" &&
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
 
-VERSION=0.7
+VERSION=0.8.1
 PACKAGE=libipfix
 
 # Checks for programs.
@@ -6054,7 +6054,7 @@ fi
 fi
 done
 
-ac_config_files="$ac_config_files Makefile lib/Makefile probe/Makefile examples/Makefile collector/Makefile"
+ac_config_files="$ac_config_files Makefile lib/Makefile libmisc/Makefile probe/Makefile examples/Makefile collector/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6612,6 +6612,7 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
+    "libmisc/Makefile") CONFIG_FILES="$CONFIG_FILES libmisc/Makefile" ;;
     "probe/Makefile") CONFIG_FILES="$CONFIG_FILES probe/Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "collector/Makefile") CONFIG_FILES="$CONFIG_FILES collector/Makefile" ;;

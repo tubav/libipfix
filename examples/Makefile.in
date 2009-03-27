@@ -37,9 +37,9 @@ install_sh = @install_sh@
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ @MYSQLLIBS@ @SCTPLIBS@ -L../lib -lipfix -lmisc 
+LIBS = @LIBS@ @MYSQLLIBS@ @SCTPLIBS@ -L../lib -L../libmisc -lipfix -lmisc 
 CCOPT = -Wall -g
-INCLS = -I. -I.. -I../lib 
+INCLS = -I. -I.. -I../lib -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = example_exporter example_collector @IPFIX_DB_EXAMPLES@

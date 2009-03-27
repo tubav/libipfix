@@ -37,9 +37,9 @@ install_sh = @install_sh@
 DEFS = -DHAVE_CONFIG_H 
 CPPFLAGS = -DDBSUPPORT 
 LDFLAGS = 
-LIBS =  -lmysqlclient  -L../lib -lipfix -lmisc 
+LIBS =  -lmysqlclient  -L../lib -L../libmisc -lipfix -lmisc 
 CCOPT = -Wall -g
-INCLS = -I. -I.. -I../lib 
+INCLS = -I. -I.. -I../lib -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = example_exporter example_collector example_collector_db

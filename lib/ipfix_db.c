@@ -20,7 +20,7 @@ $$LIC$$
 #include <errno.h>
 #include <sys/time.h>
 
-#include "misc.h"
+#include "libmisc/misc.h"
 #include "ipfix_db.h"
 
 /*------ defines ---------------------------------------------------------*/
@@ -54,7 +54,7 @@ int ipfix_db_check_table( MYSQL *mysql, char *tablename, char *createcmd )
     /* check if table exists (show tables like 'tablename')
      */
     if ( (result=mysql_list_tables( mysql, tablename )) ==NULL ) {
-        mlogf( 1, "[%s] mysql_list_tables() failed: %s\n", 
+        mlogf( 1, "[%s] mysql_list_tables() failed: %s\n",
                func, mysql_error(mysql) );
         return -1;
     }
@@ -83,9 +83,9 @@ int ipfix_db_check_table( MYSQL *mysql, char *tablename, char *createcmd )
 /*
  * Name       : ipfix_db_open
  * Parameters : none
- * Description: 
+ * Description:
  * Returns    : 0 if ok, -1 on error
- * Remarks    : 
+ * Remarks    :
  */
 int ipfix_db_open( MYSQL **mysqlp,
                    char *dbhost, char *dbuser, char *dbpw, char *dbname )
@@ -109,7 +109,7 @@ int ipfix_db_open( MYSQL **mysqlp,
 
     /* connect to database
      */
-    if ( mysql_real_connect( (*mysqlp), dbhost, dbuser, 
+    if ( mysql_real_connect( (*mysqlp), dbhost, dbuser,
                              dbpw, dbname, 0, NULL, 0 ) ==NULL ) {
         mlogf( 0, "[db_open] mysql_real_connect() failed: %s\n",
                mysql_error(*mysqlp) );
@@ -128,12 +128,12 @@ int ipfix_db_open( MYSQL **mysqlp,
               "CREATE TABLE %s ( "
               " %s INT NOT NULL AUTO_INCREMENT, %s INT UNSIGNED NOT NULL,"
               " %s BLOB NOT NULL, %s BLOB, PRIMARY KEY (%s) ) ",
-              IPFIX_DB_EXPORTERS, 
+              IPFIX_DB_EXPORTERS,
               IPFIX_DB_EXP_ID, IPFIX_DB_EXP_ODID, IPFIX_DB_EXP_ADDR,
               IPFIX_DB_EXP_DESCR, IPFIX_DB_EXP_ID );
 
     if ( ipfix_db_check_table( *mysqlp, IPFIX_DB_EXPORTERS, sql ) <0 ) {
-        mlogf( 0, "[%s] checking table %s failed: %s\n", 
+        mlogf( 0, "[%s] checking table %s failed: %s\n",
                IPFIX_DB_EXPORTERS, func, mysql_error(*mysqlp) );
         return -1;
     }
@@ -144,12 +144,12 @@ int ipfix_db_open( MYSQL **mysqlp,
               "CREATE TABLE %s ( "
               " %s INT NOT NULL AUTO_INCREMENT, "
               " %s INT NOT NULL, %s INT NOT NULL, PRIMARY KEY (%s) ) ",
-              IPFIX_DB_MESSAGETABLE, 
+              IPFIX_DB_MESSAGETABLE,
               IPFIX_DB_MSGT_ID, IPFIX_DB_MSGT_EXPID,
               IPFIX_DB_MSGT_TIME, IPFIX_DB_MSGT_ID );
 
     if ( ipfix_db_check_table( *mysqlp, IPFIX_DB_MESSAGETABLE, sql ) <0 ) {
-        mlogf( 0, "[%s] checking table %s failed: %s\n", 
+        mlogf( 0, "[%s] checking table %s failed: %s\n",
                IPFIX_DB_MESSAGETABLE, func, mysql_error(*mysqlp) );
         return -1;
     }
@@ -160,12 +160,12 @@ int ipfix_db_open( MYSQL **mysqlp,
               "CREATE TABLE %s ( "
               " %s INT NOT NULL AUTO_INCREMENT, "
               " %s BLOB, %s BLOB, PRIMARY KEY (%s) ) ",
-              IPFIX_DB_TEMPLATETABLE, 
+              IPFIX_DB_TEMPLATETABLE,
               IPFIX_DB_TMPL_ID, IPFIX_DB_TMPL_IDENT,
               IPFIX_DB_TMPL_TABLENAME, IPFIX_DB_TMPL_ID );
 
     if ( ipfix_db_check_table( *mysqlp, IPFIX_DB_TEMPLATETABLE, sql ) <0 ) {
-        mlogf( 0, "[%s] checking table %s failed: %s\n", 
+        mlogf( 0, "[%s] checking table %s failed: %s\n",
                IPFIX_DB_TEMPLATETABLE, func, mysql_error(*mysqlp) );
         return -1;
     }
@@ -179,7 +179,7 @@ int ipfix_db_open( MYSQL **mysqlp,
               IPFIX_DB_MT_TMPLID, IPFIX_DB_MT_MSGID );
 
     if ( ipfix_db_check_table( *mysqlp, IPFIX_DB_MAPPINGTABLE, sql ) <0 ) {
-        mlogf( 0, "[%s] checking table %s failed: %s\n", 
+        mlogf( 0, "[%s] checking table %s failed: %s\n",
                IPFIX_DB_MAPPINGTABLE, func, mysql_error(*mysqlp) );
         return -1;
     }
@@ -224,10 +224,10 @@ int ipfix_db_get_int( MYSQL *mysqlp, char *query, int *i )
 /*
  * name       : ipfix_db_create_table
  * parameters : > tablename          - table name
- *              > template           - ipfix template 
+ *              > template           - ipfix template
  * description: crate table to store result data of that template
  * returns    : 0 if ok, -1 on error
- * todo       : 
+ * todo       :
  */
 int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
 {
@@ -237,8 +237,8 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
 
     /** build query
      */
-    snprintf( query, MAXQUERYLEN, 
-              "CREATE TABLE %s ( %s INT UNSIGNED NOT NULL", 
+    snprintf( query, MAXQUERYLEN,
+              "CREATE TABLE %s ( %s INT UNSIGNED NOT NULL",
               tablename, IPFIX_DB_DT_MSGID );
     for ( i=0; i<t->nfields; i++ ) {
         if ( ipfix_db_get_columnname( t->fields[i].elem->ft->eno,
@@ -249,26 +249,26 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
 
         switch( t->fields[i].elem->ft->coding ) {
           case IPFIX_CODING_INT:
-              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query), 
+              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s %sINT ", tmpbuf,
                         (t->fields[i].elem->ft->length>4)?"BIG":"" );
               break;
           case IPFIX_CODING_UINT:
-              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query), 
+              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s %sINT UNSIGNED ", tmpbuf,
                         (t->fields[i].elem->ft->length>4)?"BIG":"" );
               break;
           case IPFIX_CODING_STRING:
-              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query), 
+              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s TEXT ", tmpbuf );
               break;
           case IPFIX_CODING_BYTES:
               snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
-                        ", %s VARBINARY(%d) ", tmpbuf, 
+                        ", %s VARBINARY(%d) ", tmpbuf,
                         (t->fields[i].elem->ft->length<MAXBINARYIELEN)?(t->fields[i].elem->ft->length):MAXBINARYIELEN);
               break;
           default:
-              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query), 
+              snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s VARBINARY(%d) ", tmpbuf, MAXBINARYIELEN );
               break;
         }
@@ -279,7 +279,7 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
      */
     if ( mysql_query( mysql, query ) !=0 ) {
         mlogf( 0, "[%s] %s\n", func, query );
-        mlogf( 0, "[%s] mysql_query() failed: %s\n", 
+        mlogf( 0, "[%s] mysql_query() failed: %s\n",
                func, mysql_error(mysql) );
         return -1;
     }
@@ -292,12 +292,12 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
  * name       : ipfix_db_get_tablename
  * parameters : <> buf, buflen        - table name
  *              <  template_id        - template id (db table index)
- *               > template           - ipfix template 
+ *               > template           - ipfix template
  * description: get table name to store result data of that template
  * returns    : 0 if ok, -1 on error
  */
-int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen, 
-                            uint32_t *template_id, 
+int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
+                            uint32_t *template_id,
                             ipfix_template_t *t, int create_table_flag )
 {
     MYSQL_RES     *result;
@@ -328,7 +328,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
         min  = 0xFFFF;
 
         if ( cur_eno ) {
-            snprintf( ident+strlen(ident), len-strlen(ident), 
+            snprintf( ident+strlen(ident), len-strlen(ident),
                       "v%x_", cur_eno );
         }
 
@@ -359,7 +359,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
 
         if ( next_eno == 0x7FFFFFFF )
             break;
-            
+
         if ( (next_eno>cur_eno) && found )
             strcat( ident, "_" );
 
@@ -376,7 +376,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
 
     if ( mysql_query( mysql, query ) !=0 ) {
         mlogf( 0, "[%s] %s\n", func, query );
-        mlogf( 0, "[%s] mysql_query() failed: %s\n", 
+        mlogf( 0, "[%s] mysql_query() failed: %s\n",
                func, mysql_error(mysql) );
         free(ident);
         return -1;
@@ -409,7 +409,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
                   IPFIX_DB_TMPL_TABLENAME );
 
         if ( mysql_query( mysql, query ) !=0 ) {
-            mlogf( 0, "[%s] mysql_query(%s) failed: %s\n", 
+            mlogf( 0, "[%s] mysql_query(%s) failed: %s\n",
                    func, query, mysql_error(mysql) );
             free(ident);
             return -1;
@@ -434,7 +434,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
                   IPFIX_DB_TEMPLATETABLE, IPFIX_DB_TMPL_IDENT, ident,
                   IPFIX_DB_TMPL_TABLENAME, tablename, IPFIX_DB_TMPL_ID, id );
         if ( mysql_query( mysql, query ) !=0 ) {
-            mlogf( 0, "[%s] mysql_query(%s) failed: %s\n", 
+            mlogf( 0, "[%s] mysql_query(%s) failed: %s\n",
                    func, query, mysql_error(mysql) );
             free(ident);
             return -1;
@@ -461,7 +461,7 @@ int ipfix_db_get_tablename( MYSQL *mysql, char *tablename, size_t tablenamelen,
          ** todo: check if table has right layout
          */
         if ( (result=mysql_list_tables( mysql, tablename )) ==NULL ) {
-            mlogf( 1, "[%s] mysql_list_tables() failed: %s\n", 
+            mlogf( 1, "[%s] mysql_list_tables() failed: %s\n",
                    func, mysql_error(mysql) );
             return -1;
         }

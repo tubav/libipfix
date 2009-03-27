@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([lib/ipfix.h])
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_TARGET
 
-VERSION=0.7
+VERSION=0.8.1
 PACKAGE=libipfix
 
 # Checks for programs.
@@ -212,6 +212,7 @@ AC_CHECK_FUNCS([getopt_long],,
   [LIBS="-lgnugetopt $LIBS";AC_DEFINE([HAVE_GETOPT_LONG])])])
 AC_CONFIG_FILES([Makefile \
            lib/Makefile \
+           libmisc/Makefile \
            probe/Makefile \
            examples/Makefile \
            collector/Makefile ])

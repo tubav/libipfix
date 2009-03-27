@@ -42,8 +42,8 @@
 
 # these information elements have been defined by FOKUS for the Oracle project
 
-402, IPFIX_FT_ORsignalBandwidth, 4, IPFIX_CODING_UINT, "ORsignalBandwidth, "signal bandwidth" 
-403, IPFIX_FT_ORsignalPower, 2, IPFIX_CODING_UINT, "ORsignalPower ", "ERIP" 
+402, IPFIX_FT_ORsignalBandwidth, 4, IPFIX_CODING_UINT, "ORsignalBandwidth", "signal bandwidth" 
+403, IPFIX_FT_ORsignalPower, 2, IPFIX_CODING_UINT, "ORsignalPower", "ERIP" 
 404, IPFIX_FT_ORmodulationType, 2, IPFIX_CODING_UINT, "ORmodulationType", "AM/FM,.."
 405, IPFIX_FT_ORsymbolRate, 2, IPFIX_CODING_UINT, "ORsymbolRate", "symbol rate"
 406, IPFIX_FT_ORmodulationOrder, 1, IPFIX_CODING_UINT, "ORmodulationOrder", "number of levels"

@@ -1,7 +1,7 @@
-/* 
+/*
  * IPFIX structs, types and definitions
  *
- * This is a generated file. Do not edit! 
+ * This is a generated file. Do not edit!
  *
  */
 #ifndef IPFIX_DEF_H

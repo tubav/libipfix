@@ -88,6 +88,7 @@ typedef struct ipfix_col_info
     int (*export_newsource)(ipfixs_node_t*,void*);
     int (*export_newmsg)(ipfixs_node_t*,ipfix_hdr_t*,void*);
     int (*export_trecord)(ipfixs_node_t*,ipfixt_node_t*,void*);
+    int (*export_dset)(ipfixt_node_t*,uint8_t*,size_t,void*);
     int (*export_drecord)(ipfixs_node_t*,ipfixt_node_t*,
                           ipfix_datarecord_t*,void*);
     void (*export_cleanup)(void*);

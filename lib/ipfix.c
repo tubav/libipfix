@@ -6,7 +6,7 @@ $$LIC$$
  *
  *   Copyright Fraunhofer FOKUS
  *
- *   $Date: 2007/02/28 10:13:17 $
+ *   $Date: 2009-03-19 19:14:44 +0100 (Thu, 19 Mar 2009) $
  *
  *   $Revision: 1.27 $
  *
@@ -37,10 +37,13 @@ $$LIC$$
 #ifdef SCTPSUPPORT
 #include <netinet/sctp.h>
 #endif
+#ifndef NOTHREADS
+#include <pthread.h>
+#endif
 #include <fcntl.h>
 #include <netdb.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_fields.h"
 #ifdef SSLSUPPORT
@@ -67,7 +70,7 @@ $$LIC$$
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id: ipfix.c,v 1.27 2007/02/28 10:13:17 luz Exp $";
+static const char cvsid[]="$Id: ipfix.c 996 2009-03-19 18:14:44Z csc $";
 
 /*----- globals ----------------------------------------------------------*/
 
@@ -123,6 +126,18 @@ static uint16_t           g_lasttid;                  /* change this! */
 static ipfix_datarecord_t g_data = { NULL, NULL, 0 }; /* ipfix_export */
 
 static ipfix_field_t      *g_ipfix_fields;
+#ifndef NOTHREADS
+static pthread_mutex_t    g_mutex;
+#define mod_lock()        { \
+                            if ( pthread_mutex_lock( &g_mutex ) !=0 ) \
+                                mlogf( 0, "[ipfix] mutex_lock() failed: %s\n", \
+                                       strerror( errno ) ); \
+                          }
+#define mod_unlock()      {  pthread_mutex_unlock( &g_mutex ); }
+#else
+#define mod_lock()
+#define mod_unlock()
+#endif
 
 /*----- prototypes -------------------------------------------------------*/
 
@@ -133,6 +148,7 @@ int  _ipfix_send_message( ipfix_t *ifh, ipfix_collector_t *col, int flag,
                           ipfix_message_t *message );
 int  _ipfix_write_msghdr( ipfix_t *ifh, ipfix_message_t *msg, iobuf_t *buf );
 void _ipfix_disconnect( ipfix_collector_t *col );
+int  _ipfix_export_flush( ipfix_t *ifh );
 
 
 /* name      : do_writeselect
@@ -682,12 +698,19 @@ int ipfix_get_eno_ieid( char *field, int *eno, int *ieid )
  * parameters:
  * remarks:     init module, read field type info.
  */
-int ipfix_init ( void )
+int ipfix_init( void )
 {
     if ( g_tstart ) {
         ipfix_cleanup();
     }
 
+#ifndef NOTHREADS
+    if ( pthread_mutex_init( &g_mutex, NULL ) !=0 ) {
+        mlogf( 0, "[ipfix] pthread_mutex_init() failed: %s\n",
+               strerror(errno) );
+        return -1;
+    }
+#endif
     g_tstart = time(NULL);
     signal( SIGPIPE, SIG_IGN );
     g_lasttid = 255;
@@ -806,6 +829,9 @@ void ipfix_cleanup ( void )
     g_data.maxfields = 0;
     g_data.lens  = NULL;
     g_data.addrs = NULL;
+#ifndef NOTHREADS
+    (void)pthread_mutex_destroy( &g_mutex );
+#endif
 }
 
 int _ipfix_connect ( ipfix_collector_t *col )
@@ -1193,7 +1219,7 @@ int _ipfix_send_message( ipfix_t *ifh, ipfix_collector_t *col, int flag,
 
       case IPFIX_PROTO_UDP:
       {
-          ssize_t n, nleft= buf->buflen;
+          ssize_t n=0, nleft= buf->buflen;
           uint8_t *p = (uint8_t*)(buf->buffer);
 
           while( nleft>0 ) {
@@ -1270,7 +1296,7 @@ int _ipfix_send_msg( ipfix_t *ifh, ipfix_collector_t *col, iobuf_t *buf )
 
                   if ( flag==0 ) {
                       /* write would block */
-                      mlogf( 3, "[ipfix] output buf full: cannot send msg!\n");
+                      mlogf( 4, "[ipfix] output buf full: cannot send msg!\n");
                       errno = EAGAIN;
                       return -1;
                   }
@@ -1297,7 +1323,7 @@ int _ipfix_send_msg( ipfix_t *ifh, ipfix_collector_t *col, iobuf_t *buf )
           break;
       case IPFIX_PROTO_UDP:
       {
-          ssize_t n, nleft= buf->buflen;
+          ssize_t n=0, nleft= buf->buflen;
           uint8_t *p = (uint8_t*)(buf->buffer);
 
           while( nleft>0 ) {
@@ -1444,7 +1470,7 @@ int _ipfix_write_template( ipfix_t           *ifh,
 
       case IPFIX_PROTO_TCP:
           for ( ;; ) {
-              buf = col->message.buffer;
+              buf    = col->message.buffer;
               buflen = col->message.offset;
               /* check space */
               if ( buflen + tsize > IPFIX_DEFAULT_BUFLEN ) {
@@ -1465,7 +1491,7 @@ int _ipfix_write_template( ipfix_t           *ifh,
       default:
           /* check space */
           if ( tsize+ifh->offset > IPFIX_DEFAULT_BUFLEN ) {
-              if ( ipfix_export_flush( ifh ) < 0 )
+              if ( _ipfix_export_flush( ifh ) < 0 )
                   return -1;
               if ( tsize+ifh->offset > IPFIX_DEFAULT_BUFLEN )
                   return -1;
@@ -1474,6 +1500,8 @@ int _ipfix_write_template( ipfix_t           *ifh,
           /* write template prior to data */
           if ( ifh->offset > 0 ) {
               memmove( ifh->buffer + tsize, ifh->buffer, ifh->offset );
+          	  if ( ifh->cs_tid )
+                  ifh->cs_header += tsize;          
           }
 
           buf = ifh->buffer;
@@ -1615,8 +1643,11 @@ int ipfix_open( ipfix_t **ipfixh, int sourceid, int ipfix_version )
         return -1;
     }
     node->ifh   = i;
+
+    mod_lock();
     node->next  = g_ipfixlist;
     g_ipfixlist = node;
+    mod_unlock();
 
     *ipfixh = i;
     return 0;
@@ -1633,7 +1664,8 @@ void ipfix_close( ipfix_t *h )
     {
         ipfix_node_t *l, *n;
 
-        ipfix_export_flush( h );
+        mod_lock();
+        _ipfix_export_flush( h );
 
         while( h->collectors )
             _ipfix_drop_collector( (ipfix_collector_t**)&h->collectors );
@@ -1659,6 +1691,7 @@ void ipfix_close( ipfix_t *h )
 #endif
         free(h->buffer);
         free(h);
+        mod_unlock();
     }
 }
 
@@ -2156,6 +2189,22 @@ void ipfix_release_template( ipfix_t *ifh, ipfix_template_t *templ )
     ipfix_delete_template( ifh, templ );
 }
 
+static void _finish_cs( ipfix_t *ifh )
+{
+    size_t   buflen;
+    uint8_t  *buf;
+
+    /* finish current dataset */
+    if ( (buf=ifh->cs_header) ==NULL )
+        return;
+    buflen = 0;
+    INSERTU16( buf+buflen, buflen, ifh->cs_tid );
+    INSERTU16( buf+buflen, buflen, ifh->cs_bytes );
+    ifh->cs_bytes = 0;
+    ifh->cs_header = NULL;
+    ifh->cs_tid = 0;
+}
+
 int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
 {
     int       i;
@@ -2199,13 +2248,13 @@ int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
                                g_data.addrs, g_data.lens );
 }
 
-int ipfix_export_array( ipfix_t          *ifh,
+int _ipfix_export_array( ipfix_t          *ifh,
                         ipfix_template_t *templ,
                         int              nfields,
                         void             **fields,
                         uint16_t         *lengths )
 {
-    int               i;
+    int               i, newset_f=0;
     size_t            buflen, datasetlen;
     uint8_t           *p, *buf;
 
@@ -2249,7 +2298,19 @@ int ipfix_export_array( ipfix_t          *ifh,
 
     /** get size of data set, check space
      */
-    for ( i=0, datasetlen=4; i<nfields; i++ ) {
+    if ( templ->tid == ifh->cs_tid ) {
+        newset_f = 0;
+        datasetlen = 0;
+    }
+    else {
+        if ( ifh->cs_tid > 0 ) {
+            _finish_cs( ifh );
+        }
+        newset_f = 1;
+        datasetlen = 4;
+    }
+    
+    for ( i=0; i<nfields; i++ ) {
         if ( templ->fields[i].flength == IPFIX_FT_VARLEN ) {
             if ( lengths[i]>254 )
                 datasetlen += 3;
@@ -2263,21 +2324,31 @@ int ipfix_export_array( ipfix_t          *ifh,
         }
         datasetlen += lengths[i];
     }
-    if ( ((ifh->offset + datasetlen) > IPFIX_DEFAULT_BUFLEN )
-         && (ipfix_export_flush( ifh ) <0) ) {
-        return -1;
+
+    if ( (ifh->offset + datasetlen) > IPFIX_DEFAULT_BUFLEN ) {
+        if ( ifh->cs_tid )
+            _finish_cs( ifh );
+        newset_f = 1;
+
+        if ( _ipfix_export_flush( ifh ) <0 )
+            return -1;
     }
 
-    /* fill buffer
-     */
+    /* fill buffer */
     buf    = (uint8_t*)(ifh->buffer) + ifh->offset;
     buflen = 0;
 
-    /* insert data set
-     */
-    ifh->nrecords ++;
-    INSERTU16( buf+buflen, buflen, templ->tid );
-    INSERTU16( buf+buflen, buflen, datasetlen );
+    if ( newset_f ) {
+        /* insert data set
+         */
+        ifh->cs_bytes = 0;
+        ifh->cs_header = buf;
+        ifh->cs_tid = templ->tid;
+        INSERTU16( buf+buflen, buflen, templ->tid );
+        INSERTU16( buf+buflen, buflen, datasetlen );
+    }
+    /* csc: to be checked with Lutz whether the usage of "datasetlen" 
+     * in the last 30 lines of code is correct */
 
     /* insert data record
      */
@@ -2303,17 +2374,19 @@ int ipfix_export_array( ipfix_t          *ifh,
         buflen += lengths[i];
     }
 
+    ifh->nrecords ++;
     ifh->offset += buflen;
+    ifh->cs_bytes += buflen;
     if ( ifh->version == IPFIX_VERSION )
         ifh->seqno ++;
     return 0;
 }
 
-/* name:        ipfix_export_flush()
+/* name:        _ipfix_export_flush()
  * parameters:
  * remarks:     rewrite this func!
  */
-int ipfix_export_flush( ipfix_t *ifh )
+int _ipfix_export_flush( ipfix_t *ifh )
 {
     iobuf_t           *buf;
     ipfix_collector_t *col;
@@ -2322,6 +2395,11 @@ int ipfix_export_flush( ipfix_t *ifh )
     if ( (ifh==NULL) || (ifh->offset==0) )
         return 0;
 
+    if ( ifh->cs_tid > 0 ) {
+        /* finish current dataset */
+        _finish_cs( ifh );
+    }
+    
     if ( (buf=_ipfix_getbuf()) ==NULL )
         return -1;
 
@@ -2348,5 +2426,31 @@ int ipfix_export_flush( ipfix_t *ifh )
     }
 
     _ipfix_freebuf( buf );
+    return ret;
+}
+
+int ipfix_export_array( ipfix_t          *ifh,
+                        ipfix_template_t *templ,
+                        int              nfields,
+                        void             **fields,
+                        uint16_t         *lengths )
+{
+    int ret;
+
+    mod_lock();
+    ret = _ipfix_export_array( ifh, templ, nfields, fields, lengths );
+    mod_unlock();
+
+    return ret;
+}
+
+int ipfix_export_flush( ipfix_t *ifh )
+{
+    int ret;
+
+    mod_lock();
+    ret = _ipfix_export_flush( ifh );
+    mod_unlock();
+
     return ret;
 }

@@ -24,7 +24,7 @@ $$LIC$$
 #include <limits.h>
 #include <stdarg.h>
 
-#include <ipfix.h>
+#include "ipfix.h"
 #include "ipfix_col.h"
 #include "ipfix_def_fokus.h"
 #include "ipfix_fields_fokus.h"

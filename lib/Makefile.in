@@ -1,6 +1,6 @@
 #$$LIC$$
 #
-# $Id: Makefile.in,v 1.8 2007/01/12 11:46:15 luz Exp $
+# $Id: Makefile.in 996 2009-03-19 18:14:44Z csc $
 # 
 # Makefile
 SHELL = @SHELL@
@@ -40,12 +40,12 @@ LIBS = @LIBS@ -lm
 CCOPT = -Wall -g
 INCLS = -I. -I..
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
+LIBMISCDIR = ../libmisc
 
-TARGETS = libmisc.a libipfix.a
-OBJS = ipfix.o ipfix_col.o ipfix_print.o \
+TARGETS = libipfix.a
+OBJS = ipfix.o ipfix_col.o ipfix_print.o $(LIBMISCDIR)/libmisc.a \
        ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
-MISCOBJS = mpoll.o mlog.o
 DHPARAMS = dh512.pem dh1024.pem
 CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
 
@@ -60,19 +60,12 @@ distclean:
 install:
 	@[ -d ${libdir} ] || (mkdir -p ${libdir}; chmod 755 ${libdir})
 	$(INSTALL_DATA) libipfix.a ${libdir}/
-	$(INSTALL_DATA) libmisc.a ${libdir}/
+	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a ${libdir}/
 	@[ -d ${includedir} ] || (mkdir -p ${includedir}; chmod 755 ${includedir})
-	$(INSTALL_HEADER) ipfix*.h mlog.h mpoll.h ${includedir}/
+	$(INSTALL_HEADER) ipfix*.h -I$(LIBMISCDIR) mlog.h mpoll.h ${includedir}/
 
-libmisc.a: $(MISCOBJS) Makefile
-	@rm -f $@
-	$(AR) rc $@ $(MISCOBJS) 
-
-mlog.o: mlog.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mlog.c
-
-mpoll.o: mpoll.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mpoll.c
+$(LIBMISCDIR)/libmisc.a:
+	cd $(LIBMISCDIR); $(MAKE) libmisc.a
 
 libipfix.a: $(OBJS) Makefile
 	@rm -f $@

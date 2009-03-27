@@ -26,33 +26,33 @@ extern "C" {
 /*------ structs ---------------------------------------------------------*/
 
 /** netflow9 header format
- **  0                   1                   2                   3 
- **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |       Version Number          |            Count              | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                           sysUpTime                           | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                           UNIX Secs                           | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                       Sequence Number                         | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                        Source ID                              | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- */    
+ **  0                   1                   2                   3
+ **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |       Version Number          |            Count              |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                           sysUpTime                           |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                           UNIX Secs                           |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                       Sequence Number                         |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                        Source ID                              |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */   
 /** ipfix header format
- **  0                   1                   2                   3 
- **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |       Version Number          |            Length             | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                         Export Time                           | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                       Sequence Number                         | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- **   |                     Observation Domain ID                     | 
- **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
- */    
+ **  0                   1                   2                   3
+ **    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |       Version Number          |            Length             |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                         Export Time                           |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                       Sequence Number                         |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ **   |                     Observation Domain ID                     |
+ **   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */   
 typedef struct {
     uint16_t   version;     /* version of Flow Record format of this packet */
     union {
@@ -93,9 +93,9 @@ typedef struct {
 /** bearer protocol
  */
 typedef enum {
-    IPFIX_PROTO_SCTP = 132,    /* IPPROTO_SCTP */     
-    IPFIX_PROTO_TCP  = 6,      /* IPPROTO_TCP  */     
-    IPFIX_PROTO_UDP  = 17      /* IPPROTO_UDP  */     
+    IPFIX_PROTO_SCTP = 132,    /* IPPROTO_SCTP */    
+    IPFIX_PROTO_TCP  = 6,      /* IPPROTO_TCP  */    
+    IPFIX_PROTO_UDP  = 17      /* IPPROTO_UDP  */    
 } ipfix_proto_t;
 
 typedef struct
@@ -134,7 +134,7 @@ typedef struct ipfix_template
 typedef struct
 {
     int              sourceid;    /* domain id of the exporting process */
-    int              version;     /* ipfix version to export */ 
+    int              version;     /* ipfix version to export */
     void             *collectors; /* list of collectors */
     ipfix_template_t *templates;  /* list of templates  */
 
@@ -142,27 +142,33 @@ typedef struct
     int         nrecords;         /* no. of records in buffer */
     size_t      offset;           /* output buffer fill level */
     uint32_t    seqno;            /* sequence no. of next message */
+
+    /* experimental */
+    int        cs_tid;            /* template id of current dataset */
+    int        cs_bytes;          /* size of current set */
+    uint8_t    *cs_header;        /* start of current set */
+
 } ipfix_t;
 
 /** exporter funcs
  */
-int  ipfix_open( ipfix_t **ifh, int sourceid, int ipfix_version ); 
-int  ipfix_add_collector( ipfix_t *ifh, char *host, int port, 
+int  ipfix_open( ipfix_t **ifh, int sourceid, int ipfix_version );
+int  ipfix_add_collector( ipfix_t *ifh, char *host, int port,
                           ipfix_proto_t protocol );
-int  ipfix_new_data_template( ipfix_t *ifh, 
+int  ipfix_new_data_template( ipfix_t *ifh,
                               ipfix_template_t **templ, int nfields );
-int  ipfix_new_option_template( ipfix_t *ifh, 
+int  ipfix_new_option_template( ipfix_t *ifh,
                                 ipfix_template_t **templ, int nfields );
-int  ipfix_add_field( ipfix_t *ifh, ipfix_template_t *templ, 
-                      uint32_t enterprise_number, 
+int  ipfix_add_field( ipfix_t *ifh, ipfix_template_t *templ,
+                      uint32_t enterprise_number,
                       uint16_t type, uint16_t length );
-int  ipfix_add_scope_field( ipfix_t *ifh, ipfix_template_t *templ, 
-                            uint32_t enterprise_number, 
+int  ipfix_add_scope_field( ipfix_t *ifh, ipfix_template_t *templ,
+                            uint32_t enterprise_number,
                             uint16_t type, uint16_t length );
 void ipfix_delete_template( ipfix_t *ifh, ipfix_template_t *templ );
 
 int  ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... );
-int  ipfix_export_array( ipfix_t *ifh, ipfix_template_t *templ, 
+int  ipfix_export_array( ipfix_t *ifh, ipfix_template_t *templ,
                          int nfields, void **fields, uint16_t *lengths );
 int  ipfix_export_flush( ipfix_t *ifh );
 void ipfix_close( ipfix_t *ifh );
@@ -176,7 +182,7 @@ typedef struct ipfix_ssl_options {
     char            *certfile;    /* certificate */
 } ipfix_ssl_opts_t;
 
-int  ipfix_add_collector_ssl( ipfix_t *ifh, char *host, int port, 
+int  ipfix_add_collector_ssl( ipfix_t *ifh, char *host, int port,
                               ipfix_proto_t protocol,
                               ipfix_ssl_opts_t *ssl_opts );
 

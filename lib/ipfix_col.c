@@ -40,7 +40,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #ifdef SSLSUPPORT
 #include "ipfix_ssl.h"
@@ -907,7 +907,7 @@ int ipfix_decode_datarecord( ipfixt_node_t      *n,
     return 0;
 }
 
-static void do_free_datarecord( ipfix_datarecord_t   *data )
+void ipfix_free_datarecord( ipfix_datarecord_t   *data )
 { 
     if ( data ) {
         if ( data->addrs )
@@ -925,6 +925,7 @@ int ipfix_parse_msg( ipfix_input_t *input,
     ipfix_hdr_t          hdr;                  /* ipfix packet header */
     ipfixs_node_t        *s;
     ipfix_datarecord_t   data = { NULL, NULL, 0 };
+    ipfixe_node_t        *e;
     uint8_t              *buf;                 /* ipfix payload */
     uint16_t             setid, setlen;        /* set id, set lenght */
     int                  i, nread, offset;     /* counter */
@@ -987,6 +988,12 @@ int ipfix_parse_msg( ipfix_input_t *input,
         }
         setlen -= 4;
         if ( setlen > (nbytes-nread) ) {
+            int     ii;
+
+            for ( ii=0; ii<nbytes; ii++ )
+                fprintf( stderr, "[%02x]", (msg[ii]&0xFF) );
+            fprintf( stderr, "\n" );
+
             mlogf( 0, "[%s] set%d: message too short (%d>%d)!\n", 
                    func, i+1, setlen+nread, (int)nbytes );
             goto end;
@@ -1042,6 +1049,12 @@ int ipfix_parse_msg( ipfix_input_t *input,
                 err_flag = 1;
             } 
             else {
+                for ( e=g_exporter; e!=NULL; e=e->next ) {
+                    if ( e->elem->export_dset )
+                        (void) e->elem->export_dset( t, buf+nread, setlen,
+                                                     e->elem->data );
+                }
+
                 /** read data records
                  */
                 for ( offset=nread, bytesleft=setlen; bytesleft>4; ) {
@@ -1076,11 +1089,11 @@ int ipfix_parse_msg( ipfix_input_t *input,
         goto errend;
 
  end:
-    do_free_datarecord( &data );
+    ipfix_free_datarecord( &data );
     return nread;
 
  errend:
-    do_free_datarecord( &data );
+    ipfix_free_datarecord( &data );
     return -1;
 }
 
@@ -1093,7 +1106,7 @@ void process_client_tcp( int fd, int mask, void *data )
     tcp_conn_t   *tcon = (tcp_conn_t*)data;
     char         *func = "process_client_tcp";
 
-    mlogf( 3,  "[%s] fd %d mask %d called.\n", func, fd, mask );
+    mlogf( 4,  "[%s] fd %d mask %d called.\n", func, fd, mask );
 
     /** read ipfix header 
      */

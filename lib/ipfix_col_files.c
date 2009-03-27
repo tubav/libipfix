@@ -25,7 +25,7 @@ $$LIC$$
 #include <time.h>
 #include <fcntl.h>
 
-#include <misc.h>
+#include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 
@@ -68,7 +68,7 @@ static int export_newsource_file( ipfixs_node_t *s, void *arg )
             return -1;
         }
         snprintf( s->fname+strlen(s->fname), PATH_MAX-strlen(s->fname),
-                  "/%u", s->odid );
+                  "/%u", (unsigned int)s->odid );
         if ( (access( s->fname, R_OK ) <0 )
              && (mkdir( s->fname, S_IRWXU ) <0) ) {
             mlogf( 0, "[%s] cannot access dir '%s': %s\n",
