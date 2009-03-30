@@ -40,6 +40,10 @@
 313, IPFIX_FT_OWDVARMIN_NSEC,       4, IPFIX_CODING_INT, "owdvarmin_nsec", "FOKUS minimum owd variance in ns"
 314, IPFIX_FT_OWDVARMAX_NSEC,       4, IPFIX_CODING_INT, "owdvarmax_nsec", "FOKUS maximum ow variance in ns"
 
+# Project INTERSECTION
+315, IPFIX_FT_SOURCEIPV4FANOUT,     4, IPFIX_CODING_UINT,"sourceIPv4FanOut", "FOKUS IPv4 fanout"
+316, IPFIX_FT_DESTINATIONIPV4FANIN, 4, IPFIX_CODING_UINT,"destinationIPv4FanIn", "FOKUS IPv4 fanin"
+
 # these information elements have been defined by FOKUS for the Oracle project
 
 402, IPFIX_FT_ORsignalBandwidth, 4, IPFIX_CODING_UINT, "ORsignalBandwidth", "signal bandwidth" 
