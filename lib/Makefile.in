@@ -62,7 +62,7 @@ install:
 	$(INSTALL_DATA) libipfix.a ${libdir}/
 	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a ${libdir}/
 	@[ -d ${includedir} ] || (mkdir -p ${includedir}; chmod 755 ${includedir})
-	$(INSTALL_HEADER) ipfix*.h -I$(LIBMISCDIR) mlog.h mpoll.h ${includedir}/
+	$(INSTALL_HEADER) ipfix*.h ${includedir}/
 
 $(LIBMISCDIR)/libmisc.a:
 	cd $(LIBMISCDIR); $(MAKE) libmisc.a
