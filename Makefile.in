@@ -7,7 +7,7 @@ SHELL = @SHELL@
 top_srcdir = @top_srcdir@
 prefix = @prefix@
 
-SUBDIRS       = lib libmisc # collector examples
+SUBDIRS       = lib libmisc examples # collector 
 
 all: compile
 

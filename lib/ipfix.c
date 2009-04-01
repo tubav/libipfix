@@ -433,15 +433,15 @@ int ipfix_snprint_int( char *str, size_t size, void *data, size_t len )
           return snprintf( str, size, "%d", tmp8 );
       case 2:
           memcpy( &tmp16, data, len );
-          tmp16 = ntohs( tmp16 );
+          //tmp16 = ntohs( tmp16 );
           return snprintf( str, size, "%d", tmp16 );
       case 4:
           memcpy( &tmp32, data, len );
-          tmp32 = ntohl( tmp32 );
+          //tmp32 = ntohl( tmp32 );
           return snprintf( str, size, "%d", (int)tmp32 );
       case 8:
           memcpy( &tmp64, data, len );
-          tmp64 = NTOHLL( tmp64 );
+          //tmp64 = NTOHLL( tmp64 );
           return snprintf( str, size, "%lld", (long long int)tmp64 );
       default:
           break;
@@ -462,15 +462,15 @@ int ipfix_snprint_uint( char *str, size_t size, void *data, size_t len )
           return snprintf( str, size, "%u", tmp8 );
       case 2:
           memcpy( &tmp16, data, len );
-          tmp16 = htons( tmp16 );
+          //tmp16 = htons( tmp16 );
           return snprintf( str, size, "%u", tmp16 );
       case 4:
           memcpy( &tmp32, data, len );
-          tmp32 = htonl( tmp32 );
+          //tmp32 = htonl( tmp32 );
           return snprintf( str, size, "%u", (unsigned int)tmp32 );
       case 8:
           memcpy( &tmp64, data, len );
-          tmp64 = HTONLL( tmp64 );
+          //tmp64 = HTONLL( tmp64 );
           return snprintf( str, size, "%llu", (long long unsigned int)tmp64 );
       default:
           break;
@@ -592,16 +592,16 @@ int ipfix_decode_float( void *in, void *out, size_t len )
 
 int ipfix_snprint_float( char *str, size_t size, void *data, size_t len )
 {
-    float tmp32;
-    double tmp64;
+    //float tmp32;
+    //double tmp64;
 
     switch ( len ) {
       case 4:
-          ipfix_decode_float( data, &tmp32, 4);
-          return snprintf( str, size, "%f", tmp32 );
+          //ipfix_decode_float( data, &tmp32, 4);
+          return snprintf( str, size, "%f", *(float*)data );
       case 8:
-          ipfix_decode_float( data, &tmp64, 8);
-          return snprintf( str, size, "%lf", tmp64);
+          //ipfix_decode_float( data, &tmp64, 8);
+          return snprintf( str, size, "%lf", *(double*)data);
       default:
           break;
     }

@@ -897,6 +897,8 @@ int ipfix_decode_datarecord( ipfixt_node_t      *n,
             return -1;
         }
 
+        n->ipfixt->fields[i].elem->decode(p,p,len);
+
         data->lens[i]  = len;
         data->addrs[i] = p;
 
