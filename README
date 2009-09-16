@@ -1,5 +1,5 @@
 
-libipfix 0.8.1
+libipfix 1.0
 
 This package contains source code for a library to export and 
 collect IPFIX measurement and accounting data. 

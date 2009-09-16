@@ -7,7 +7,7 @@ SHELL = /bin/bash
 
 srcdir = .
 top_srcdir = ..
-prefix = /usr/local
+prefix = /tmp
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -21,7 +21,7 @@ includedir = ${prefix}/include
 oldincludedir = /usr/include
 top_builddir = .
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/bin/install -c -p
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL}
