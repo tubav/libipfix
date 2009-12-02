@@ -36,9 +36,9 @@ install_sh = @install_sh@
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ @PCAPLIBS@ @SSLLIBS@ @SCTPLIBS@ -L../lib -lipfix -lmisc 
+LIBS = @LIBS@ @PCAPLIBS@ @SSLLIBS@ @SCTPLIBS@ -L../lib -lipfix -L../libmisc -lmisc 
 CCOPT = -Wall -g
-INCLS = -I. -I.. -I../lib @PCAPINCLS@
+INCLS = -I. -I.. -I../lib -I../libmisc @PCAPINCLS@
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = ipfix_probe
