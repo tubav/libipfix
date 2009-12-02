@@ -44,7 +44,7 @@ CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 TARGETS = ipfix_probe
 DEPS = Makefile 
 OBJS = probe.o ipflow.o
-CLEANFILES = $(OBJS) $(TARGETS) $(DEPS)
+CLEANFILES = $(OBJS) $(TARGETS)
 
 all: $(TARGETS)
 
@@ -52,7 +52,7 @@ clean:
 	rm -f $(CLEANFILES)
 
 distclean:
-	rm -f $(CLEANFILES)
+	rm -f $(CLEANFILES) $(DEPS)
 
 install: $(TARGETS)
 	[ -d $(bindir) ] || \
