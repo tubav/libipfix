@@ -24,6 +24,7 @@
 196, IPFIX_FT_PKTID,                4, IPFIX_CODING_UINT, "pktId", "FOKUS packet id"
 197, IPFIX_FT_STARTTIME,            4, IPFIX_CODING_INT, "startTime", "FOKUS interval start"
 198, IPFIX_FT_ENDTIME,              4, IPFIX_CODING_INT, "endTime", "FOKUS interval end"
+199, IPFIX_FT_RTT_USEC,             8, IPFIX_CODING_UINT, "rtt_usec", "FOKUS rtt in us"
 
 300, IPFIX_FT_FLOWCREATIONTIMEUSEC, 4, IPFIX_CODING_INT, "flowCreationTimeUsec", "FOKUS flow start usec fraction"
 301, IPFIX_FT_FLOWENDTIMEUSEC,      4, IPFIX_CODING_INT, "flowEndTimeUsec", "FOKUS flow end usec fraction"
@@ -52,6 +53,8 @@
 333, IPFIX_FT_PR_DECRYPTIONKEY, 65535, IPFIX_CODING_STRING, "decryptionKey", "PRISM decryption key"
 334, IPFIX_FT_PR_KEYSHARE,      65535, IPFIX_CODING_STRING, "keyShare", "PRISM key share"
 335, IPFIX_FT_PR_KEYSHAREADP,   65535, IPFIX_CODING_STRING, "keyShareAdp", "PRISM key share ADP"
+336, IPFIX_FT_PR_INITVECTOR,    65535, IPFIX_CODING_STRING, "cryptoInitVector", "PRISM crypto init vector"
+
 
 # these information elements have been defined by FOKUS for the Oracle project
 
