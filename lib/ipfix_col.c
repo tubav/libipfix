@@ -1386,7 +1386,7 @@ void process_client_sctp( int fd, int mask, void *data )
         return;
     }
 
-    mlogf( 3, "[%s] got SCTP message of %d bytes.\n",
+    mlogf( 3, "[%s] got SCTP message of %lu bytes.\n",
            func, nbytes );
 
     /* parse message
@@ -1395,7 +1395,7 @@ void process_client_sctp( int fd, int mask, void *data )
     input.u.ipcon.addr = (struct sockaddr *)&caddr;
     input.u.ipcon.addrlen = caddrlen;
     (void) ipfix_parse_msg( &input, &(assoc->sources), (uint8_t*)buf, nbytes );
-    mlogf( 3, "[%s] SCTP message had %d bytes.\n",
+    mlogf( 3, "[%s] SCTP message had %lu bytes.\n",
            func, nbytes );
     return;
 
