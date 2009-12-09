@@ -673,7 +673,7 @@ static int input_init( probe_t *probe, int flags )
     else {
         /* open interface */
         int         promisc = (flags&PROBE_PROMISC)?1:0;
-        char        *p;
+        char        *p = probe->device;
 
         if ( *device == '\0' ) {
             if ((device=pcap_lookupdev( errbuf )) ==NULL) {
