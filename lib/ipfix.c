@@ -46,6 +46,7 @@ $$LIC$$
 #include "libmisc/misc.h"
 #include "ipfix.h"
 #include "ipfix_fields.h"
+#include "ipfix_reverse_fields.h"
 #ifdef SSLSUPPORT
 #include "ipfix_ssl.h"
 #endif
@@ -726,9 +727,14 @@ int ipfix_init( void )
      ** - from field_types.h
      ** - in future from config files
      */
+
     if ( ipfix_add_vendor_information_elements( ipfix_field_types ) <0 ) {
         return -1;
     }
+
+    if ( ipfix_add_vendor_information_elements( ipfix_reverse_field_types ) <0 ) {
+        return -1;
+    }    
 
     return 0;
 }

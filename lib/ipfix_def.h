@@ -1,4 +1,4 @@
-/*
+ /*
  * IPFIX structs, types and definitions
  *
  * This is a generated file. Do not edit!
@@ -14,6 +14,8 @@
 #define IPFIX_CODING_FLOAT  5
 #define IPFIX_CODING_NTP    6
 #define IPFIX_CODING_IPADDR 7
+
+#define REV_PEN 29305 /* reverse elements private enterprise number, see RFC5103 */
 
 typedef int (*ipfix_encode_func) (void *, void*, size_t);
 typedef int (*ipfix_decode_func) (void *, void*, size_t);

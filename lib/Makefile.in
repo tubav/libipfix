@@ -71,7 +71,7 @@ libipfix.a: $(OBJS) Makefile
 	@rm -f $@
 	$(AR) rc $@ $(OBJS) 
 
-ipfix.o: ipfix.c $(DEPHDR) ipfix_ssl.h Makefile
+ipfix.o: ipfix.c $(DEPHDR) ipfix_ssl.h ipfix_reverse_fields.h Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix.c
 
 ipfix_col.o: ipfix_col.c $(DEPHDR) ipfix_col.h Makefile
@@ -106,6 +106,9 @@ dhparams.c: $(DHPARAMS) Makefile
 
 dhparam.o: dhparams.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c dhparams.c
+
+ipfix_reverse_fields.h: ipfix_fields.h make-reverse-IPFIX_FIELDS_H.sed-script-file
+	sed -f make-reverse-IPFIX_FIELDS_H.sed-script-file ipfix_fields.h > ipfix_reverse_fields.h
 
 ipfix_def_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_DEF_FOKUS_H.awk
 	awk -f make-IPFIX_DEF_FOKUS_H.awk ipfix_FOKUS_IEs.txt > ipfix_def_fokus.h
