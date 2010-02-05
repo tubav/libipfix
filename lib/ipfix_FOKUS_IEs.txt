@@ -44,6 +44,8 @@
 # Project INTERSECTION
 315, IPFIX_FT_SOURCEIPV4FANOUT,     4, IPFIX_CODING_UINT,"sourceIPv4FanOut", "FOKUS IPv4 fanout"
 316, IPFIX_FT_DESTINATIONIPV4FANIN, 4, IPFIX_CODING_UINT,"destinationIPv4FanIn", "FOKUS IPv4 fanin"
+317, IPFIX_FT_PACKETARRIVALMEAN,    8, IPFIX_CODING_UINT,"packetArrivalMean", "FOKUS IPv4 interpacket arrival time. mean in ms"
+318, IPFIX_FT_PACKETARRIVALVAR,     8, IPFIX_CODING_UINT,"packetArrivalVar", "FOKUS IPv4 interpacket arrival time.  variance in ms"
 
 # Project PRISM
 
@@ -54,7 +56,6 @@
 334, IPFIX_FT_PR_KEYSHARE,      65535, IPFIX_CODING_STRING, "keyShare", "PRISM key share"
 335, IPFIX_FT_PR_KEYSHAREADP,   65535, IPFIX_CODING_STRING, "keyShareAdp", "PRISM key share ADP"
 336, IPFIX_FT_PR_INITVECTOR,    65535, IPFIX_CODING_STRING, "cryptoInitVector", "PRISM crypto init vector"
-
 
 # these information elements have been defined by FOKUS for the Oracle project
 
