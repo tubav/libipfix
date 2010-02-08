@@ -2139,6 +2139,38 @@ int ipfix_get_template_array( ipfix_t          *ifh,
     return 0;
 }
 
+
+/*
+ * name:        ipfix_get_template()
+ * parameters:
+ * return:      generates a new template and stores a pointer to it into the templ parameter
+ */
+
+int ipfix_make_template( ipfix_t *handle, ipfix_template_t **templ,
+                        export_fields_t *fields, int nfields )
+{
+    ipfix_template_t *t;
+    int i;
+
+    if ( ipfix_new_data_template( handle, &t, nfields ) <0 ) {
+        mlogf( 0, "ipfix_new_template() failed: %s\n", strerror(errno) );
+        return -1;
+    }
+
+    for ( i=0; i<nfields; i++ ) {
+        if ( ipfix_add_field( handle, t, fields[i].eno,
+             fields[i].ienum, fields[i].length ) <0 ) {
+            mlogf( 0, "ipfix_add_field() failed: %s\n", strerror(errno) );
+            ipfix_delete_template( handle, t );
+            return -1;
+        }
+    }
+
+    *templ = t;
+    return 0;
+}
+
+
 /*
  * name:        ipfix_free_template()
  * parameters:
@@ -2194,6 +2226,7 @@ void ipfix_release_template( ipfix_t *ifh, ipfix_template_t *templ )
 {
     ipfix_delete_template( ifh, templ );
 }
+
 
 static void _finish_cs( ipfix_t *ifh )
 {

@@ -150,6 +150,12 @@ typedef struct
 
 } ipfix_t;
 
+typedef struct {
+    int       eno;		/* IPFIX enterprize number, 0 for standard element */
+    uint16_t  ienum;		/* IPFIX information element number */
+    uint16_t  length;		/* length of this element in bytes - use 65535 for varlen elements */
+} export_fields_t;
+
 /** exporter funcs
  */
 int  ipfix_open( ipfix_t **ifh, int sourceid, int ipfix_version );
@@ -166,7 +172,8 @@ int  ipfix_add_scope_field( ipfix_t *ifh, ipfix_template_t *templ,
                             uint32_t enterprise_number,
                             uint16_t type, uint16_t length );
 void ipfix_delete_template( ipfix_t *ifh, ipfix_template_t *templ );
-
+int  ipfix_make_template( ipfix_t *handle, ipfix_template_t **templ,
+                         export_fields_t *fields, int nfields );
 int  ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... );
 int  ipfix_export_array( ipfix_t *ifh, ipfix_template_t *templ,
                          int nfields, void **fields, uint16_t *lengths );

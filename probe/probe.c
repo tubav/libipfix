@@ -111,12 +111,6 @@ typedef struct probe_struct {
     int                 offset;
 } probe_t;
 
-typedef struct { 
-    int       eno; 
-    uint16_t  type; 
-    uint16_t  length; 
-} export_fields_t;
-
 /*------ globals ---------------------------------------------------------*/
 
 static struct probe_Options    g_par;
@@ -234,36 +228,6 @@ void usage (char *taskname)
     exit(1);
 }
 
-/* name: export_ipfix_get_template()
- */
-int export_ipfix_get_template( ipfix_t           *handle,
-                               ipfix_template_t  **templ,
-                               export_fields_t   *fields,
-                               int               nfields )
-{
-    ipfix_template_t *t;
-    int              i;
-
-    if ( ipfix_new_data_template( handle, &t, nfields ) <0 ) {
-        mlogf( 0, "ipfix_new_template() failed: %s\n", strerror(errno) ); 
-        return -1;
-    }
-
-    for ( i=0; i<nfields; i++ ) {
-        if ( ipfix_add_field( handle, t, fields[i].eno, 
-                              fields[i].type, fields[i].length ) <0 ) {
-            mlogf( 0, "ipfix_add_field( %d, %d, %d ) failed: %s\n",
-                    fields[i].eno, 
-                   fields[i].type, fields[i].length,
-                   strerror(errno) ); 
-            ipfix_delete_template( handle, t );
-            return -1;
-        }
-    }
-
-    *templ = t;
-    return 0;
-}
 
 /* name       : export_biflows
  * remarks    : 
@@ -811,29 +775,29 @@ static int export_init( probe_t *probe )
     }
 
     if ( g_par.biflows ) {
-        if ( export_ipfix_get_template( ifh, &t4,
-                                        ipbiflow4_fields,
-                                        ipbiflow4_nfields ) <0) {
+        if ( ipfix_make_template( ifh, &t4,
+                                  ipbiflow4_fields,
+                                  ipbiflow4_nfields ) <0) {
             goto err;
         }
 
-        if ( export_ipfix_get_template( ifh, &t6,
-                                        ipbiflow6_fields,
-                                        ipbiflow6_nfields ) <0) {
+        if ( ipfix_make_template( ifh, &t6,
+                                  ipbiflow6_fields,
+                                  ipbiflow6_nfields ) <0) {
             ipfix_delete_template( ifh, t4 );
             goto err;
         }
     }
     else {
-        if ( export_ipfix_get_template( ifh, &t4,
-                                        ipflow4_fields,
-                                        ipflow4_nfields ) <0) {
+        if ( ipfix_make_template( ifh, &t4,
+                                  ipflow4_fields,
+                                  ipflow4_nfields ) <0) {
             goto err;
         }
 
-        if ( export_ipfix_get_template( ifh, &t6,
-                                        ipflow6_fields,
-                                        ipflow6_nfields ) <0) {
+        if ( ipfix_make_template( ifh, &t6,
+                                  ipflow6_fields,
+                                  ipflow6_nfields ) <0) {
             ipfix_delete_template( ifh, t4 );
             goto err;
         }
