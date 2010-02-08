@@ -2141,7 +2141,7 @@ int ipfix_get_template_array( ipfix_t          *ifh,
 
 
 /*
- * name:        ipfix_get_template()
+ * name:        ipfix_make_template()
  * parameters:
  * return:      generates a new template and stores a pointer to it into the templ parameter
  */
