@@ -2131,7 +2131,7 @@ int ipfix_col_listen( int *nfds, int **fds,
 {
     int              i, *socks, nsocks;
     pcallback_f      callback;
-    char             *func = "ipfix_listen";
+    char             *func = "ipfix_col_listen";
 
     switch ( protocol ) {
       case IPFIX_PROTO_TCP:
