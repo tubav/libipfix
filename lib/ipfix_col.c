@@ -935,6 +935,18 @@ int ipfix_parse_msg( ipfix_input_t *input,
     int                  err_flag = 0;
     char                 *func = "parse_ipfix_msg";
 
+    ipfixe_node_t *exporter;
+    int exporter_result;
+
+    /** call exporter funcs
+     */
+    for ( exporter=g_exporter; exporter!=NULL; exporter=exporter->next ) {
+        if ( exporter->elem->export_rawmsg ) {
+            exporter_result = exporter->elem->export_rawmsg( msg, nbytes, exporter->elem->data );
+            goto end; // TODO: proceed according to result
+        }
+    }
+
     if ( ipfix_parse_hdr( (uint8_t*)msg, nbytes, &hdr ) <0 ) {
         mlogf( 1, "[%s] read invalid msg header!\n", func );
         return -1;
