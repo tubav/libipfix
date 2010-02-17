@@ -36,18 +36,18 @@ OPENSSL = @OPENSSL@
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ -lm
-CCOPT = -Wall -g
+LIBS = @LIBS@ -lmysqlclient
+CCOPT = -Wall -g -fPIC
 INCLS = -I. -I.. -I../.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 LIBMISCDIR = ../libmisc
 
-TARGETS = libipfix.a
+TARGETS = libipfix.a libipfix.so
 OBJS = ipfix.o ipfix_col.o ipfix_print.o $(LIBMISCDIR)/libmisc.a \
        ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
 DHPARAMS = dh512.pem dh1024.pem
-CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
+CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.so.*
 
 all: $(TARGETS)
 
@@ -60,8 +60,10 @@ distclean:
 install:
 	@[ -d ${libdir} ] || (mkdir -p ${libdir}; chmod 755 ${libdir})
 	$(INSTALL_DATA) libipfix.a ${libdir}/
+	$(INSTALL_DATA) libipfix.so.$(VERSION) ${libdir}/
 	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a ${libdir}/
 	@[ -d ${includedir} ] || (mkdir -p ${includedir}; chmod 755 ${includedir})
+	ln -s ${libdir}/libipfix.so.$(VERSION) ${libdir}/libipfix.so
 	$(INSTALL_HEADER) ipfix*.h ${includedir}/
 
 $(LIBMISCDIR)/libmisc.a:
@@ -70,6 +72,12 @@ $(LIBMISCDIR)/libmisc.a:
 libipfix.a: $(OBJS) Makefile
 	@rm -f $@
 	$(AR) rc $@ $(OBJS) 
+
+libipfix.so: $(OBJS) Makefile
+	@rm -f $@
+	$(CC) -shared $(LIBS) -Wl,-soname,libipfix.so.$(VERSION) -o libipfix.so.$(VERSION) $(OBJS)
+	ln -s libipfix.so.$(VERSION) libipfix.so
+
 
 ipfix.o: ipfix.c $(DEPHDR) ipfix_ssl.h ipfix_reverse_fields.h Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix.c
