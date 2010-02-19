@@ -15,6 +15,7 @@ $$LIC$$
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <ipfix.h>
 #ifdef DBSUPPORT
 #include <ipfix_db.h>
 #endif
@@ -91,7 +92,7 @@ typedef struct ipfix_col_info
     int (*export_dset)(ipfixt_node_t*,uint8_t*,size_t,void*);
     int (*export_drecord)(ipfixs_node_t*,ipfixt_node_t*,
                           ipfix_datarecord_t*,void*);
-    int (*export_rawmsg)(uint8_t* data, size_t len, void *arg);
+    int (*export_rawmsg)(ipfixs_node_t *source, uint8_t* data, size_t len, void *arg);
     void (*export_cleanup)(void*);
     void *data;
 } ipfix_col_info_t;
