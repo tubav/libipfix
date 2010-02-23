@@ -1,7 +1,7 @@
 CC = cc
-CFLAGS = -g -Wall -I../lib \
+CFLAGS = -g -Wall -I.. -I../lib -I../libmisc\
          -DDBSUPPORT -DSCTPSUPPORT  # -I/usr/local/include
-LDFLAGS = -L../lib -lipfix -lmisc \
+LDFLAGS = -L../lib -L../libmisc -lipfix -lmisc \
           -lsctp -lmysqlclient # -lsocket -lnsl -lgnugetopt
 TARGETS = collector exporter exporter_sb exporter_t1
 
@@ -15,6 +15,9 @@ collector: collector.c makefile
 
 exporter: exporter.c makefile
 	$(CC) $(CFLAGS) -o exporter exporter.c  $(LDFLAGS)
+
+ipfixtee: ipfixtee.c makefile
+	$(CC) $(CFLAGS) -o ipfixtee ipfixtee.c  $(LDFLAGS) -lhashish
 
 exporter_sb: exporter_sb.c makefile
 	$(CC) $(CFLAGS) -o exporter_sb exporter_sb.c  $(LDFLAGS)
