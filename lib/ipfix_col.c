@@ -63,13 +63,6 @@ $$LIC$$
 
 /*------ structs ---------------------------------------------------------*/
 
-typedef struct ipfix_col_info_node
-{
-    struct ipfix_col_info_node *next;
-    struct ipfix_col_info      *elem;
-
-} ipfixe_node_t;
-
 typedef struct tcp_conn_node
 {
     ipfixs_node_t  *sources;
@@ -512,7 +505,7 @@ int ssl_readn( SSL *ssl, char *ptr, int nbytes )
  * parameters:
  * return:      0/-1
  */
-int ipfix_parse_hdr( uint8_t *buf, size_t buflen, ipfix_hdr_t *hdr )
+int ipfix_parse_hdr( const uint8_t *buf, size_t buflen, ipfix_hdr_t *hdr )
 {
     uint16_t version = READ16(buf);
 
@@ -549,7 +542,7 @@ int ipfix_parse_hdr( uint8_t *buf, size_t buflen, ipfix_hdr_t *hdr )
  * name:        read_templ_field()
  * return:      0/-1
  */
-int ipfix_read_templ_field( uint8_t  *buf,
+int ipfix_read_templ_field( const uint8_t  *buf,
                             size_t   buflen,
                             size_t   *nread,
                             ipfix_template_field_t  *field )
@@ -619,7 +612,7 @@ int ipfix_export_hdr( ipfixs_node_t *s, ipfix_hdr_t *hdr )
  */
 int ipfix_decode_trecord( ipfixs_node_t  *s,
                           int            setid,
-                          uint8_t        *buf, 
+                          const uint8_t        *buf,
                           size_t         len,
                           int            *nread,
                           ipfixt_node_t  **templ )
@@ -922,7 +915,7 @@ void ipfix_free_datarecord( ipfix_datarecord_t   *data )
 
 int ipfix_parse_msg( ipfix_input_t *input,
                      ipfixs_node_t **sources, 
-                     uint8_t *msg, size_t nbytes )
+                     const uint8_t *msg, size_t nbytes )
 {
     ipfix_hdr_t          hdr;                  /* ipfix packet header */
     ipfixs_node_t        *s;
@@ -933,19 +926,9 @@ int ipfix_parse_msg( ipfix_input_t *input,
     int                  i, nread, offset;     /* counter */
     int                  bytes, bytesleft;
     int                  err_flag = 0;
-    char                 *func = "parse_ipfix_msg";
+    char                 *func = "ipfix_parse_msg";
 
-    ipfixe_node_t *exporter;
-    int exporter_result;
-
-    /** call exporter funcs
-     */
-    for ( exporter=g_exporter; exporter!=NULL; exporter=exporter->next ) {
-        if ( exporter->elem->export_rawmsg ) {
-            exporter_result = exporter->elem->export_rawmsg( msg, nbytes, exporter->elem->data );
-            goto end; // TODO: proceed according to result
-        }
-    }
+    ipfix_col_info_t *raw_exporter = 0;
 
     if ( ipfix_parse_hdr( (uint8_t*)msg, nbytes, &hdr ) <0 ) {
         mlogf( 1, "[%s] read invalid msg header!\n", func );
@@ -977,6 +960,16 @@ int ipfix_parse_msg( ipfix_input_t *input,
 #ifdef DBSUPPORT
     s->last_message_snr = hdr.seqno;
 #endif
+
+	/** check for raw exporter
+	 */
+	for (e = g_exporter; e != NULL; e = e->next) {
+		if (e->elem->export_rawmsg) {
+			raw_exporter = e->elem;
+	        (void)raw_exporter->export_rawmsg( s, msg, nbytes, raw_exporter->data);
+	        goto end;
+		}
+	}
 
     if ( ipfix_export_hdr( s, &hdr ) <0 )
         return -1;
@@ -1094,6 +1087,176 @@ int ipfix_parse_msg( ipfix_input_t *input,
         }
         else {
             mlogf( 0, "[%s] set%d: invalid set id %d, set skipped!\n", 
+                   func, i+1, setid );
+            nread += setlen;
+        }
+    } /* for (read sets */
+
+    if ( err_flag )
+        goto errend;
+
+ end:
+    ipfix_free_datarecord( &data );
+    return nread;
+
+ errend:
+    ipfix_free_datarecord( &data );
+    return -1;
+}
+
+int ipfix_parse_raw_msg(ipfixs_node_t *src, ipfixe_node_t  *local_exporter, const uint8_t *msg, size_t nbytes )
+{
+    ipfix_hdr_t          hdr;                  /* ipfix packet header */
+    ipfix_datarecord_t   data = { NULL, NULL, 0 };
+    ipfixe_node_t        *e;
+    uint8_t              *buf;                 /* ipfix payload */
+    uint16_t             setid, setlen;        /* set id, set lenght */
+    int                  i, nread, offset;     /* counter */
+    int                  bytes, bytesleft;
+    int                  err_flag = 0;
+    char                 *func = "ipfix_parse_raw_msg";
+
+    if ( ipfix_parse_hdr( (uint8_t*)msg, nbytes, &hdr ) <0 ) {
+        mlogf( 1, "[%s] read invalid msg header!\n", func );
+        return -1;
+    }
+
+    switch( hdr.version ) {
+      case IPFIX_VERSION_NF9:
+          buf   = (uint8_t*)msg;
+          nread = IPFIX_HDR_BYTES_NF9;
+          break;
+      case IPFIX_VERSION:
+          buf   = (uint8_t*)msg;
+          nread = IPFIX_HDR_BYTES;
+          break;
+      default:
+          return -1;
+    }
+
+    if ( ipfix_export_hdr( src, &hdr ) <0 )
+        return -1;
+
+    /** read ipfix sets
+     */
+    for ( i=0; (nread+4)<nbytes; i++ ) {
+
+        if ( (hdr.version == IPFIX_VERSION_NF9)
+             && (i>=hdr.u.nf9.count) ) {
+            break;
+        }
+
+        /** read ipfix record header (set id, lenght)
+         */
+        setid   = READ16(buf+nread);
+        setlen  = READ16(buf+nread+2);
+        nread  += 4;
+        if ( setlen <4 ) {
+            mlogf( 0, "[%s] set%d: invalid set length %d\n",
+                   func, i+1, setlen );
+            continue;
+        }
+        setlen -= 4;
+        if (setlen > (nbytes - nread)) {
+			int ii;
+
+			for (ii = 0; ii < nbytes; ii++)
+				fprintf(stderr, "[%02x]", (msg[ii] & 0xFF));
+			fprintf(stderr, "\n");
+
+			mlogf(0, "[%s] set%d: message too short (%d>%d)!\n", func, i + 1,
+					setlen + nread, (int) nbytes);
+			goto end;
+		}
+
+		mlogf(4, "[%s] set%d: sid=%u, setid=%d, setlen=%d\n", func, i + 1,
+				(u_int) hdr.sourceid, setid, setlen + 4);
+
+		/** read rest of ipfix message
+         */
+        if ( (setid == IPFIX_SETID_TEMPLATE_NF9)
+             || (setid == IPFIX_SETID_OPTTEMPLATE_NF9)
+             || (setid == IPFIX_SETID_TEMPLATE)
+             || (setid == IPFIX_SETID_OPTTEMPLATE) ) {
+            /** [option] template set
+             */
+            ipfixt_node_t *t;
+
+            for (offset = nread, bytesleft = setlen; bytesleft > 4;) {
+
+				mlogf(4, "[%s] set%d: decode template, setlen=%d, left=%d\n",
+						func, i + 1, setlen, bytesleft);
+
+				if (ipfix_decode_trecord(src, setid, buf + offset, bytesleft,
+						&bytes, &t) < 0) {
+					mlogf(0, "[%s] record%d: decode template failed: %s\n",
+							func, i + 1, strerror(errno));
+					break;
+				} else {
+					for (e = local_exporter; e != NULL; e = e->next) {
+						if (e->elem->export_trecord)
+							(void) e->elem->export_trecord(src, t, e->elem->data);
+					}
+
+					bytesleft -= bytes;
+					offset += bytes;
+					mlogf(4, "[%s] set%d: %d bytes decoded\n", func, i + 1,
+							bytes);
+				}
+			}
+            nread += setlen;
+        }
+        else if ( setid >255 )
+        {
+            /** get template
+             */
+            ipfixt_node_t *t;
+
+            for ( e=local_exporter; e!=NULL; e=e->next ) {
+                if ( e->elem->export_dset ) {
+                    (void) e->elem->export_dset( t, buf+nread, setlen,
+                                                 e->elem->data );
+                }
+            }
+
+            if ( (t=_get_ipfixt( src->templates, setid )) ==NULL ) {
+                mlogf( 0, "[%s] no template for %d, skip data set\n",
+                       func, setid );
+                nread += setlen;
+                err_flag = 1;
+            }
+            else {
+
+                /** read data records
+                 */
+                for ( offset=nread, bytesleft=setlen; bytesleft>4; ) {
+                    if ( ipfix_decode_datarecord( t, buf+offset, bytesleft,
+                                                  &bytes, &data ) <0 ) {
+                        mlogf( 0, "[%s] set%d: decode record failed: %s\n",
+                               func, i+1, strerror(errno) );
+                        goto errend;
+                    }
+
+                    for ( e=local_exporter; e!=NULL; e=e->next ) {
+                        if ( e->elem->export_drecord )
+                            (void) e->elem->export_drecord( src, t, &data, e->elem->data );
+                    }
+
+                    //(void) ipfix_export_datarecord( src, t, &data );
+
+                    bytesleft -= bytes;
+                    offset    += bytes;
+                }
+
+                if ( bytesleft ) {
+                    mlogf( 3, "[%s] set%d: skip %d bytes padding\n",
+                           func, i+1, bytesleft );
+                }
+                nread += setlen;
+            }
+        }
+        else {
+            mlogf( 0, "[%s] set%d: invalid set id %d, set skipped!\n",
                    func, i+1, setid );
             nread += setlen;
         }
