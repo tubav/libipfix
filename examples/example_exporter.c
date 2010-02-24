@@ -145,7 +145,7 @@ int main ( int argc, char **argv )
 
         printf( "done.\n" );
         bytes++;
-        sleep(2);
+        sleep(1);
     }
 
     printf( "data exported.\n" );
