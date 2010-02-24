@@ -10,7 +10,7 @@
 # 10-07-2002  luz  initial
 #
 SVNREPOS="https://svnsrv.fokus.fraunhofer.de/svn/cc/ccnet/libipfix/"
-SVNTAG="arrabiata-release"
+SVNTAG=""
 DOTAG=""
 
 # about
