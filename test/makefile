@@ -3,7 +3,7 @@ CFLAGS = -g -Wall -I.. -I../lib -I../libmisc\
          -DDBSUPPORT -DSCTPSUPPORT  # -I/usr/local/include
 LDFLAGS = -L../lib -L../libmisc -lipfix -lmisc \
           -lsctp -lmysqlclient # -lsocket -lnsl -lgnugetopt
-TARGETS = collector exporter exporter_sb exporter_t1
+TARGETS = exporter exporter_sb ipfixtee
 
 all: $(TARGETS)
 
