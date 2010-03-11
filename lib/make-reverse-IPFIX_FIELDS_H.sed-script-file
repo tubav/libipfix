@@ -1,0 +1,4 @@
+s/ipfix_field_types/ipfix_reverse_field_types/g
+s/{ 0, /{ REV_PEN, /g
+s/"\(.[^"]*\)"/"reverse \1"/g
+#s/IPFIX_FT_/IPFIX_FT_REVERSE/g

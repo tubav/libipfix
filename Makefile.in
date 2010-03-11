@@ -1,0 +1,37 @@
+#
+#
+# $Id: Makefile.in,v 1.2 2005/01/04 09:25:12 luz Exp $
+# 
+# Makefile
+SHELL = @SHELL@
+top_srcdir = @top_srcdir@
+prefix = @prefix@
+
+SUBDIRS       = lib libmisc examples collector probe
+
+all: compile
+
+rmtarget clean distclean:
+	@ for DIR in $(SUBDIRS) ; \
+        do \
+                ( \
+                cd ./$$DIR; $(MAKE) $@; \
+                ); \
+        done
+
+compile:
+	@ for DIR in $(SUBDIRS) ; \
+        do \
+                ( \
+                cd ./$$DIR; $(MAKE); \
+                ); \
+        done
+
+install: 
+	@ for DIR in $(SUBDIRS) ; \
+        do \
+                ( \
+                cd ./$$DIR; $(MAKE) $@; \
+                ); \
+        done
+

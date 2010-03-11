@@ -1,0 +1,21 @@
+
+libipfix 1.0
+
+This package contains source code for a library to export and 
+collect IPFIX measurement and accounting data. 
+The library is complemented with an IPFIX collector and
+a basic IPFIX probe.
+
+The library supports IPFIX (draft-ietf-ipfix-protocol-24.txt,
+draft-ietf-ipfix-info-15.txt, draft-ietf-psamp-info-05.txt)
+and Netflow9 (RFC 3954) using TCP, UDP and SCTP as transport protocol.
+
+There are some small example programs containing code that 
+demonstrates how to use the library.
+Find a howto under: http://ants.fokus.fraunhofer.de/libipfix/docs.php
+
+You can download the current version under:
+http://ants.fokus.fraunhofer.de/libipfix/downloads.php
+
+Please send inquiries/comments/reports to mark@fokus.fraunhofer.de
+

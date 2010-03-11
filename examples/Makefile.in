@@ -1,0 +1,76 @@
+#
+#
+# $Id: Makefile.in,v 1.3 2006/11/14 15:50:37 luz Exp $
+# 
+# Makefile
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+datarootdir = @datarootdir@
+libdir = @libdir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+top_builddir = .
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+CC = @CC@
+EXEEXT = @EXEEXT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+install_sh = @install_sh@
+
+DEFS = @DEFS@ 
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@ @MYSQLLIBS@ @SCTPLIBS@ -L../lib -L../libmisc -lipfix -lmisc 
+CCOPT = -Wall -g
+INCLS = -I. -I.. -I../lib -I../libmisc
+CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
+
+TARGETS = example_exporter example_collector @IPFIX_DB_EXAMPLES@
+OBJS = example_exporter.o example_collector.o example_collector_db.o
+CLEANFILES = $(OBJS) $(TARGETS)
+
+all: $(TARGETS)
+
+clean:
+	rm -f $(CLEANFILES)
+
+distclean:
+	rm -f $(CLEANFILES) Makefile
+
+install:
+
+example_exporter: example_exporter.o Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ example_exporter.o $(LDFLAGS) $(LIBS)
+
+example_collector: example_collector.o Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ example_collector.o $(LDFLAGS) $(LIBS)
+
+example_collector_db: example_collector_db.o Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ example_collector_db.o $(LDFLAGS) $(LIBS)
+
+example_collector.o: example_collector.c Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c example_collector.c
+
+example_collector_db.o: example_collector_db.c Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c example_collector_db.c
+
+example_exporter.o: example_exporter.c Makefile
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c example_exporter.c
+

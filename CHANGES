@@ -1,0 +1,77 @@
+ChangeLog for libipfix
+
+Version 1.0
+
++ update of IE definitions
+- fixes
+
+Version 0.8.1 (2007-02-28)
++ update to draft-ietf-ipfix-info-15.txt
++ update psamp ies to draft-ietf-psamp-info-05.txt 
++ basic TLS support (experimental)
+- nf9 export fixed
+- sending tcp/sctp templates updated.
+- fixes
+
+Version 0.8 (2006-12-18)
++ update to draft-ietf-ipfix-info-14.txt
++ ipfix probe added
++ libmisc updated
+- make install fixed (reported by Thomas Hirsch)
+- resend templates via udp
+- resend templates after tcp reconnect fixed
+- use sctp stream zero to send templates
+- uint8 coding fixed
+- ipfix header sequence no. counts data records
+- fixes
+
+Version 0.7 (2006-09-06)
++ update to draft-ietf-ipfix-info-12.txt
++ add psamp IEs draft-ietf-psamp-info-04.txt 
++ collector uses exporter ipaddr plus observ. domain id to differ input streams
++ db export: change column names to ieENO_ID
++ db export: prefix template table names with 'ipfix_data_'
++ db export: write octet arrays as binary data
++ describe database layout in howto document
+- fixes
+
+Version 0.6 (2006-04-22)
++ support float32/float64 IEs
+- send ipfix messages via tcp fixed (reported by Luca Deri)
+- fixes to compile on OpenBSD
+- send option data fixed
++ howto document added
+
+Version 0.5 (2005-12-19)
++ update to draft-ietf-ipfix-info-11.txt
++ FOKUS IEs updated
++ ipfix message logging revised
++ collector now can start and stop export
+  to file, database (mysql) or screen (=message logging) 
++ new func to generate template identifier
++ example exporter supports protocol parameter
+  to export via tcp, udp or sctp
+- fixes
+
+Version 0.4 (2005-08-03)
++ update to draft-ietf-ipfix-info-09.txt
++ example collector sctp support 
++ collector marks scope fields
+- some fixes
+
+Version 0.3 (2005-07-08)
++ update to draft-ietf-ipfix-info-07.txt
++ collector processes unknown IEs
+- export of unknown IEs disabled
+- lots of fixes
+
+Version 0.2 (2005-04-22)
+= first release
++ rudimentary sctp protocol support
+- fixes
+
+Version 0.1 (2004-12-22)
+= libipfix imported from openimp package
++ support tcp and udp protocol
++ support ipv4 and ipv6
++ collector exports to file or database

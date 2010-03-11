@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>libIPFIX HOWTO</title>
+
+    <author>
+      <firstname>Lutz</firstname>
+      <surname>Mark</surname>
+      <affiliation>
+	<address>Fraunhofer FOKUS, <email>mark@fokus.fraunhofer.de</email></address>
+      </affiliation>
+    </author>
+
+    <pubdate>2006-09-06</pubdate>
+	<revhistory>
+
+	<revision>
+          <revnumber>0.2</revnumber>
+          <date>2006-09-06</date>
+          <authorinitials>lutz</authorinitials>
+          <revremark>second draft, db tables overview</revremark>
+          </revision>
+
+	<revision>
+          <revnumber>0.1</revnumber>
+          <date>2006-01-05</date>
+          <authorinitials>lutz</authorinitials>
+          <revremark>first draft</revremark>
+        </revision>
+        </revhistory>
+
+	<abstract>
+	<para>
+        This HOWTO lists some examples how to use the libipfix library.
+        </para>
+        </abstract>
+  </articleinfo>
+
+<sect1 id="intro">
+<title>Introduction</title>
+<para>
+The IPFIX protocol has been developed for the purpose of exporting IP packet flow information from IP devices such as routers or measurement stations to mediation, accounting, and network management systems. This export includes (a) attributes derived from the IP packet headers and (b) attributes known only to the exporter (e.g., ingress and egress ports, network prefix). The IPFIX protocol defines the data mapping, a way to specify templates for data record definition and a transport mapping to export flow information records across the network from an IPFIX exporter to an IPFIX collector. It is intended for the purposes of Internet research, measurement, attack and intrusion detection, accounting, and billing.
+</para>
+
+<sect2 id="copyright">
+<title>Copyright and License</title>
+     <para>
+     This document, <emphasis>libIPFIX HOWTO</emphasis>,
+     is copyrighted (c) 2006 by <emphasis>Lutz Mark</emphasis>.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation
+     License, Version 1.1 or any later version published
+     by the Free Software Foundation; with no Invariant Sections,
+     with no Front-Cover Texts, and with no Back-Cover Texts.
+     A copy of the license is available at
+     <ulink url="http://www.gnu.org/copyleft/fdl.html">
+     http://www.gnu.org/copyleft/fdl.html</ulink>.
+     </para>
+ </sect2>
+
+<!--
+	<sect2 id="credits">
+<title>Credits / Contributors</title>
+
+	<para>
+
+     In this document, I have the pleasure of acknowledging:
+    
+</para>
+
+	<itemizedlist>
+	<listitem>
+	<para>
+Individual 1 
+<email>someone1 (at) somewhere.org</email>
+</para>
+</listitem>
+	<listitem>
+	<para>
+Individual 2 
+<email>someone2 (at) somewhere.org</email>
+</para>
+</listitem>
+</itemizedlist>
+</sect2>
+-->
+
+<sect2 id="feedback">
+  <title>Feedback</title>
+  <para>
+  Feedback is welcome for this document. Please send
+  your additions, comments and criticisms to <email>mark@fokus.fraunhofer.de</email>.
+  </para>
+</sect2>
+
+</sect1>
+
+<sect1 id="library">
+  <title>IPFIX library</title>
+
+  <sect2 id="installation">
+  <title>Installation</title>
+  <programlisting>
+prerequisites:
+- libmysqlclient (only needed to build a collector which 
+                  stores results data into a mysql database)
+- libsctp (needed on some OS when to support SCTP)
+
+To build libipfix, run "./configure" (a shell script). The configure
+script will determine your system attributes and generate
+appropriate makefiles from Makefile.in. Next run "make". If everything
+goes well you can run "make install". 
+
+e.g.:
+          ./configure --enable-ipv6 --prefix=/usr/local
+          make
+          make install
+
+To compile the example programs:
+          cd examples
+          make
+  </programlisting>
+  <para>
+  </para>
+</sect2>
+
+  <sect2 id="compile">
+  <title>Compilation and linking</title>
+  <para>
+  There are two libraries. libipfix containing all IPFIX related funcs
+  and libmisc providing some general funcs for logging and polling. 
+  You have to link both libraries to you program when using ipfix functions.
+  </para>
+  <programlisting>
+  e.g.:
+     <prompt># </prompt>gcc -o myprog myprog.c -lipfix -lmisc
+  </programlisting>
+  </sect2>
+
+  <sect2 id="loggin">
+  <title>Logging</title>
+  <para>
+  There are special functions to enable and configure logging.
+  </para>
+  <programlisting>
+  <emphasis>to be done.</emphasis>
+  </programlisting>
+  </sect2>
+</sect1>
+
+<sect1 id="exporter">
+  <title>Exporting IPFIX data</title>
+  <para>The following examples omit the error handling
+  to keep it readable.
+  </para>
+
+<sect2 id="exp_example1">
+  <title>Exporting IPFIX data using ipfix_export()</title>
+  <para>The following code fragment shows the main
+  body of an IPFIX exporter.
+  </para>
+  <para>
+  First one has to get an ipfix handle via
+  <function>ipfix_open()</function>.
+  All subsequent calls will get this handle as a parameter.
+  To select an export destination <function>ipfix_add_collector()</function>
+  is used.
+  A template has to be build before the data export can start:
+  </para>
+  <programlisting>
+  #include &lt;ipfix.h>
+
+  /* init lib 
+   */
+  (void) ipfix_init();
+
+  /* open ipfix exporter
+   */
+  (void) ipfix_open( &amp;handle, sourceid, IPFIX_VERSION )
+
+  /* set collector to use
+   */
+  (void) ipfix_add_collector( handle, chost, port, IPFIX_PROTO_TCP );
+
+  /* build template to use
+   */
+  (void) ipfix_new_data_template( handle,
+                                  &amp;template,
+                                  2 /* no. of elems */ );
+  (void) ipfix_add_field( handle, template,
+                          0, IPFIX_FT_SOURCEIPV4ADDRESS, 4 );
+  (void) ipfix_add_field( handle, template,
+                          0, IPFIX_FT_PACKETDELTACOUNT, 4 );
+
+  /* export some data
+   */
+  while( ... ) {
+      (void) ipfix_export( handle, template, &amp;ipaddr, &amp;counter );
+      (void) ipfix_export_flush( handle );
+  }
+
+  /* clean up
+   */
+  ipfix_delete_template( handle, template );
+  ipfix_close( handle );
+  ipfix_cleanup();
+
+  </programlisting>
+</sect2>
+
+
+<sect2 id="exp_example2">
+  <title>Exporting IPFIX data using ipfix_export_array()</title>
+  <para>An alternative method to export data is to call
+  <function>ipfix_export_array()</function> instead of
+  <function>ipfix_export()</function>.
+  <function>ipfix_export_array()</function> gets two arrays and the length
+  of the arrays as parameters (instead of a variable number of arguments).
+  The first array contains pointers to the related data and the second
+  array contains the correspoinding lengths of the data.
+  </para>
+  <para>
+  <function>ipfix_export_array()</function> has to be used if
+  the number of arguments is unknown during compile time.
+  </para>
+  <programlisting>
+{
+  void      *data[2];
+  uint16_t  len[2];
+
+  data[0] = &amp;ipaddr;
+  len[0]  = 4;
+  data[1] = &amp;counter
+  len[1]  = 4;
+
+  ...
+
+  /* export some data
+   */
+  while( ... ) {
+      (void) ipfix_export( handle, template, 2, data, len );
+      (void) ipfix_export_flush( handle );
+  }
+
+  ...
+}
+</programlisting>
+</sect2>
+
+</sect1>
+
+<sect1 id="collector">
+  <title>Collecting and processing IPFIX data</title>
+  <para>
+  The library provides functions to build an IPFIX collector.
+  There are two method to store the collected data.
+  <orderedlist>
+   <listitem>
+      <para>store data as plain text into a file</para>
+   </listitem>
+   <listitem>
+      <para>store data into a <ulink url="http://www.mysql.com">mysql</ulink> database</para>
+   </listitem>
+   </orderedlist>
+  In addition one can printout the received messages e.g. for debugging.
+  </para>
+
+  <sect2 id="collecfile">
+  <title>Collect IPFIX data and store into files</title>
+  <para>The following code fragment shows the main
+  body of an IPFIX collector. Omitting the error handling
+  to keep it readable.
+  </para>
+  <para>
+  After initialising the library the call of
+  <function>ipfix_col_init_fileexport()</function> activates the
+  storage of the collected data into files. The function gets a
+  path to a directory as an argument. The collected data is stored
+  within this directory. 
+  </para>
+
+  <programlisting>
+  #include &lt;mpoll.h>
+  #include &lt;ipfix.h>
+  #include &lt;ipfix_col.h>
+
+  /* init lib 
+   */
+  (void) ipfix_init();
+
+  /* activate file export
+   */
+  (void) ipfix_col_init_fileexport( "/path/to/my/datadir" );
+  </programlisting>
+
+  <para>
+  The library supports the receipt of IPFIX data via TCP, UDP
+  and SCTP transport protocol. You have to call
+  <function>ipfix_col_listen()</function> for each protocol your
+  collector should care for.
+  </para>
+
+  <programlisting>
+  /* open ipfix collector port(s)
+   */
+  (void) ipfix_col_listen( &amp;nsocks, &amp;socks, IPFIX_PROTO_TCP,
+                           port, AF_INET, 10 );
+
+
+  </programlisting>
+
+  <para>
+  Start the event loop. Done.
+  </para>
+
+  <programlisting>
+  /* event loop
+   */
+  (void) mpoll_loop( -1 );
+
+  /* clean up
+   */
+  ipfix_col_cleanup();
+
+  </programlisting>
+  </sect2>
+
+  <sect2 id="fileformat">
+  <title>IPFIX data file format</title>
+  <para>
+  <emphasis>to be done.</emphasis>
+  </para>
+  </sect2>
+
+  <sect2 id="collecdb">
+  <title>Collect IPFIX data and store into mysql database</title>
+  <para>The code is similar to the example above. Just replace the
+  call to <function>ipfix_col_init_fileexport()</function> with
+  <function>ipfix_col_init_mysqlexport()</function>. 
+  </para>
+
+  <programlisting>
+  /* activate database export
+   */
+  (void) ipfix_col_init_mysqlexport( dbhost, dbuser, dbpw, dbname );
+  </programlisting>
+
+  </sect2>
+
+  <sect2 id="dblayout">
+  <title>IPFIX database layout</title>
+  <para>
+  There are the four tables
+  <emphasis>ipfix_exporters</emphasis>, <emphasis>ipfix_messages</emphasis>,
+  <emphasis>ipfix_templates</emphasis> and <emphasis>ipfix_mapping</emphasis>
+  plus one table for each different collected template.
+  </para>
+
+  <sect3 id="dbgeneral">
+  <title>IPFIX general tables</title>
+
+  <para>
+  Table <emphasis>ipfix_exporters</emphasis> holds information about the IPFIX exporters
+  basically their source IP addresses. Each incoming IPFIX message generates
+  one entry in table <emphasis>ipfix_messages</emphasis>
+  with timpstamp and oberservation domain information from the IPFIX message header.
+  For each different template received at the collector a new table is created to
+  store the content of subsequent data records of the related template.
+  For each template a unique template ident can be derived.
+  Table <emphasis>ipfix_templates</emphasis> is used to map the template ident
+  to the table name used to store data records of that template.
+  Table <emphasis>ipfix_mapping</emphasis> holds information about what 
+  templates are used by the data recoreds of each IPFIX message.
+  </para>
+
+  <programlisting>
+mysql> describe ipfix_exporters;
++--------------------+------------------+------+-----+---------+----------------+
+| Field              | Type             | Null | Key | Default | Extra          |
++--------------------+------------------+------+-----+---------+----------------+
+| id                 | int(11)          | NO   | PRI | NULL    | auto_increment | 
+| observation_domain | int(10) unsigned | NO   |     |         |                | 
+| ipaddr             | blob             | NO   |     |         |                | 
+| description        | blob             | YES  |     | NULL    |                | 
++--------------------+------------------+------+-----+---------+----------------+
+
+mysql> describe ipfix_messages;
++--------------+------------+------+-----+---------+----------------+
+| Field        | Type       | Null | Key | Default | Extra          |
++--------------+------------+------+-----+---------+----------------+
+| id           | int(11)    | NO   | PRI | NULL    | auto_increment | 
+| id_exporters | int(11)    | NO   |     |         |                | 
+| tstamp       | bigint(20) | YES  |     | NULL    |                | 
++--------------+------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> describe ipfix_templates;
++----------------+---------+------+-----+---------+----------------+
+| Field          | Type    | Null | Key | Default | Extra          |
++----------------+---------+------+-----+---------+----------------+
+| id             | int(11) | NO   | PRI | NULL    | auto_increment | 
+| template_ident | blob    | YES  |     | NULL    |                | 
+| table_name     | blob    | YES  |     | NULL    |                | 
++----------------+---------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> describe ipfix_mapping;
++--------------------+---------+------+-----+---------+-------+
+| Field              | Type    | Null | Key | Default | Extra |
++--------------------+---------+------+-----+---------+-------+
+| id_ipfix_messages  | int(11) | NO   | MUL | 0       |       | 
+| id_ipfix_templates | int(11) | NO   |     | 0       |       | 
++--------------------+---------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+  </programlisting>
+  </sect3>
+
+  <sect3 id="dbdata">
+  <title>IPFIX data tables</title>
+  <para>
+  IPFIX data tables are created dynamically on the arrival of a
+  new type of template that hasn't been appeared before.
+  The table has one column for each information element of the
+  related template. The column name has the format
+  <emphasis>ie&lt;eno&gt;_&lt;ieid&gt;</emphasis>.
+  In addition there is the column <emphasis>id_ipfix_messages</emphasis>
+  to map the data to the related IPFIX message information.
+  In general the table name would be
+  <emphasis>ipfix_&lt;template_ident&gt;</emphasis>.
+  If that string is longer than the maximal length allowed for a 
+  table name (e.g. 64 bytes), then this string cannot be taken. 
+  The name <emphasis>ipfix_data_&lt;num&gt;</emphasis> is used instead
+  and table <emphasis>ipfix_templates</emphasis> is needed to
+  get the related table name.
+  </para>
+  <para>
+  <emphasis>todo: insert example table here.</emphasis>
+  </para>
+  </sect3>
+
+  </sect2>
+</sect1>
+
+<sect1 id="troubleshooting">
+<title>Answers to Frequently Asked Questions</title>
+  <para>
+     This area contains general troubleshooting information,
+     if applicable. The question/answer format works best 
+     (like a FAQ).
+  </para>
+
+  <qandaset>
+  <qandaentry>
+  <question>
+    <para>Which Operating System do I need to run libipfix?</para>
+  </question>
+  <answer>
+  <para>Tested on Linux (Debian3.1), FreeBSD(4.10, 6.0), Solaris9</para>
+  </answer>
+  </qandaentry>
+
+  <qandaentry>
+  <question>
+    <para>Does the library support IPv6?</para>
+  </question>
+  <answer>
+  <para>yes</para>
+  </answer>
+  </qandaentry>
+
+  <qandaentry>
+  <question>
+    <para>How to enable SCTP support?</para>
+  </question>
+  <answer>
+  <para>To be able to export and collect data via IPFIX using SCTP
+  as transport protocol you first need SCTP support from your operation
+  system. Maybe you need to install a special library providing SCTP 
+  related functions. On Debian e.g. the package libsctp-dev
+  provides this lib.
+  </para>
+  <para>In addtion you have to activate SCTP support of the libipfix
+  using --enable-sctp parameter of the configure script.
+  <programlisting>
+  e.g.:
+     <prompt># </prompt>./configure --enable-sctp --prefix=/usr/local
+     <prompt># </prompt>make
+     <prompt># </prompt>make install
+  </programlisting>
+  </para>
+  </answer>
+  </qandaentry>
+
+  <qandaentry>
+  <question>
+    <para>Can I use my own information elements (field types)</para>
+  </question>
+  <answer>
+  <para>yes. You have to define them in a special C-struct
+  (use file ipfix_fields_fokus.h as an example) and register
+  them via ipfix_add_vendor_information_elements() func.
+  </para>
+  <programlisting>
+  ipfix_field_type_t my_ftypes[] = {
+    { MYENO, 1, 4, IPFIX_CODING_UINT, "my counter1", "some description" }, 
+    { MYENO, 2, 4, IPFIX_CODING_UINT, "my counter2", "some description" }, 
+    { 0, 0, -1, 0, NULL, NULL, }
+  };
+
+  ...
+  (void) ipfix_add_vendor_information_elements( my_ftypes );
+  </programlisting>
+  </answer>
+  </qandaentry>
+
+  <qandaentry>
+  <question>
+    <para>I don't want to store collected data but process it immediately?</para>
+  </question>
+  <answer>
+  <para>You can do that. Use file <function>./lib/ipfix_print.c</function> as
+  an example.</para>
+  </answer>
+  </qandaentry>
+
+</qandaset>
+</sect1>
+
+<sect1 id="links">
+<title>Further Information / Links</title>
+ <itemizedlist>
+    <listitem>
+      <para>
+        <ulink url="http://ants.fokus.fraunhofer.de/libipfix/">libIPFIX home</ulink>
+      </para>
+      <para>
+        libIPFIX pages at Fraunhofer FOKUS
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>
+        <ulink url="https://sourceforge.net/projects/libipfix">
+        sourceforge project page</ulink>
+      </para>
+      <para>
+        libIPFIX project pages at sourceforge 
+      </para>
+    </listitem>
+  </itemizedlist>
+
+</sect1>
+</article>
