@@ -57,14 +57,14 @@ $$LIC$$
 #define IPFIX_DEFAULT_BUFLEN  1400
 
 #ifndef NTOHLL
-uint8_t g_isBigEndian = 0;
+uint8_t g_isLittleEndian = 0;
 void testEndianness() {
 	uint32_t tmp = 0x0a0b0c0d;
-	g_isBigEndian = (tmp != ntohl(tmp));
+	g_isLittleEndian = (tmp != ntohl(tmp));
 }
-#define HTONLL(val)  (g_isBigEndian ? ((uint64_t)(htonl((uint32_t)((val)>>32))) | \
+#define HTONLL(val)  (g_isLittleEndian ? ((uint64_t)(htonl((uint32_t)((val)>>32))) | \
                           (((uint64_t)htonl((uint32_t)((val)&0xFFFFFFFF)))<<32)) : (val))
-#define NTOHLL(val)  (g_isBigEndian ? ((uint64_t)(ntohl((uint32_t)((val)>>32))) | \
+#define NTOHLL(val)  (g_isLittleEndian ? ((uint64_t)(ntohl((uint32_t)((val)>>32))) | \
                           (((uint64_t)ntohl((uint32_t)((val)&0xFFFFFFFF)))<<32)) : (val))
 #endif
 
