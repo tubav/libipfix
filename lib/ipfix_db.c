@@ -265,7 +265,7 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
           case IPFIX_CODING_BYTES:
               snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s VARBINARY(%lu) ", tmpbuf,
-                        (t->fields[i].elem->ft->length<MAXBINARYIELEN)?(t->fields[i].elem->ft->length):MAXBINARYIELEN);
+                        (t->fields[i].elem->ft->length<MAXBINARYIELEN)?(t->fields[i].elem->ft->length):(unsigned long)MAXBINARYIELEN);
               break;
           default:
               snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
