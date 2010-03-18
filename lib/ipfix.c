@@ -57,10 +57,15 @@
 #define IPFIX_DEFAULT_BUFLEN  1400
 
 #ifndef NTOHLL
-#define HTONLL(val)  ((uint64_t)(htonl((uint32_t)((val)>>32))) | \
-                          (((uint64_t)htonl((uint32_t)((val)&0xFFFFFFFF)))<<32))
-#define NTOHLL(val)  ((uint64_t)(ntohl((uint32_t)((val)>>32))) | \
-                          (((uint64_t)ntohl((uint32_t)((val)&0xFFFFFFFF)))<<32))
+uint8_t g_isLittleEndian = 0;
+void testEndianness() {
+       uint32_t tmp = 0x0a0b0c0d;
+       g_isLittleEndian = (tmp != ntohl(tmp));
+}
+#define HTONLL(val)  (g_isLittleEndian ? ((uint64_t)(htonl((uint32_t)((val)>>32))) | \
+                          (((uint64_t)htonl((uint32_t)((val)&0xFFFFFFFF)))<<32)) : (val))
+#define NTOHLL(val)  (g_isLittleEndian ? ((uint64_t)(ntohl((uint32_t)((val)>>32))) | \
+                          (((uint64_t)ntohl((uint32_t)((val)&0xFFFFFFFF)))<<32)) : (val))
 #endif
 
 #define INSERTU16(b,l,val) \
@@ -701,6 +706,10 @@ int ipfix_get_eno_ieid( char *field, int *eno, int *ieid )
  */
 int ipfix_init( void )
 {
+    /* check and store in global flag,
+     * whether we are on a Small or BigEndian machine */
+    testEndianness();
+
     if ( g_tstart ) {
         ipfix_cleanup();
     }
