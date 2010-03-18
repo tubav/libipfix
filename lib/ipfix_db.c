@@ -1,13 +1,13 @@
 /*
-
+$$LIC$$
  *
  * ipfix_db.c - database access functions
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Date: 2009-12-09 15:34:45 +0100 (Wed, 09 Dec 2009) $
+ * $Date: 2010-03-18 10:39:32 +0100 (Thu, 18 Mar 2010) $
  *
- * $Revision: 147 $
+ * $Revision: 187 $
  *
  * Remarks: make this funcs mysql independent
  *
@@ -35,7 +35,7 @@ static char    query[MAXQUERYLEN+1];
 
 /*------ revision id -----------------------------------------------------*/
 
-static char const cvsid[]="$Id: ipfix_db.c 147 2009-12-09 14:34:45Z jka $";
+static char const cvsid[]="$Id: ipfix_db.c 187 2010-03-18 09:39:32Z csc $";
 
 /*------ static funcs ----------------------------------------------------*/
 
@@ -265,7 +265,7 @@ int ipfix_db_create_table( MYSQL *mysql, char *tablename, ipfix_template_t *t )
           case IPFIX_CODING_BYTES:
               snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
                         ", %s VARBINARY(%lu) ", tmpbuf,
-                        (t->fields[i].elem->ft->length<MAXBINARYIELEN)?(t->fields[i].elem->ft->length):MAXBINARYIELEN);
+                        (t->fields[i].elem->ft->length<MAXBINARYIELEN)?(t->fields[i].elem->ft->length):(unsigned long)MAXBINARYIELEN);
               break;
           default:
               snprintf( query+strlen(query), MAXQUERYLEN-strlen(query),
