@@ -1400,7 +1400,7 @@ int _ipfix_write_hdr( ipfix_t *ifh, iobuf_t *buf )
         INSERTU16( buf->buffer+buf->buflen, buf->buflen,
                    ifh->offset + IPFIX_HDR_BYTES );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, now );
-        INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno );
+        INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno - ifh->nrecords );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->sourceid );
     }
 
@@ -1433,7 +1433,7 @@ int _ipfix_write_msghdr( ipfix_t *ifh, ipfix_message_t *msg, iobuf_t *buf )
         INSERTU16( buf->buffer+buf->buflen, buf->buflen,
                    msg->offset + IPFIX_HDR_BYTES );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, now );
-        INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno );
+        INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->seqno - ifh->nrecords );
         INSERTU32( buf->buffer+buf->buflen, buf->buflen, ifh->sourceid );
     }
 
@@ -2425,8 +2425,9 @@ int _ipfix_export_array( ipfix_t          *ifh,
     ifh->nrecords ++;
     ifh->offset += buflen;
     ifh->cs_bytes += buflen;
-    if ( ifh->version == IPFIX_VERSION )
+    if ( ifh->version == IPFIX_VERSION ) {
         ifh->seqno ++;
+    }
     return 0;
 }
 
