@@ -88,8 +88,7 @@ void mstrlist_free( mstrnode_t **root );
 /** get/setGlobal() hashtable 
  */
 
-struct hashtable  *ht_globals;
-
+extern struct hashtable  *ht_globals;
 void     initGlobals();
 void*    setGlobal(char *key, void *value);
 void*    getGlobal(char *key);

@@ -29,6 +29,10 @@
 
 static char const cvsid[]="$Id: misc.c 1122 2010-02-24 14:32:09Z csc $";
 
+/*------ globals ----------------------------------------------------*/
+
+struct hashtable  *ht_globals;
+
 /*------ export funcs ----------------------------------------------------*/
 
 #if !defined(HAVE_BASENAME)
