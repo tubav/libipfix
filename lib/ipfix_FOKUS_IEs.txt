@@ -60,6 +60,13 @@
 336, IPFIX_FT_PR_KEYSHAREINITVECTOR,  16, IPFIX_CODING_STRING, "cryptoInitVector", "PRISM crypto init vector"
 #339
 
+# Packet Tracking
+
+340, IPFIX_FT_PT_CPU_IDLE, 2, IPFIX_CODING_UINT, "cpu_idle_percentage", "PT CPU idle"
+341, IPFIX_FT_PT_CPU_PROCESS, 2, IPFIX_CODING_UINT, "cpu_process_percentage", "PT CPU process"
+342, IPFIX_FT_PT_RAM_PROCESS, 4, IPFIX_CODING_UINT, "used memory process  PT", "PT used memory by process"
+343, IPFIX_FT_PT_RAM_UNUSED, 4, IPFIX_CODING_UINT, "unused memory PT", "PT unused memory" 
+
 # these information elements have been defined by FOKUS for the Oracle project
 
 402, IPFIX_FT_ORsignalBandwidth, 4, IPFIX_CODING_UINT, "ORsignalBandwidth", "signal bandwidth" 
