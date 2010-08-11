@@ -62,12 +62,14 @@
 
 # Packet Tracking
 
-340, IPFIX_FT_PT_CPU_IDLE, 2, IPFIX_CODING_UINT, "cpu_idle_percentage", "PT CPU idle"
-341, IPFIX_FT_PT_CPU_PROCESS, 2, IPFIX_CODING_UINT, "cpu_process_percentage", "PT CPU process"
-342, IPFIX_FT_PT_RAM_PROCESS, 8, IPFIX_CODING_UINT, "used memory process  PT", "PT used memory by process"
-343, IPFIX_FT_PT_RAM_FREE, 8, IPFIX_CODING_UINT, "unused memory PT", "PT unused memory" 
-344, IPFIX_FT_PT_PCAPSTATS_PACKETTOTALCOUNT, 8, IPFIX_CODING_UINT, "number of pcap packets received", "number of pcap packets received"
-345, IPFIX_FT_PT_PCAPSTATS_DROPPEDPACKETDELTACOUNT, 8, IPFIX_CODING_UINT, "number of packets dropped by pcap", "number of packets dropped by pcap"
+340, IPFIX_FT_PT_SYSTEM_CPU_IDLE,   4, IPFIX_CODING_FLOAT, "sys_cpu_idle",  "PT system CPU idle %"
+341, IPFIX_FT_PT_SYSTEM_MEM_FREE,   8, IPFIX_CODING_UINT,  "sys_mem_free",  "PT system free memory in kilobytes"
+342, IPFIX_FT_PT_PROCESS_CPU_USER,  4, IPFIX_CODING_FLOAT, "proc_cpu_user", "PT percentage of CPU used in user level (application)"
+343, IPFIX_FT_PT_PROCESS_CPU_SYS,   4, IPFIX_CODING_FLOAT, "proc_cpu_sys",  "PT percentage of CPU used in system level (kernel)"
+344, IPFIX_FT_PT_PROCESS_MEM_VZS,   8, IPFIX_CODING_UINT,  "proc_mem_vzs",  "PT the process virtual memory used in kilobytes"
+345, IPFIX_FT_PT_PROCESS_MEM_RSS,   8, IPFIX_CODING_UINT,  "proc_mem_rss",  "PT the process resident set size in kilobytes"
+346, IPFIX_FT_PT_PCAPSTAT_RECV,     8, IPFIX_CODING_UINT,  "pcap_recv",     "PT number of packets received by pcap"
+347, IPFIX_FT_PT_PCAPSTAT_DROP,     8, IPFIX_CODING_UINT,  "pcap_drop",    " PT number of packets dropped by pcap"
 
 # these information elements have been defined by FOKUS for the Oracle project
 
