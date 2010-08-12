@@ -68,8 +68,8 @@
 343, IPFIX_FT_PT_PROCESS_CPU_SYS,   4, IPFIX_CODING_FLOAT, "proc_cpu_sys",  "PT percentage of CPU used in system level (kernel)"
 344, IPFIX_FT_PT_PROCESS_MEM_VZS,   8, IPFIX_CODING_UINT,  "proc_mem_vzs",  "PT the process virtual memory used in kilobytes"
 345, IPFIX_FT_PT_PROCESS_MEM_RSS,   8, IPFIX_CODING_UINT,  "proc_mem_rss",  "PT the process resident set size in kilobytes"
-346, IPFIX_FT_PT_PCAPSTAT_RECV,     8, IPFIX_CODING_UINT,  "pcap_recv",     "PT number of packets received by pcap"
-347, IPFIX_FT_PT_PCAPSTAT_DROP,     8, IPFIX_CODING_UINT,  "pcap_drop",    " PT number of packets dropped by pcap"
+346, IPFIX_FT_PT_PCAPSTAT_RECV,     4, IPFIX_CODING_UINT,  "pcap_recv",     "PT number of packets received by pcap"
+347, IPFIX_FT_PT_PCAPSTAT_DROP,     4, IPFIX_CODING_UINT,  "pcap_drop",    " PT number of packets dropped by pcap"
 
 # these information elements have been defined by FOKUS for the Oracle project
 
