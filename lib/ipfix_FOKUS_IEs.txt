@@ -62,14 +62,18 @@
 
 # Packet Tracking
 
-340, IPFIX_FT_PT_SYSTEM_CPU_IDLE,   4, IPFIX_CODING_FLOAT, "sys_cpu_idle",  "PT system CPU idle %"
-341, IPFIX_FT_PT_SYSTEM_MEM_FREE,   8, IPFIX_CODING_UINT,  "sys_mem_free",  "PT system free memory in kilobytes"
-342, IPFIX_FT_PT_PROCESS_CPU_USER,  4, IPFIX_CODING_FLOAT, "proc_cpu_user", "PT percentage of CPU used in user level (application)"
-343, IPFIX_FT_PT_PROCESS_CPU_SYS,   4, IPFIX_CODING_FLOAT, "proc_cpu_sys",  "PT percentage of CPU used in system level (kernel)"
-344, IPFIX_FT_PT_PROCESS_MEM_VZS,   8, IPFIX_CODING_UINT,  "proc_mem_vzs",  "PT the process virtual memory used in kilobytes"
-345, IPFIX_FT_PT_PROCESS_MEM_RSS,   8, IPFIX_CODING_UINT,  "proc_mem_rss",  "PT the process resident set size in kilobytes"
-346, IPFIX_FT_PT_PCAPSTAT_RECV,     4, IPFIX_CODING_UINT,  "pcap_recv",     "PT number of packets received by pcap"
-347, IPFIX_FT_PT_PCAPSTAT_DROP,     4, IPFIX_CODING_UINT,  "pcap_drop",    " PT number of packets dropped by pcap"
+340, IPFIX_FT_PT_SYSTEM_CPU_IDLE,   4, IPFIX_CODING_FLOAT, "sysCpuIdle",  "PT system CPU idle %"
+341, IPFIX_FT_PT_SYSTEM_MEM_FREE,   8, IPFIX_CODING_UINT,  "sysMemFree",  "PT system free memory in kilobytes"
+342, IPFIX_FT_PT_PROCESS_CPU_USER,  4, IPFIX_CODING_FLOAT, "procCpuUser", "PT percentage of CPU used in user level (application)"
+343, IPFIX_FT_PT_PROCESS_CPU_SYS,   4, IPFIX_CODING_FLOAT, "procCpuSys",  "PT percentage of CPU used in system level (kernel)"
+344, IPFIX_FT_PT_PROCESS_MEM_VZS,   8, IPFIX_CODING_UINT,  "procMemVzs",  "PT the process virtual memory used in bytes"
+345, IPFIX_FT_PT_PROCESS_MEM_RSS,   8, IPFIX_CODING_UINT,  "procMemRss",  "PT the process resident set size in bytes"
+346, IPFIX_FT_PT_PCAPSTAT_RECV,     4, IPFIX_CODING_UINT,  "pcapRecv",    "PT number of packets received by pcap"
+347, IPFIX_FT_PT_PCAPSTAT_DROP,     4, IPFIX_CODING_UINT,  "pcapDrop",    "PT number of packets dropped by pcap"
+348, IPFIX_FT_PT_MESSAGE_ID,        4, IPFIX_CODING_UINT,  "msgId",       "PT message id"
+349, IPFIX_FT_PT_MESSAGE_VALUE,     4, IPFIX_CODING_UINT,  "msgValue",     "PT generic value"
+350, IPFIX_FT_PT_MESSAGE,      65535, IPFIX_CODING_STRING, "msg",     "PT generic message"
+
 
 # these information elements have been defined by FOKUS for the Oracle project
 
