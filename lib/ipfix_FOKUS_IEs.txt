@@ -72,7 +72,11 @@
 347, IPFIX_FT_PT_PCAPSTAT_DROP,     4, IPFIX_CODING_UINT,  "pcapDrop",    "PT number of packets dropped by pcap"
 348, IPFIX_FT_PT_MESSAGE_ID,        4, IPFIX_CODING_UINT,  "msgId",       "PT message id"
 349, IPFIX_FT_PT_MESSAGE_VALUE,     4, IPFIX_CODING_UINT,  "msgValue",     "PT generic value"
-350, IPFIX_FT_PT_MESSAGE,      65535, IPFIX_CODING_STRING, "msg",     "PT generic message"
+350, IPFIX_FT_PT_MESSAGE,      65535, IPFIX_CODING_STRING, "msg",     "generic message"
+
+# FIXME use standard ipfix ies instead
+351, IPFIX_FT_PT_INTERFACE_NAME,             65535, IPFIX_CODING_STRING, "interfaceName",     "PT Interface Name"
+352, IPFIX_FT_PT_INTERFACE_DESCRIPTION,      65535, IPFIX_CODING_STRING, "interfaceDescripton",  "PT Interface Description"
 
 
 # these information elements have been defined by FOKUS for the Oracle project
