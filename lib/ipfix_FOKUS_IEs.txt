@@ -60,7 +60,7 @@
 336, IPFIX_FT_PR_KEYSHAREINITVECTOR,  16, IPFIX_CODING_STRING, "cryptoInitVector", "PRISM crypto init vector"
 #339
 
-# Packet Tracking
+#---[ Packet Tracking ]---------------------------------------------------------
 
 340, IPFIX_FT_PT_SYSTEM_CPU_IDLE,   4, IPFIX_CODING_FLOAT, "sysCpuIdle",  "PT system CPU idle %"
 341, IPFIX_FT_PT_SYSTEM_MEM_FREE,   8, IPFIX_CODING_UINT,  "sysMemFree",  "PT system free memory in kilobytes"
@@ -74,9 +74,16 @@
 349, IPFIX_FT_PT_MESSAGE_VALUE,     4, IPFIX_CODING_UINT,  "msgValue",     "PT generic value"
 350, IPFIX_FT_PT_MESSAGE,      65535, IPFIX_CODING_STRING, "msg",     "generic message"
 
-# FIXME use standard ipfix ies instead
-351, IPFIX_FT_PT_INTERFACE_NAME,             65535, IPFIX_CODING_STRING, "interfaceName",     "PT Interface Name"
+# We should use standard ipfix ies instead, but currently support is missing.
+351, IPFIX_FT_PT_INTERFACE_NAME,             65535, IPFIX_CODING_STRING, "interfaceName",        "PT Interface Name"
 352, IPFIX_FT_PT_INTERFACE_DESCRIPTION,      65535, IPFIX_CODING_STRING, "interfaceDescripton",  "PT Interface Description"
+
+#---[ Queue Sync ]-------------------------------------------------------------
+390, IPFIX_FT_SYNC_QUEUE_FILL_LEVEL,             4, IPFIX_CODING_FLOAT, "queueFillLevel", "SYNC QueueFillLevel"
+391, IPFIX_FT_SYNC_BOTTLENECK,                   4, IPFIX_CODING_FLOAT, "bottleneck",     "SYNC Bottleneck"
+392, IPFIX_FT_SYNC_FREQ,                         4, IPFIX_CODING_FLOAT, "freq",           "SYNC Frequency"
+
+
 
 
 # these information elements have been defined by FOKUS for the Oracle project
