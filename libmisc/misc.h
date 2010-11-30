@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 ** misc.h - export declarations for misc. funcs
@@ -88,7 +88,8 @@ void mstrlist_free( mstrnode_t **root );
 /** get/setGlobal() hashtable 
  */
 
-extern struct hashtable  *ht_globals;
+struct hashtable  *ht_globals;
+
 void     initGlobals();
 void*    setGlobal(char *key, void *value);
 void*    getGlobal(char *key);

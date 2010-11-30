@@ -3,42 +3,42 @@
 # $Id: Makefile.in,v 1.2 2006/12/01 18:25:56 luz Exp $
 # 
 # Makefile
-SHELL = @SHELL@
+SHELL = /bin/bash
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-datarootdir = @datarootdir@
-libdir = @libdir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+libdir = ${exec_prefix}/lib
+mandir = ${datarootdir}/man
+includedir = ${prefix}/include
 oldincludedir = /usr/include
 top_builddir = .
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL}
 INSTALL_HEADER = $(INSTALL_DATA)
-CC = @CC@
-EXEEXT = @EXEEXT@
-OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE_NAME@
-VERSION = @PACKAGE_VERSION@
+CC = gcc
+EXEEXT = 
+OBJEXT = o
+PACKAGE = libipfix
+VERSION = 1.0
 install_sh = @install_sh@
 
-DEFS = @DEFS@ 
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ @PCAPLIBS@ @SSLLIBS@ @SCTPLIBS@ -L../lib -lipfix -L../libmisc -lmisc 
+DEFS = -DHAVE_CONFIG_H 
+CPPFLAGS = 
+LDFLAGS = 
+LIBS =  -lpcap   -L../lib -lipfix -L../libmisc -lmisc 
 CCOPT = -Wall -g
-INCLS = -I. -I.. -I../lib -I../libmisc @PCAPINCLS@
+INCLS = -I. -I.. -I../lib -I../libmisc 
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = ipfix_probe

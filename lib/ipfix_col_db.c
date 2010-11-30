@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 **     ipfix_col_db.c - IPFIX collector related funcs

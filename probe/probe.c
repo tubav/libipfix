@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  *
  * probe.c - ipfix probe
  *

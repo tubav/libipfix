@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
  *    collector.c - example ipfix collector

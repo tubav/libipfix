@@ -3,9 +3,9 @@
 # $Id: Makefile.in,v 1.2 2005/01/04 09:25:12 luz Exp $
 # 
 # Makefile
-SHELL = @SHELL@
-top_srcdir = @top_srcdir@
-prefix = @prefix@
+SHELL = /bin/bash
+top_srcdir = .
+prefix = /usr/local
 
 SUBDIRS       = lib libmisc examples collector probe
 

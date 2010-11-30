@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 **     example_collector_db.c - example ipfix collector

@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 ** mlog.c - loggin funcs

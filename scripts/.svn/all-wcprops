@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/cc/ccnet/libipfix/!svn/ver/182/trunk/scripts
+END
+makelicense.sh
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/cc/ccnet/libipfix/!svn/ver/179/trunk/scripts/makelicense.sh
+END
+makedist.sh
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/cc/ccnet/libipfix/!svn/ver/182/trunk/scripts/makedist.sh
+END

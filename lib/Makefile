@@ -3,40 +3,40 @@
 # $Id: Makefile.in 996 2009-03-19 18:14:44Z csc $
 # 
 # Makefile
-SHELL = @SHELL@
+SHELL = /bin/bash
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-datarootdir = @datarootdir@
-libdir = @libdir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+libdir = ${exec_prefix}/lib
+mandir = ${datarootdir}/man
+includedir = ${prefix}/include
 top_builddir = .
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL}
 INSTALL_HEADER = $(INSTALL_DATA)
-CC = @CC@
-EXEEXT = @EXEEXT@
-OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE_NAME@
-VERSION = @PACKAGE_VERSION@
+CC = gcc
+EXEEXT = 
+OBJEXT = o
+PACKAGE = libipfix
+VERSION = 1.0
 install_sh = @install_sh@
-OPENSSL = @OPENSSL@
+OPENSSL = /usr/bin/openssl
 
-DEFS = @DEFS@ 
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
+DEFS = -DHAVE_CONFIG_H 
+CPPFLAGS = 
+LDFLAGS = 
+LIBS = 
 CCOPT = -Wall -g
 #CCOPT = -Wall -g -fPIC
 INCLS = -I. -I.. -I../.. -I../libmisc
@@ -46,7 +46,7 @@ LIBMISCDIR = ../libmisc
 TARGETS = libipfix.a
 #TARGETS = libipfix.a libipfix.so
 OBJS = ipfix.o ipfix_col.o ipfix_print.o $(LIBMISCDIR)/libmisc.a \
-       ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
+       ipfix_col_files.o ipfix_col_db.o  
 DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
 DHPARAMS = dh512.pem dh1024.pem
 CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h

@@ -3,46 +3,46 @@
 # $Id: Makefile.in,v 1.3 2006/11/14 15:50:37 luz Exp $
 # 
 # Makefile
-SHELL = @SHELL@
+SHELL = /bin/bash
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-datarootdir = @datarootdir@
-libdir = @libdir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+libdir = ${exec_prefix}/lib
+mandir = ${datarootdir}/man
+includedir = ${prefix}/include
 oldincludedir = /usr/include
 top_builddir = .
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL}
 INSTALL_HEADER = $(INSTALL_DATA)
-CC = @CC@
-EXEEXT = @EXEEXT@
+CC = gcc
+EXEEXT = 
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-OBJEXT = @OBJEXT@
+OBJEXT = o
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 install_sh = @install_sh@
 
-DEFS = @DEFS@ 
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ @MYSQLLIBS@ @SCTPLIBS@ -L../lib -L../libmisc -lipfix -lmisc 
+DEFS = -DHAVE_CONFIG_H 
+CPPFLAGS = 
+LDFLAGS = 
+LIBS =    -L../lib -L../libmisc -lipfix -lmisc 
 CCOPT = -Wall -g
 INCLS = -I. -I.. -I../lib -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
-TARGETS = example_exporter example_collector @IPFIX_DB_EXAMPLES@
+TARGETS = example_exporter example_collector 
 OBJS = example_exporter.o example_collector.o example_collector_db.o
 CLEANFILES = $(OBJS) $(TARGETS)
 

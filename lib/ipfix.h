@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 ** ipfix.h - export declarations of libipfix

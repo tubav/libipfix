@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 ** ipfix_col.h - export declarations of ipfix collector funcs

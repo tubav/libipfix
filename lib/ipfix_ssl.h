@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  *
  * ipfix_ssl.h - export declarations of ipfix_ssl.c
  *

@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 **     ipfix_print.c - IPFIX message printing funcs

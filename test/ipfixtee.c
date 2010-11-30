@@ -1,5 +1,5 @@
 /*
-
+$$LIC$$
  */
 /*
 **     nodedegree.c - calculate node in/out-degree from ipfix flows
