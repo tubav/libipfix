@@ -94,14 +94,15 @@ fi
 # insert header text
 #
 LICSCRIPT="./libipfix/scripts/makelicense.sh"
+LICFILE="./libipfix/COPYRIGHT"
 if test -f $LICSCRIPT ; then
     printf "\n insert header/license ...\n"
     chmod u+x $LICSCRIPT # if something ever happens to the permissions of this script
-    find . -path "*.h"   -exec $LICSCRIPT {} ./libipfix/scripts/header.txt  \; 2> /dev/null
-    find . -path "*.c"   -exec $LICSCRIPT {} ./libipfix/scripts/header.txt  \; 2> /dev/null 
-    find . -path "*.cc"  -exec $LICSCRIPT {} ./libipfix/scripts/header.txt \; 2> /dev/null
-    find . -path "*.php" -exec $LICSCRIPT {} ./libipfix/scripts/header-php.txt \; 2> /dev/null
-    find . -path "*.lua" -exec $LICSCRIPT {} ./libipfix/scripts/header.txt \; 2> /dev/null
+    find . -path "*.h"   -exec $LICSCRIPT {} $LICFILE \; 2> /dev/null
+    find . -path "*.c"   -exec $LICSCRIPT {} $LICFILE \; 2> /dev/null 
+    find . -path "*.cc"  -exec $LICSCRIPT {} $LICFILE \; 2> /dev/null
+    find . -path "*.php" -exec $LICSCRIPT {} $LICFILE \; 2> /dev/null
+    find . -path "*.lua" -exec $LICSCRIPT {} $LICFILE \; 2> /dev/null
     find . -name "Makefile.in" -exec $LICSCRIPT {} ./libipfix/scripts/header-makefile-in.txt \; 2> /dev/null
     sleep 3 ;			# for slow NFS
     printf " done."
