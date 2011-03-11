@@ -77,6 +77,8 @@
 # We should use standard ipfix ies instead, but currently support is missing.
 351, IPFIX_FT_PT_INTERFACE_NAME,             65535, IPFIX_CODING_STRING, "interfaceName",        "PT Interface Name"
 352, IPFIX_FT_PT_INTERFACE_DESCRIPTION,      65535, IPFIX_CODING_STRING, "interfaceDescripton",  "PT Interface Description"
+353, IPFIX_FT_PT_GEO_LATITUDE,      65535, IPFIX_CODING_STRING, "geoLatitude",  "PT GeoLocation Latitude"
+354, IPFIX_FT_PT_GEO_LONGITUDE,      65535, IPFIX_CODING_STRING, "geoLongitude",  "PT GeoLocation Longitude"
 
 #---[ Queue Sync ]-------------------------------------------------------------
 390, IPFIX_FT_SYNC_QUEUE_FILL_LEVEL,             4, IPFIX_CODING_FLOAT, "queueFillLevel", "SYNC QueueFillLevel"
