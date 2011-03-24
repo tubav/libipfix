@@ -55,7 +55,7 @@ distclean:
 	rm -f $(CLEANFILES) Makefile
 
 install:
-	$(INSTALL_HEADER) mlog.h mpoll.h ${includedir}/
+	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
 
 libmisc.a: $(OBJS) Makefile
 	@rm -f $@
