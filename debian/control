@@ -1,0 +1,26 @@
+Source: libipfix
+Priority: extra
+Maintainer: Packettracking <packettracking@fokus.fraunhofer.de> 
+Uploaders: Ramón Masek <ramon.masek@fokus.fraunhofer.de>
+Build-Depends: debhelper (>= 7), autotools-dev
+Standards-Version: 3.8.3
+Section: libs
+Homepage: http://www.ip-measurement.org/libipfix
+
+Package: libipfix-dev
+Section: libdevel
+Architecture: any
+Depends: libipfix (= ${binary:Version})
+Description: A C-Library for the IPFIX protocol
+ The libipfix is used to export and collect measurement data. 
+ Libipfix is a C-library implementing the IPFIX protocol defined by 
+ the IP Flow Information Export working group of the IETF. 
+
+Package: libipfix
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A C-Library for the IPFIX protocol
+ The libipfix is used to export and collect measurement data. 
+ Libipfix is a C-library implementing the IPFIX protocol defined by 
+ the IP Flow Information Export working group of the IETF. 
