@@ -54,9 +54,9 @@ distclean:
 	rm -f $(CLEANFILES) Makefile
 
 install: $(TARGETS)
-	[ -d $(bindir) ] || \
-	    (mkdir -p $(bindir); chmod 755 $(bindir))
-	$(INSTALL_PROGRAM) $(TARGETS) $(bindir)
+	@[ -d $(DESTDIR)${bindir} ] || (mkdir -p $(DESTDIR)${bindir}; chmod 755 $(DESTDIR)${bindir})
+	$(INSTALL_PROGRAM) $(TARGETS) $(DESTDIR)/${bindir}/
+	chmod 755 $(DESTDIR)${bindir}/$(TARGETS)
 
 ipfix_collector: collector.o Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ collector.o $(LDFLAGS) $(LIBS)

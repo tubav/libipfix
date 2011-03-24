@@ -61,13 +61,16 @@ distclean:
 	rm -f $(CLEANFILES) $(DHPARAMS) Makefile
 
 install:
-	@[ -d ${libdir} ] || (mkdir -p ${libdir}; chmod 755 ${libdir})
-	$(INSTALL_DATA) libipfix.a ${libdir}/
-#	$(INSTALL_DATA) libipfix.so.$(VERSION) ${libdir}/
-	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a ${libdir}/
-	@[ -d ${includedir} ] || (mkdir -p ${includedir}; chmod 755 ${includedir})
-#	ln -s ${libdir}/libipfix.so.$(VERSION) ${libdir}/libipfix.so
-	$(INSTALL_HEADER) ipfix*.h ${includedir}/
+	#install libraries
+	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
+	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
+	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a $(DESTDIR)${libdir}/
+	#install header
+	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
+	$(INSTALL_HEADER) ipfix*.h $(DESTDIR)${includedir}/
+#	#shared library TODO 
+#	$(INSTALL_DATA) libipfix.so.$(VERSION) $(DESTDIR)${libdir}/
+#	ln -s $(DESTDIR)${libdir}/libipfix.so.$(VERSION) $(DESTDIR)${libdir}/libipfix.so
 
 $(LIBMISCDIR)/libmisc.a:
 	cd $(LIBMISCDIR); $(MAKE) libmisc.a
