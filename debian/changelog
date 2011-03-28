@@ -1,3 +1,31 @@
+libipfix (0.8.1-1ubuntu1) lucid; urgency=low
+
+  [ PRISM User ]
+  * fixed ntohll+htonll bug on MIPS machines (hopefully)
+  * type fix
+  * fixed sequence number bug
+
+  [ Robert Wuttke ]
+  * fixed ht_globals include problem
+  * bleeding edge - synced with current developer-version
+
+  [ Carsten Schmoll ]
+  * makedist script fix
+  * removed Makedfiles from repo.
+  * updated README
+  * changed contact mail
+  * added two new IEs for geo location longitude and latitude (String
+    type)
+
+  [ Ramón Masek ]
+  * add VERSION file
+  * add DESTDIR to makefiles
+  * [debian] add debian directory for package building
+  * [debian] remove shared library installation
+  * [debian] adjust library installation
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Mon, 28 Mar 2011 17:09:03 +0200
+
 libipfix (0.8.1-1) unstable; urgency=low
 
   * Initial release 
