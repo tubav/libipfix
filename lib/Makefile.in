@@ -72,8 +72,8 @@ install:
 #	$(INSTALL_DATA) libipfix.so.$(VERSION) $(DESTDIR)${libdir}/
 #	ln -s $(DESTDIR)${libdir}/libipfix.so.$(VERSION) $(DESTDIR)${libdir}/libipfix.so
 
-$(LIBMISCDIR)/libmisc.a:
-	cd $(LIBMISCDIR); $(MAKE) libmisc.a
+#$(LIBMISCDIR)/libmisc.a:
+#	cd $(LIBMISCDIR); $(MAKE) libmisc.a
 
 libipfix.a: $(OBJS) Makefile
 	@rm -f $@
