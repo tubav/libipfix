@@ -1130,6 +1130,18 @@ int _ipfix_connect ( ipfix_collector_t *col )
                               if (_ipfix_write_template( node->ifh, col,
                                                          tnode ) <0 )
                                   return -1;
+
+			      /* ugly hack: update sourceid in IPFIX handle right before sending */
+			      /*            but only of the current template has an odid set     */
+			      if ( tnode->odid != 0 ) {
+				  node->ifh->sourceid = tnode->odid;
+			      }
+			      /* Send each template immediately (only one template per message) */
+                              if ( _ipfix_send_message( node->ifh, col,
+							(col->protocol==IPFIX_PROTO_SCTP)?1:0,
+							&col->message ) < 0 )
+				  return -1;
+
                               break;
                           case IPFIX_PROTO_UDP:
                               tnode->tsend = 0;

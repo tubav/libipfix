@@ -129,6 +129,8 @@ typedef struct ipfix_template
     int                     nfields;        /* = ndata + nscope */
     ipfix_template_field_t  *fields;
     int                     maxfields;         /* sizeof fields */
+
+    uint32_t                odid;  /* observation domain id */
 } ipfix_template_t;
 
 typedef struct
