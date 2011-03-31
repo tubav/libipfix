@@ -6,7 +6,7 @@ $$LIC$$
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id: ipfix.h 152 2010-02-08 14:16:24Z csc $
+** $Id: ipfix.h 231 2011-03-29 17:02:12Z csc $
 **
 */
 #ifndef IPFIX_H
@@ -129,6 +129,8 @@ typedef struct ipfix_template
     int                     nfields;        /* = ndata + nscope */
     ipfix_template_field_t  *fields;
     int                     maxfields;         /* sizeof fields */
+
+    uint32_t                odid;  /* observation domain id */
 } ipfix_template_t;
 
 typedef struct
