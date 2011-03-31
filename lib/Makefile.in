@@ -43,19 +43,15 @@ INCLS = -I. -I.. -I../.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 LIBMISCDIR = ../libmisc
 
-TARGETS = libipfix.a
-#TARGETS = libipfix.a libipfix.so
-OBJS = ipfix.o ipfix_col.o ipfix_print.o $(LIBMISCDIR)/libmisc.a \
-       ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
-DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
+#TARGETS  = libipfix.a libipfix.so
+TARGETS  = libipfix.a
+OBJS     = ipfix.o ipfix_col.o ipfix_print.o ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
+DEPHDR   = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
 DHPARAMS = dh512.pem dh1024.pem
 CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
 #CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.so.*
 
-all: $(TARGETS) ipfix_reverse_fields.h ipfix_def_fokus.h 
-
-#$(LIBMISCDIR)/libmisc.a:
-#	cd $(LIBMISCDIR); $(MAKE) libmisc.a
+all: $(TARGETS) ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
 
 libipfix.a: $(OBJS) 
 	$(AR) rc $@ $?
@@ -70,23 +66,17 @@ libipfix.so: $(OBJS)
 dh%.pem:
 	$(OPENSSL) dhparam -check -text -5 $* -out $@
 
-#dh1024.pem:
-#	$(OPENSSL) dhparam -check -text -5 1024 -out $@
-
 dhparams.c: $(DHPARAMS) 
 	echo "#include <openssl/ssl.h>" > $@
 	echo "#include <openssl/x509v3.h>" >> $@
-	$(OPENSSL) dh -noout -C < dh512.pem >> $@
-	$(OPENSSL) dh -noout -C < dh1024.pem >> $@
+	$(OPENSSL) dh -noout -C < dh512.pem >> $@ 
+	$(OPENSSL) dh -noout -C < dh1024.pem >> $@ 
 
 ipfix_reverse_fields.h: ipfix_fields.h make-reverse-IPFIX_FIELDS_H.sed-script-file
 	sed -f make-reverse-IPFIX_FIELDS_H.sed-script-file $< > $@
 
-ipfix_def_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_DEF_FOKUS_H.awk
-	awk -f make-IPFIX_DEF_FOKUS_H.awk $< > $@
-
-ipfix_fields_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_FIELDS_FOKUS_H.awk
-	awk -f make-IPFIX_FIELDS_FOKUS_H.awk $< > $@
+ipfix_%_fokus.h: ipfix_FOKUS_IEs.txt make-ipfix_%_fokus_h.awk
+	awk -f make-ipfix_$*_fokus_h.awk $< > $@
 
 clean:
 	rm -f $(CLEANFILES)
