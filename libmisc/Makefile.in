@@ -48,6 +48,12 @@ CLEANFILES = $(OBJS) $(TARGETS) testmhash
 
 all: $(TARGETS)
 
+libmisc.a: $(OBJS)
+	$(AR) rc $@ $?
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
 clean:
 	rm -f $(CLEANFILES)
 
@@ -57,34 +63,5 @@ distclean:
 install:
 	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
 
-libmisc.a: $(OBJS) Makefile
-	@rm -f $@
-	$(AR) rc $@ $(OBJS) 
-
-misc.o: misc.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c misc.c
-
-mpoll.o: mpoll.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mpoll.c
-
-mhash.o: mhash.c hashtable.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mhash.c
-
-hashtable.o: hashtable.c hashtable.h hashtable_private.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c hashtable.c
-
 testmhash: testmhash.c Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) testmhash.c libmisc.a hashtable.c -lm -o testmhash
-
-mlog.o: mlog.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mlog.c
-
-mlist.o: mlist.c misc.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mlist.c
-
-getopt.o: getopt.c getopt.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c getopt.c
-
-getopt1.o: getopt1.c getopt.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c getopt1.c
-
