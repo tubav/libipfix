@@ -1131,15 +1131,15 @@ int _ipfix_connect ( ipfix_collector_t *col )
                                                          tnode ) <0 )
                                   return -1;
 
-			      /* ugly hack: update sourceid in IPFIX handle right before sending */
-			      /*            but only of the current template has an odid set     */
-			      if ( tnode->odid != 0 ) {
-                                 node->ifh->sourceid = tnode->odid;
-			      }
-			      /* Send each template immediately (only one template per message) */
-                              if ( _ipfix_send_message( node->ifh, col,
-							(col->protocol==IPFIX_PROTO_SCTP)?1:0,
-							&col->message ) < 0 )
+                                /* ugly hack: update sourceid in IPFIX handle right before sending */
+                                /*            but only of the current template has an odid set     */
+                                if (tnode->odid != 0) {
+                                    node->ifh->sourceid = tnode->odid;
+                                }
+                                /* Send each template immediately (only one template per message) */
+                                if (_ipfix_send_message(node->ifh, col,
+                                        (col->protocol == IPFIX_PROTO_SCTP) ? 1 : 0,
+                                        &col->message) < 0)
 				  return -1;
 
                               break;
@@ -2265,7 +2265,7 @@ static void _finish_cs( ipfix_t *ifh )
     ifh->cs_tid = 0;
 }
 
-int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
+int _ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
 {
     int       i;
     va_list   args;
@@ -2502,6 +2502,40 @@ int ipfix_export_array( ipfix_t          *ifh,
     ret = _ipfix_export_array( ifh, templ, nfields, fields, lengths );
     mod_unlock();
 
+    return ret;
+}
+
+int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
+{
+    int ret;
+    ret = _ipfix_export(ifh, templ, ...);
+    return ret;
+}
+
+int ipfix_export_array_with_odid( ipfix_t          *ifh,
+                        uint32_t         odid,
+                        ipfix_template_t *templ,
+                        int              nfields,
+                        void             **fields,
+                        uint16_t         *lengths )
+{
+    int ret;
+
+    ifh->sourceid = odid;
+    mod_lock();
+    ret = _ipfix_export_array( ifh,  templ, nfields, fields, lengths );
+    mod_unlock();
+
+    return ret;
+}
+
+int ipfix_export_with_odid( ipfix_t *ifh, uint32_t odid,
+                        ipfix_template_t *templ, ... )
+{
+    int ret;
+
+    ifh->sourceid = odid;
+    ret = _ipfix_export(ifh, templ, ...);
     return ret;
 }
 
