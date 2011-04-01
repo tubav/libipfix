@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DIR=`pwd`
+FPATTERN=$1
+
+if test -z $1
+then    
+    echo "Usage: ipfixfromfile filepattern [col_ipaddr] [port]"
+    exit
+fi
+
+# Check if port/url is set from commandline, if not set to default
+if test -z $2
+then
+    URL="127.0.0.1"
+else
+    URL=$2
+fi
+
+if test -z $3
+then
+    PORT=4739
+else
+    PORT=$3
+fi
+
+for file in $FPATTERN*;
+do
+    echo $file
+    `nc $URL $PORT < $file`
+done
+
