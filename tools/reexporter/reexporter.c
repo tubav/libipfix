@@ -173,7 +173,6 @@ static void usage() {
         "  -f <datadir>        store files of collected data in this dir\n"
         "  -p <portno>         listen on this port (default=4739)\n"
         "  -s <size>           define the chunk size (default=1M)\n"
-        "  -P <protocol>       set protocol, either TCP or UDP\n"
         "  -g <hostname>       instead of writing to a file forward ipfix\n"
         "                      to <hostname>";
 
@@ -216,10 +215,6 @@ int main(int argc, char** argv) {
                 par.host = optarg;
                 remcol = count = 1;
                 break;
-            case 'P':
-                break;
-            case '?':
-                break;
             case 'h':
             default:
                 usage();
@@ -248,6 +243,5 @@ int main(int argc, char** argv) {
         }
     }
 
-    
     return 0;
 }
