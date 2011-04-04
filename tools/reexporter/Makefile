@@ -1,10 +1,10 @@
 CC      = /usr/bin/gcc
 CFLAGS  = -Wall -g \
-	  -I../../trunk \
-	  -I../../trunk/lib \
-	  -I../../trunk/libmisc
-LDFLAGS = -L../../trunk/lib -lipfix \
-	  -L../../trunk/libmisc -lmisc \
+      -I../../ \
+	  -I../../lib \
+	  -I../../libmisc
+LDFLAGS = -L../../lib -lipfix \
+	  -L../../libmisc -lmisc \
 	  -lpthread
 
 OBJ = reexporter.o utilities.o thread2.o

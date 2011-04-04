@@ -33,20 +33,6 @@ struct parameters par;
 pthread_barrier_t barrier;
 pthread_barrierattr_t attr;
 
-static void usage() {
-    const char helptxt[] =
-        "[options]\n\n"
-        "options:\n"
-        "  -h                  this help\n"
-        "  -f <datadir>        store files of collected data in this dir\n"
-        "  -p <portno>         listen on this port (default=4739)\n"
-        "  -s <size>           define the chunk size (default=1M)\n"
-        "  -P <protocol>       set protocol, either TCP or UDP\n";
-
-    fprintf(stderr, "\nipfix reexporter (%s %s)\n", "$Revision: 0.1 $", __DATE__ );
-    fprintf(stderr, "\nusage: %s\n\n", helptxt);
-}
-
 void exit_func(int signo) {
 
     if (tcp_s) {
@@ -185,12 +171,22 @@ void *startReexporter() {
     pthread_exit(NULL);
 }
 
-/**
- * 
- * @param argc
- * @param argv
- * @return
- */
+static void usage() {
+    const char helptxt[] =
+        "[options]\n"
+        "options:\n"
+        "  -h                  this help\n"
+        "  -f <datadir>        store files of collected data in this dir\n"
+        "  -p <portno>         listen on this port (default=4739)\n"
+        "  -s <size>           define the chunk size (default=1M)\n"
+        "  -P <protocol>       set protocol, either TCP or UDP\n"
+        "  -g <hostname>       instead of writing to a file forward ipfix\n"
+        "                      to <hostname>";
+
+    fprintf(stderr, "\nipfix reexporter (%s)\n",  __DATE__ );
+    fprintf(stderr, "\nusage: %s\n", helptxt);
+}
+
 int main(int argc, char** argv) {
     pthread_t idC, idR;
     char opt;
@@ -207,7 +203,7 @@ int main(int argc, char** argv) {
     par.prot = NULL;
     par.size = 5*1024;
 
-    while ((opt = getopt(argc, argv, "f:p:h:s:P")) != EOF) {
+    while ((opt = getopt(argc, argv, "f:hp:s:P:")) != EOF) {
         switch (opt) {
             case 's': /*"j"unksize*/
                 par.size = atoi(optarg) * 1024*1024;
@@ -221,13 +217,15 @@ int main(int argc, char** argv) {
             case 'f': /*path+filename*/
                 par.path = optarg;
                 break;
-            case 'h':
+            case 'g':
                 par.host = optarg;
+                //initSocket();
                 break;
             case 'P':
                 break;
             case '?':
                 break;
+            case 'h':
             default:
                 usage();
                 exit(1);
