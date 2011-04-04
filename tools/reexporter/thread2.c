@@ -20,7 +20,6 @@
 #define MSG_SIZE    4096
 
 extern struct parameters par;
-extern char *chost;
 extern int bytecounter;
 
 #ifndef SINGLEFLOW
@@ -41,7 +40,7 @@ socklen_t initCollector() {
     memset(&sa, 0, sizeof (sa));
     sa.sin_family = AF_INET;
     sa.sin_port = htons(par.port);
-    sa.sin_addr.s_addr = inet_addr(chost);
+    sa.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if ((sd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("socket() failed\n");
@@ -86,23 +85,8 @@ void *startCollector(void* socket) {
     fprintf(stdout, "Client Information (url: %s, port: %d)\n", inet_ntoa(ca.sin_addr), ca.sin_port);
 
     readLoop(client);
-    int ret = shutdown(client, 2);
-    switch(ret) {
-        case EBADF:
-            printf("socket is not a valid file descriptor\n");
-            break;
-        case ENOTSOCK:
-            printf("socket is not a socket\n");
-            break;
-        case ENOTCONN:
-            printf("socket is not connected\n");
-            break;
-        default:
-            printf("alles ok...\n");
-    }
-
-    //shutdown (client, 2);
-    //close(client);
+    shutdown(client, 2);
+    
 
 #ifndef SINGLEFLOW
     pthread_exit(NULL);
@@ -163,24 +147,6 @@ int writeToFile(FILE* fd, uint8_t* data, int length) {
     }
 }
 
-int writeToSocket(socklen_t socket, uint8_t* data, int length) {
-    size_t written;
-
-    while(1) {
-        written = write(socket, data, length);
-        if(written < 0) {
-            fprintf(stderr, "Error writing data to socket\n");
-            return -1;
-        }
-        if(written<length) {
-            length-=written;
-            continue;
-        }
-        else
-            return written;
-    }
-}
-
 void readLoop(socklen_t socket) {
     uint8_t header[HEADER_SIZE];
     uint8_t msg[MSG_SIZE];
@@ -193,11 +159,7 @@ void readLoop(socklen_t socket) {
         if(length == 0) {
             if(readHeader(socket, header) < 0)
                 return;
-
-            if(par.sock > -1)
-                writeToSocket(par.sock, header, HEADER_SIZE);
-            else
-                writeToFile(fd, header, HEADER_SIZE);
+            writeToFile(fd, header, HEADER_SIZE);
             
             headerstr = parseHeader(header);
             bytecounter += ntohs(headerstr.length);
@@ -208,19 +170,13 @@ void readLoop(socklen_t socket) {
             if(readMsg(socket, msg, MSG_SIZE) < 0)
                 return;
 
-            if(par.sock > -1)
-                writeToSocket(par.sock, msg, MSG_SIZE);
-            else
-                writeToFile(fd, msg, MSG_SIZE);
+            writeToFile(fd, msg, MSG_SIZE);
             length-=MSG_SIZE;
         }
         else {
             if(readMsg(socket, msg, length) < 0)
                 return;
-            if(par.sock > -1)
-                writeToSocket(par.sock, msg, length);
-            else
-                writeToFile(fd, msg, length);
+            writeToFile(fd, msg, length);
             length = 0;
         }
 
@@ -228,7 +184,6 @@ void readLoop(socklen_t socket) {
             bytecounter = 0;
             fclose(fd);
             close(socket);
-            //return;
         }
     }
 }

@@ -24,7 +24,6 @@ int sourceid = 680335508;
 
 ipfix_t *ipfixh = NULL;
 
-char *chost = "127.0.0.1";
 struct templates* g_templates = NULL;
 int bytecounter;
 
@@ -44,9 +43,6 @@ void exit_func(int signo) {
 
     ipfix_col_cleanup();
     ipfix_cleanup();
-
-    if (chost)
-        free(chost);
 
     exit(1);
 }
@@ -136,29 +132,27 @@ void *startReexporter() {
 
     pthread_barrier_wait(&barrier);
 
-    if (chost) {
-        if (ipfix_add_collector(ipfixh, chost, par.port, IPFIX_PROTO_TCP) < 0) {
-            fprintf(stderr, "ipfix_add_collector(%s,%d) failed: %s\n",
-                    chost, par.port, strerror(errno));
-            exit(1);
-        }
+        if (ipfix_add_collector(ipfixh, par.host, par.port, IPFIX_PROTO_TCP) < 0) {
+        fprintf(stderr, "ipfix_add_collector(%s,%d) failed: %s\n",
+                par.host, par.port, strerror(errno));
+        exit(1);
+    }
 
-        if ((g_colinfo = calloc(1, sizeof (ipfix_col_info_t))) == NULL) {
-            fprintf(stderr, "a calloc failed while initializing callback methods.\n");
-            exit(1);
-        }
+    if ((g_colinfo = calloc(1, sizeof (ipfix_col_info_t))) == NULL) {
+        fprintf(stderr, "a calloc failed while initializing callback methods.\n");
+        exit(1);
+    }
 
-        g_colinfo->export_newsource = export_newsource_cb;
-        g_colinfo->export_newmsg = export_newmsg_cb;
-        g_colinfo->export_trecord = export_trecord_cb;
-        g_colinfo->export_drecord = export_drecord_cb;
-        g_colinfo->export_cleanup = export_cleanup_cb;
-        g_colinfo->data = NULL;
+    g_colinfo->export_newsource = export_newsource_cb;
+    g_colinfo->export_newmsg = export_newmsg_cb;
+    g_colinfo->export_trecord = export_trecord_cb;
+    g_colinfo->export_drecord = export_drecord_cb;
+    g_colinfo->export_cleanup = export_cleanup_cb;
+    g_colinfo->data = NULL;
 
-        if (ipfix_col_register_export(g_colinfo) < 0) {
-            fprintf(stderr, "ipfix_col_register_export() failed: %s\n", strerror(errno));
-            exit(1);
-        }
+    if (ipfix_col_register_export(g_colinfo) < 0) {
+        fprintf(stderr, "ipfix_col_register_export() failed: %s\n", strerror(errno));
+        exit(1);
     }
 
     if (ipfix_col_listen(&ntcp_s, &tcp_s, IPFIX_PROTO_TCP, port, AF_INET, 10) < 0) {
@@ -190,20 +184,21 @@ static void usage() {
 int main(int argc, char** argv) {
     pthread_t idC, idR;
     char opt;
+    int remcol = 0;
     unsigned count = 2;
     char* dpath = "record";
     socklen_t sd;
 
    /* set default options
     */
-    par.host = NULL;
+    par.host = "127.0.0.1";
     par.port = 4740;
     par.path = dpath;
     par.sock = -1;
     par.prot = NULL;
     par.size = 5*1024;
 
-    while ((opt = getopt(argc, argv, "f:hp:s:P:")) != EOF) {
+    while ((opt = getopt(argc, argv, "f:hp:s:P:g:")) != EOF) {
         switch (opt) {
             case 's': /*"j"unksize*/
                 par.size = atoi(optarg) * 1024*1024;
@@ -219,7 +214,7 @@ int main(int argc, char** argv) {
                 break;
             case 'g':
                 par.host = optarg;
-                //initSocket();
+                remcol = count = 1;
                 break;
             case 'P':
                 break;
@@ -234,20 +229,25 @@ int main(int argc, char** argv) {
     }
 
     if (pthread_barrier_init(&barrier, &attr, count) != 0) {
-        fprintf(stdout, "ERROR: pthread_barrier_init() failed");
-        return 0;
+            fprintf(stdout, "ERROR: pthread_barrier_init() failed");
+            return 0;
+        }
+
+    /* Only start thread1 for remote collector*/
+    if (remcol) {
+        pthread_create(&idC, NULL, startReexporter, NULL);
+        pthread_join(idC, NULL);
+    } 
+    /* Start both threads when collector is the filewriter*/
+    else {
+        sd = initCollector();
+        pthread_create(&idC, NULL, startReexporter, NULL);
+        while (1) {
+            pthread_create(&idR, NULL, startCollector, (void*) &sd);
+            pthread_join(idR, NULL);
+        }
     }
 
-    sd = initCollector();
-
-    //if(par.sock > -1)
-        //connectToSocket();
-
-    pthread_create(&idC, NULL, startReexporter, NULL);
-
-    while (1) {
-        pthread_create(&idR, NULL, startCollector, (void*)&sd);
-        pthread_join(idR, NULL);
-    }
+    
     return 0;
 }
