@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
     par.prot = NULL;
     par.size = 5*1024;
 
-    while ((opt = getopt(argc, argv, "f:hp:s:P:g:")) != EOF) {
+    while ((opt = getopt(argc, argv, "f:hp:s:g:")) != EOF) {
         switch (opt) {
             case 's': /*"j"unksize*/
                 par.size = atoi(optarg) * 1024*1024;
@@ -215,6 +215,7 @@ int main(int argc, char** argv) {
                 par.host = optarg;
                 remcol = count = 1;
                 break;
+            case '?':
             case 'h':
             default:
                 usage();
