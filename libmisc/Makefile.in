@@ -48,7 +48,7 @@ CLEANFILES = *.o $(TARGETS) testmhash
 
 all: $(TARGETS)
 
-%.a: $(OBJS)
+$(TARGETS): $(OBJS)
 	$(AR) rc $@ $?
 
 %.o: %.c
