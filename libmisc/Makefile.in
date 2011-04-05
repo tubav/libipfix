@@ -37,22 +37,22 @@ install_sh = @install_sh@
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ -lm @PCAPLIBS@
+LIBS = @LIBS@ @PCAPLIBS@ -lm
 CCOPT = -Wall -g
 INCLS = -I. -I.. -I../.. @PCAPINCLS@
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = libmisc.a
-OBJS = misc.o mpoll.o mlog.o mlist.o mhash.o hashtable.o getopt.o getopt1.o
-CLEANFILES = $(OBJS) $(TARGETS) testmhash
+OBJS = misc.o mpoll.o mlog.o mlist.o mhash.o hashtable.o #getopt.o getopt1.o
+CLEANFILES = *.o $(TARGETS) testmhash
 
 all: $(TARGETS)
 
-libmisc.a: $(OBJS)
+%.a: $(OBJS)
 	$(AR) rc $@ $?
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
 	rm -f $(CLEANFILES)
@@ -61,7 +61,12 @@ distclean:
 	rm -f $(CLEANFILES) Makefile
 
 install:
+	#install libraries
+	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
+	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
+	#install header
+	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
 	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
 
-testmhash: testmhash.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) testmhash.c libmisc.a hashtable.c -lm -o testmhash
+testmhash: testmhash.o hashtable.o $(TARGETS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -lm -o $@

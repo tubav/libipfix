@@ -41,27 +41,26 @@ CCOPT = -Wall -g
 #CCOPT = -Wall -g -fPIC
 INCLS = -I. -I.. -I../.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
-LIBMISCDIR = ../libmisc
 
 #TARGETS  = libipfix.a libipfix.so
 TARGETS  = libipfix.a
 OBJS     = ipfix.o ipfix_col.o ipfix_print.o ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DEPHDR   = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
 DHPARAMS = dh512.pem dh1024.pem
-CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
+CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h 
 #CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.so.*
 
 all: $(TARGETS) ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
 
-libipfix.a: $(OBJS) 
+$(TARGETS): $(OBJS) 
 	$(AR) rc $@ $?
 
-libipfix.so: $(OBJS) 
-	$(CC) -shared $(LIBS) -Wl,-soname,libipfix.so.$(VERSION) -o libipfix.so.$(VERSION) $(OBJS)
-	ln -s libipfix.so.$(VERSION) libipfix.so
+%.so: libipfix.a ../libmisc/libmisc.a
+	$(CC) -shared $(LIBS) -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
+	ln -s $@.$(VERSION) $@
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $< 
 
 dh%.pem:
 	$(OPENSSL) dhparam -check -text -5 $* -out $@
@@ -88,7 +87,6 @@ install:
 	#install libraries
 	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
 	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
-	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a $(DESTDIR)${libdir}/
 	#install header
 	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
 	$(INSTALL_HEADER) ipfix*.h $(DESTDIR)${includedir}/
