@@ -2265,7 +2265,7 @@ static void _finish_cs( ipfix_t *ifh )
     ifh->cs_tid = 0;
 }
 
-int _ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
+int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
 {
     int       i;
     va_list   args;
@@ -2505,13 +2505,6 @@ int ipfix_export_array( ipfix_t          *ifh,
     return ret;
 }
 
-int ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... )
-{
-    int ret;
-    ret = _ipfix_export(ifh, templ, ...);
-    return ret;
-}
-
 int ipfix_export_array_with_odid( ipfix_t          *ifh,
                         uint32_t         odid,
                         ipfix_template_t *templ,
@@ -2526,16 +2519,6 @@ int ipfix_export_array_with_odid( ipfix_t          *ifh,
     ret = _ipfix_export_array( ifh,  templ, nfields, fields, lengths );
     mod_unlock();
 
-    return ret;
-}
-
-int ipfix_export_with_odid( ipfix_t *ifh, uint32_t odid,
-                        ipfix_template_t *templ, ... )
-{
-    int ret;
-
-    ifh->sourceid = odid;
-    ret = _ipfix_export(ifh, templ, ...);
     return ret;
 }
 

@@ -179,7 +179,6 @@ int  ipfix_make_template( ipfix_t *handle, ipfix_template_t **templ,
 int  ipfix_export( ipfix_t *ifh, ipfix_template_t *templ, ... );
 int  ipfix_export_array( ipfix_t *ifh, ipfix_template_t *templ,
                          int nfields, void **fields, uint16_t *lengths );
-int  ipfix_export_with_odid( ipfix_t *ifh, uint32_t odid, ipfix_template_t *templ, ... );
 int  ipfix_export_array_with_odid( ipfix_t *ifh, uint32_t, ipfix_template_t *templ,
                          int nfields, void **fields, uint16_t *lengths );
 
