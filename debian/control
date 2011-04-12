@@ -2,7 +2,7 @@ Source: libipfix
 Priority: extra
 Maintainer: Packettracking <packettracking@fokus.fraunhofer.de> 
 Uploaders: Ramón Masek <ramon.masek@fokus.fraunhofer.de>
-Build-Depends: debhelper (>= 7), autotools-dev
+Build-Depends: debhelper (>= 7), autotools-dev, libpcap0.8 (>= 0.9.8)
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://www.ip-measurement.org/libipfix
