@@ -23,15 +23,16 @@ examples collector probe: lib libmisc
 
 # rule how to build each subdirectory
 $(SUBDIRS):
-	$(MAKE) -C $@
+	@if [ -n "$(filter $(MAKECMDGOALS),$(SUBDIRS))" ]; then \
+		echo $(MAKE) -C $@; \
+		$(MAKE) -C $@; \
+	else \
+		echo $(MAKE) -C $@ $(MAKECMDGOALS); \
+		$(MAKE) -C $@ $(MAKECMDGOALS); \
+	fi
 
-rmtarget clean distclean:
-	@ for DIR in $(SUBDIRS) ; do \
-      $(MAKE) -C $$DIR $@; \
-    done
+clean install: subdirs
 
-install:
-	@ for DIR in $(SUBDIRS) ; do \
-      $(MAKE) -C $$DIR $@; \
-    done
+distclean: subdirs
+	rm -rf config.status config.log Makefile
 
