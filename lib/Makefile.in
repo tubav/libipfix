@@ -35,32 +35,21 @@ OPENSSL = @OPENSSL@
 
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
-CCOPT = -Wall -g
-#CCOPT = -Wall -g -fPIC
-INCLS = -I. -I.. -I../.. -I../libmisc
+LDFLAGS = @LDFLAGS@ -L../libmisc
+LIBS = @LIBS@ -lmisc
+CCOPT = -Wall -g -fPIC
+INCLS = -I. -I.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
-#TARGETS  = libipfix.a libipfix.so
-TARGETS  = libipfix.a
-OBJS     = ipfix.o ipfix_col.o ipfix_print.o ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
-DEPHDR   = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
+TARGETS = libipfix.a libipfix.so ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
+SOURCES = ipfix.c ipfix_col.c ipfix_col_db.c ipfix_col_files.c ipfix_print.c
+OBJECTS = $(SOURCES:.c=.o) @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DHPARAMS = dh512.pem dh1024.pem
-CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h 
-#CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.so.*
+CLEANFILES = $(TARGETS) *.d *.o *.so *.so.$(VERSION)
+DISTCLEANFILES = $(CLEANFILES) $(DHPARAMS) Makefile
 
-all: $(TARGETS) ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
 
-$(TARGETS): $(OBJS) 
-	$(AR) rc $@ $?
-
-%.so: libipfix.a ../libmisc/libmisc.a
-	$(CC) -shared $(LIBS) -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
-	ln -s $@.$(VERSION) $@
-
-%.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $< 
+include ../Makefile.rules
 
 dh%.pem:
 	$(OPENSSL) dhparam -check -text -5 $* -out $@
@@ -76,12 +65,6 @@ ipfix_reverse_fields.h: ipfix_fields.h make-reverse-IPFIX_FIELDS_H.sed-script-fi
 
 ipfix_%_fokus.h: ipfix_FOKUS_IEs.txt make-ipfix_%_fokus_h.awk
 	awk -f make-ipfix_$*_fokus_h.awk $< > $@
-
-clean:
-	rm -f $(CLEANFILES)
-
-distclean:
-	rm -f $(CLEANFILES) $(DHPARAMS) Makefile
 
 install:
 	#install libraries

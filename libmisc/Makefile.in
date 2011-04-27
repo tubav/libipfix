@@ -30,35 +30,30 @@ CC = @CC@
 EXEEXT = @EXEEXT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
+PACKAGE = @PACKAGE_NAME@
+VERSION = @PACKAGE_VERSION@
 install_sh = @install_sh@
 
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ @PCAPLIBS@ -lm
-CCOPT = -Wall -g
-INCLS = -I. -I.. -I../.. @PCAPINCLS@
+LIBS = @LIBS@ -lm #@PCAPLIBS@ 
+CCOPT = -Wall -g -fPIC
+INCLS = -I./ -I../ @PCAPINCLS@
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
-TARGETS = libmisc.a
-OBJS = misc.o mpoll.o mlog.o mlist.o mhash.o hashtable.o #getopt.o getopt1.o
-CLEANFILES = *.o $(TARGETS) testmhash
+TARGETS = libmisc.a libmisc.so
+SOURCES = $(wildcard *.c) # use all c-files
+SOURCES = misc.c mpoll.c mlog.c mlist.c mhash.c hashtable.c
+OBJECTS = $(SOURCES:.c=.o)
+CLEANFILES = *.so *.so.$(VERSION) *.d *.o $(TARGETS) testmhash
+DISTCLEANFILES = $(CLEANFILES) Makefile
 
-all: $(TARGETS)
 
-$(TARGETS): $(OBJS)
-	$(AR) rc $@ $?
+include ../Makefile.rules
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
-
-clean:
-	rm -f $(CLEANFILES)
-
-distclean:
-	rm -f $(CLEANFILES) Makefile
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 install:
 	#install libraries
@@ -68,5 +63,10 @@ install:
 	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
 	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
 
+uninstall:
+	rm -f $(addprefix $(DESTDIR)${libdir}/, $(TARGETS))
+	rm -f $(addprefix $(DESTDIR)${includedir}/,mlog.h mpoll.h)
+
 testmhash: testmhash.o hashtable.o $(TARGETS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -lm -o $@
+

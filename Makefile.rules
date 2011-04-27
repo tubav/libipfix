@@ -1,0 +1,56 @@
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+
+DEPDIR = .depend
+OBJDIR = .object
+CLEANFILES += $(DEPDIR) $(OBJDIR)
+SRCS = $(SOURCES)
+OBJS = $(addprefix $(OBJDIR)/,$(OBJECTS))
+
+all: $(TARGETS)
+
+# include rules file for each object file
+-include $(addprefix $(DEPDIR)/,$(SRCS:.c=.d))
+
+%.a: $(OBJS)
+	$(AR) rc $@ $?
+
+%.so: $(OBJS)
+	$(CC) $(LDFLAGS) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^ $(LIBS)
+	@rm -f $@
+	ln -s $@.$(VERSION) $@
+
+
+# generate rules file with all dependencies for each object file
+$(DEPDIR)/%.d: %.c | $(DEPDIR)
+	@set -e; rm -f $@; \
+	$(CC) -MM $(CFLAGS) $(CPPFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+$(DEPDIR):
+	mkdir -p $@
+
+# generate each object file
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+$(OBJDIR):
+	mkdir -p $@
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+clean:
+	rm -rf $(CLEANFILES)
+
+distclean:
+	rm -rf $(DISTCLEANFILES) Makefile
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
