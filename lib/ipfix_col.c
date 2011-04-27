@@ -40,7 +40,8 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "libmisc/misc.h"
+#include "mlog.h"
+#include "mpoll.h"
 #include "ipfix.h"
 #ifdef SSLSUPPORT
 #include "ipfix_ssl.h"
@@ -1006,7 +1007,7 @@ int ipfix_parse_msg( ipfix_input_t *input,
             goto end;
         }
 
-        if ( mlog_vlevel>2 )
+        if ( mlog_get_vlevel() > 2 )
             mlogf( 4, "[%s] set%d: sid=%u, setid=%d, setlen=%d\n", 
                    func, i+1, (u_int)hdr.sourceid, setid, setlen+4 );
 
@@ -1911,7 +1912,7 @@ void cb_maintenance ( void *user )
                 tn = t;
                 t  = t->next;
                 if ( now > tn->expire_time ) {
-                    if ( mlog_vlevel>2 ) {
+                    if ( mlog_get_vlevel() > 2 ) {
                         mlogf( 0, "[ipfix_col] drop template %u:%d\n", 
                                (unsigned int)s->odid, tn->ipfixt->tid );
                     }
