@@ -75,3 +75,4 @@ example_collector_db.o: example_collector_db.c Makefile
 example_exporter.o: example_exporter.c Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c example_exporter.c
 
+uninstall:

@@ -7,31 +7,32 @@ SHELL = @SHELL@
 top_srcdir = @top_srcdir@
 prefix = @prefix@
 
-SUBDIRS       = lib libmisc examples collector probe
+SUBDIRS = lib libmisc examples collector probe
 
-all: compile
+.PHONY: subdirs $(SUBDIRS)
 
-rmtarget clean distclean:
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE) $@; \
-                ); \
-        done
+all: subdirs
 
-compile:
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE); \
-                ); \
-        done
+# build all subdirectories
+subdirs: $(SUBDIRS)
 
-install: 
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE) $@; \
-                ); \
-        done
+# ensure libmisc compiled before lib
+lib: libmisc
+# ensure lib, libmisc compiled before
+examples collector probe: lib libmisc 
+
+# rule how to build each subdirectory
+$(SUBDIRS):
+	@if [ -n "$(filter $(MAKECMDGOALS),$(SUBDIRS))" ]; then \
+		echo $(MAKE) -C $@; \
+		$(MAKE) -C $@; \
+	else \
+		echo $(MAKE) -C $@ $(MAKECMDGOALS); \
+		$(MAKE) -C $@ $(MAKECMDGOALS); \
+	fi
+
+clean install uninstall: subdirs
+
+distclean: subdirs
+	rm -rf config.status config.log Makefile
 

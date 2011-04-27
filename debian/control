@@ -10,7 +10,16 @@ Homepage: http://www.ip-measurement.org/libipfix
 Package: libipfix-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}
+Depends: libipfix (= ${binary:Version}), ${misc:Depends}
+Description: A C-Library for the IPFIX protocol
+ The libipfix is used to export and collect measurement data. 
+ Libipfix is a C-library implementing the IPFIX protocol defined by 
+ the IP Flow Information Export working group of the IETF. 
+
+Package: libipfix
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: A C-Library for the IPFIX protocol
  The libipfix is used to export and collect measurement data. 
  Libipfix is a C-library implementing the IPFIX protocol defined by 

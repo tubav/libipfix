@@ -29,7 +29,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "libmisc/misc.h"
+#include "misc.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 #include "ipfix_ssl.h"

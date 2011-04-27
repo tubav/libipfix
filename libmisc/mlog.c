@@ -12,18 +12,21 @@ $$LIC$$
 **
 ** Remarks: 
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/time.h>
 
-#include "misc.h"
+
+#include <stdarg.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+
+//#include <stdlib.h>
+//#include <unistd.h>
+//#include <ctype.h>
+//#include <sys/types.h>
+//#include <fcntl.h>
+//#include <sys/time.h>
+
+#include "mlog.h"
 
 /*------ defines ---------------------------------------------------------*/
 
@@ -31,10 +34,10 @@ $$LIC$$
 
 /*------ globals ---------------------------------------------------------*/
 
-int         mlog_vlevel = 0;
-FILE        *mlog_fp    = NULL;
+static int   mlog_vlevel = 0;
+static FILE* mlog_fp     = NULL;
 
-static char tmpbuf[4100];      /* !! */
+static char  tmpbuf[4100];      /* !! */
 
 /*------ revision id -----------------------------------------------------*/
 
@@ -129,3 +132,9 @@ void mlog_set_vlevel( int vlevel )
 {
     mlog_vlevel = vlevel;
 }
+
+int mlog_get_vlevel()
+{
+    return mlog_vlevel;
+}
+

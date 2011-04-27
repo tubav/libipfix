@@ -35,97 +35,37 @@ OPENSSL = @OPENSSL@
 
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
-CCOPT = -Wall -g
-#CCOPT = -Wall -g -fPIC
-INCLS = -I. -I.. -I../.. -I../libmisc
+LDFLAGS = @LDFLAGS@ -L../libmisc
+LIBS = @LIBS@ -lmisc
+CCOPT = -Wall -g -fPIC
+INCLS = -I. -I.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
-LIBMISCDIR = ../libmisc
 
-TARGETS = libipfix.a
-#TARGETS = libipfix.a libipfix.so
-OBJS = ipfix.o ipfix_col.o ipfix_print.o $(LIBMISCDIR)/libmisc.a \
-       ipfix_col_files.o ipfix_col_db.o @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
-DEPHDR = ipfix.h ipfix_def.h ipfix_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h
+TARGETS = libipfix.a libipfix.so ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
+SOURCES = ipfix.c ipfix_col.c ipfix_col_db.c ipfix_col_files.c ipfix_print.c
+OBJECTS = $(SOURCES:.c=.o) @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DHPARAMS = dh512.pem dh1024.pem
-CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h
-#CLEANFILES = $(OBJS) $(MISCOBJS) $(TARGETS) ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.so.*
+CLEANFILES = $(TARGETS) *.d *.o *.so *.so.$(VERSION)
+DISTCLEANFILES = $(CLEANFILES) $(DHPARAMS) Makefile
 
-all: $(TARGETS)
+INST_HDR = $(wildcard ipfix*.h)
+INST_STC = libipfix.a
+INST_SHD = libipfix.so
 
-clean:
-	rm -f $(CLEANFILES)
+include ../Makefile.rules
 
-distclean:
-	rm -f $(CLEANFILES) $(DHPARAMS) Makefile
+dh%.pem:
+	$(OPENSSL) dhparam -check -text -5 $* -out $@
 
-install:
-	#install libraries
-	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
-	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
-	$(INSTALL_DATA) $(LIBMISCDIR)/libmisc.a $(DESTDIR)${libdir}/
-	#install header
-	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
-	$(INSTALL_HEADER) ipfix*.h $(DESTDIR)${includedir}/
-#	#shared library TODO 
-#	$(INSTALL_DATA) libipfix.so.$(VERSION) $(DESTDIR)${libdir}/
-#	ln -s $(DESTDIR)${libdir}/libipfix.so.$(VERSION) $(DESTDIR)${libdir}/libipfix.so
-
-$(LIBMISCDIR)/libmisc.a:
-	cd $(LIBMISCDIR); $(MAKE) libmisc.a
-
-libipfix.a: $(OBJS) Makefile
-	@rm -f $@
-	$(AR) rc $@ $(OBJS) 
-
-libipfix.so: $(OBJS) Makefile
-	@rm -f $@
-	$(CC) -shared $(LIBS) -Wl,-soname,libipfix.so.$(VERSION) -o libipfix.so.$(VERSION) $(OBJS)
-	ln -s libipfix.so.$(VERSION) libipfix.so
-
-
-ipfix.o: ipfix.c $(DEPHDR) ipfix_ssl.h ipfix_reverse_fields.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix.c
-
-ipfix_col.o: ipfix_col.c $(DEPHDR) ipfix_col.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_col.c
-
-ipfix_ssl.o: ipfix_ssl.c ipfix_ssl.h $(DEPHDR) ipfix_ssl.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_ssl.c
-
-ipfix_print.o: ipfix_print.c $(DEPHDR) Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_print.c
-
-ipfix_col_files.o: ipfix_col_files.c $(DEPHDR) ipfix_col.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_col_files.c
-
-ipfix_col_db.o: ipfix_col_db.c $(DEPHDR) ipfix_db.h ipfix_col.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_col_db.c
-
-ipfix_db.o: ipfix_db.c $(DEPHDR) ipfix_db.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipfix_db.c
-
-dh512.pem:
-	$(OPENSSL) dhparam -check -text -5 512 -out dh512.pem
-
-dh1024.pem:
-	$(OPENSSL) dhparam -check -text -5 1024 -out dh1024.pem
-
-dhparams.c: $(DHPARAMS) Makefile
-	echo "#include <openssl/ssl.h>" > dhparams.c
-	echo "#include <openssl/x509v3.h>" >> dhparams.c
-	$(OPENSSL) dh -noout -C < dh512.pem >> dhparams.c
-	$(OPENSSL) dh -noout -C < dh1024.pem >> dhparams.c
-
-dhparam.o: dhparams.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c dhparams.c
+dhparams.c: $(DHPARAMS) 
+	echo "#include <openssl/ssl.h>" > $@
+	echo "#include <openssl/x509v3.h>" >> $@
+	$(OPENSSL) dh -noout -C < dh512.pem >> $@ 
+	$(OPENSSL) dh -noout -C < dh1024.pem >> $@ 
 
 ipfix_reverse_fields.h: ipfix_fields.h make-reverse-IPFIX_FIELDS_H.sed-script-file
-	sed -f make-reverse-IPFIX_FIELDS_H.sed-script-file ipfix_fields.h > ipfix_reverse_fields.h
+	sed -f make-reverse-IPFIX_FIELDS_H.sed-script-file $< > $@
 
-ipfix_def_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_DEF_FOKUS_H.awk
-	awk -f make-IPFIX_DEF_FOKUS_H.awk ipfix_FOKUS_IEs.txt > ipfix_def_fokus.h
+ipfix_%_fokus.h: ipfix_FOKUS_IEs.txt make-ipfix_%_fokus_h.awk
+	awk -f make-ipfix_$*_fokus_h.awk $< > $@
 
-ipfix_fields_fokus.h: ipfix_FOKUS_IEs.txt make-IPFIX_FIELDS_FOKUS_H.awk
-	awk -f make-IPFIX_FIELDS_FOKUS_H.awk ipfix_FOKUS_IEs.txt > ipfix_fields_fokus.h

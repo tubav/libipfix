@@ -43,7 +43,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "libmisc/misc.h"
+#include "mlog.h"
 #include "ipfix.h"
 #include "ipfix_fields.h"
 #include "ipfix_reverse_fields.h"

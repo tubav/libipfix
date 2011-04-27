@@ -30,61 +30,34 @@ CC = @CC@
 EXEEXT = @EXEEXT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
+PACKAGE = @PACKAGE_NAME@
+VERSION = @PACKAGE_VERSION@
 install_sh = @install_sh@
 
 DEFS = @DEFS@ 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@ -lm @PCAPLIBS@
-CCOPT = -Wall -g
-INCLS = -I. -I.. -I../.. @PCAPINCLS@
+LIBS = @LIBS@ -lm #@PCAPLIBS@ 
+CCOPT = -Wall -g -fPIC
+INCLS = -I./ -I../ @PCAPINCLS@
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
-TARGETS = libmisc.a
-OBJS = misc.o mpoll.o mlog.o mlist.o mhash.o hashtable.o getopt.o getopt1.o
-CLEANFILES = $(OBJS) $(TARGETS) testmhash
+TARGETS = libmisc.a libmisc.so
+SOURCES = $(wildcard *.c) # use all c-files
+SOURCES = misc.c mpoll.c mlog.c mlist.c mhash.c hashtable.c
+OBJECTS = $(SOURCES:.c=.o)
+CLEANFILES = *.so *.so.$(VERSION) *.d *.o $(TARGETS) testmhash
+DISTCLEANFILES = $(CLEANFILES) Makefile
 
-all: $(TARGETS)
+INST_HDR = mpoll.h mlog.h
+INST_STC = libmisc.a
+INST_SHD = libmisc.so
 
-clean:
-	rm -f $(CLEANFILES)
+include ../Makefile.rules
 
-distclean:
-	rm -f $(CLEANFILES) Makefile
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-install:
-	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
-
-libmisc.a: $(OBJS) Makefile
-	@rm -f $@
-	$(AR) rc $@ $(OBJS) 
-
-misc.o: misc.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c misc.c
-
-mpoll.o: mpoll.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mpoll.c
-
-mhash.o: mhash.c hashtable.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mhash.c
-
-hashtable.o: hashtable.c hashtable.h hashtable_private.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c hashtable.c
-
-testmhash: testmhash.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) testmhash.c libmisc.a hashtable.c -lm -o testmhash
-
-mlog.o: mlog.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mlog.c
-
-mlist.o: mlist.c misc.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c mlist.c
-
-getopt.o: getopt.c getopt.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c getopt.c
-
-getopt1.o: getopt1.c getopt.h Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c getopt1.c
+testmhash: testmhash.o hashtable.o $(TARGETS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -lm -o $@
 

@@ -1,0 +1,83 @@
+# define TARGETS to be build
+# define OBJECTS to be used
+# define SOURCES to be used
+# define CLEANFILES to be deleted
+# define DISTCLEANFILES to be deleted
+# define INST_HDR for header files to be installed
+# define INST_STC for static libraries to be installed
+# define INST_SHD for shared libraries to be installed
+# define INST_PRG for executables to be installed
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+
+DEPDIR = .depend
+OBJDIR = .object
+CLEANFILES += $(DEPDIR) $(OBJDIR)
+SRCS = $(SOURCES)
+OBJS = $(addprefix $(OBJDIR)/,$(OBJECTS))
+
+all: $(TARGETS)
+
+# include rules file for each object file
+-include $(addprefix $(DEPDIR)/,$(SRCS:.c=.d))
+
+%.a: $(OBJS)
+	$(AR) rc $@ $?
+
+%.so: $(OBJS)
+	$(CC) $(LDFLAGS) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^ $(LIBS)
+	@rm -f $@
+	ln -s $@.$(VERSION) $@
+
+# generate rules file with all dependencies for each object file
+$(DEPDIR)/%.d: %.c | $(DEPDIR)
+	@set -e; rm -f $@; \
+	$(CC) -MM $(CFLAGS) $(CPPFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+$(DEPDIR):
+	mkdir -p $@
+
+# generate each object file
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+$(OBJDIR):
+	mkdir -p $@
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+clean:
+	rm -rf $(CLEANFILES)
+
+distclean:
+	rm -rf $(DISTCLEANFILES) Makefile
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+install:
+	#install header
+	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
+	$(INSTALL_HEADER) $(INST_HDR) $(DESTDIR)${includedir}/
+	#install static library
+	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
+	$(INSTALL_DATA) $(INST_STC) $(DESTDIR)/${libdir}/
+	#install shared library
+	$(INSTALL_DATA) $(INST_SHD).$(VERSION) $(DESTDIR)${libdir}/
+	ln -sf $(DESTDIR)${libdir}/$(INST_SHD).$(VERSION) $(DESTDIR)${libdir}/$(INST_SHD)
+
+uninstall:
+	rm -f $(addprefix $(DESTDIR)${includedir}/, $(INST_HDR))
+	rm -f $(addprefix $(DESTDIR)${libdir}/, $(INST_STC))
+	rm -f $(addprefix $(DESTDIR)${libdir}/, $(INST_SHD) $(INST_SHD).$(VERSION))
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
