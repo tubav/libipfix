@@ -53,7 +53,7 @@ clean:
 distclean:
 	rm -f $(CLEANFILES) Makefile
 
-install: $(TARGETS)
+install:
 	@[ -d $(DESTDIR)${bindir} ] || (mkdir -p $(DESTDIR)${bindir}; chmod 755 $(DESTDIR)${bindir})
 	$(INSTALL_PROGRAM) $(TARGETS) $(DESTDIR)/${bindir}/
 	chmod 755 $(DESTDIR)${bindir}/$(TARGETS)
@@ -64,3 +64,4 @@ ipfix_collector: collector.o Makefile
 collector.o: collector.c Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c collector.c
 
+uninstall:

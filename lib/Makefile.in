@@ -48,6 +48,9 @@ DHPARAMS = dh512.pem dh1024.pem
 CLEANFILES = $(TARGETS) *.d *.o *.so *.so.$(VERSION)
 DISTCLEANFILES = $(CLEANFILES) $(DHPARAMS) Makefile
 
+INST_HDR = $(wildcard ipfix*.h)
+INST_STC = libipfix.a
+INST_SHD = libipfix.so
 
 include ../Makefile.rules
 
@@ -65,15 +68,4 @@ ipfix_reverse_fields.h: ipfix_fields.h make-reverse-IPFIX_FIELDS_H.sed-script-fi
 
 ipfix_%_fokus.h: ipfix_FOKUS_IEs.txt make-ipfix_%_fokus_h.awk
 	awk -f make-ipfix_$*_fokus_h.awk $< > $@
-
-install:
-	#install libraries
-	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
-	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
-	#install header
-	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
-	$(INSTALL_HEADER) ipfix*.h $(DESTDIR)${includedir}/
-#	#shared library TODO 
-#	$(INSTALL_DATA) libipfix.so.$(VERSION) $(DESTDIR)${libdir}/
-#	ln -s $(DESTDIR)${libdir}/libipfix.so.$(VERSION) $(DESTDIR)${libdir}/libipfix.so
 

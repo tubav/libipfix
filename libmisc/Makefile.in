@@ -49,23 +49,14 @@ OBJECTS = $(SOURCES:.c=.o)
 CLEANFILES = *.so *.so.$(VERSION) *.d *.o $(TARGETS) testmhash
 DISTCLEANFILES = $(CLEANFILES) Makefile
 
+INST_HDR = mpoll.h mlog.h
+INST_STC = libmisc.a
+INST_SHD = libmisc.so
 
 include ../Makefile.rules
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-
-install:
-	#install libraries
-	@[ -d $(DESTDIR)${libdir} ] || (mkdir -p $(DESTDIR)${libdir}; chmod 755 $(DESTDIR)${libdir})
-	$(INSTALL_DATA) $(TARGETS) $(DESTDIR)/${libdir}/
-	#install header
-	@[ -d $(DESTDIR)${includedir} ] || (mkdir -p $(DESTDIR)${includedir}; chmod 755 $(DESTDIR)${includedir})
-	$(INSTALL_HEADER) mlog.h mpoll.h $(DESTDIR)${includedir}/
-
-uninstall:
-	rm -f $(addprefix $(DESTDIR)${libdir}/, $(TARGETS))
-	rm -f $(addprefix $(DESTDIR)${includedir}/,mlog.h mpoll.h)
 
 testmhash: testmhash.o hashtable.o $(TARGETS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -lm -o $@
