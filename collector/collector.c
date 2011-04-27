@@ -35,7 +35,6 @@ $$LIC$$
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
-#include "misc.h"
 #include <ipfix.h>
 #ifdef DBSUPPORT
 #include "ipfix_db.h"
@@ -43,6 +42,9 @@ $$LIC$$
 #include "ipfix_col.h"
 #include "ipfix_def_fokus.h"
 #include "ipfix_fields_fokus.h"
+
+#include "mlog.h"
+#include "mpoll.h"
 
 /*------ defines ---------------------------------------------------------*/
 
