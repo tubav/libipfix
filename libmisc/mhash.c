@@ -23,8 +23,15 @@ $$LIC$$
 #include <fcntl.h>
 #include <sys/time.h>
 
-#include "misc.h"
+//#include "misc.h"
+#include "mhash.h"
 #include "hashtable.h"
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+static struct hashtable  *ht_globals;
+
+// ----------------------------------------------------------------------------
 
 static unsigned int dj2b_hash_from_char_fn( void *strp ) { /* char* */
   char * str = (char*) strp;

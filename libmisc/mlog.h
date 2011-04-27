@@ -1,5 +1,5 @@
 /*
-** mpoll.h - export declarations for poll funcs
+** mlog.h - export declarations for mlog funcs
 **
 ** Copyright Fraunhofer FOKUS
 **
@@ -11,13 +11,9 @@
 #ifndef _MLOG_H
 #define _MLOG_H
 
-#include <stdarg.h>
-
 #ifdef   __cplusplus
 extern "C" {
 #endif
-
-extern int mlog_vlevel;
 
 void errorf ( char fmt[], ... ) __attribute__ ((format (printf, 1, 2)));
 void debugf ( char fmt[], ... ) __attribute__ ((format (printf, 1, 2)));
@@ -26,6 +22,7 @@ void mlogf  ( int verbosity,
 int  mlog_open  ( char *logfile, char *prefix );
 void mlog_close ( void );
 void mlog_set_vlevel( int vlevel );
+int  mlog_get_vlevel();
 
 #ifdef   __cplusplus
 }

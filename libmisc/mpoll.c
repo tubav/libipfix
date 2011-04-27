@@ -23,7 +23,8 @@ $$LIC$$
 #include <fcntl.h>
 #include <sys/time.h>
 
-#include "misc.h"
+#include "mpoll.h"
+#include "mlog.h"
 
 /*------ defines ---------------------------------------------------------*/
 
@@ -42,14 +43,6 @@ $$LIC$$
   if ((i)->prev) (i)->prev->next = (i)->next; else r = (i)->next; })
 
 /*------ stuctures -------------------------------------------------------*/
-
-typedef struct _timer 
-{
-    struct timeval expiration;
-    void           (*callback)(void *user);
-    void           *user;
-    struct _timer  *prev,*next;
-} mtimer_t;
 
 typedef struct poll_node
 {
