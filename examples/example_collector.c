@@ -28,7 +28,9 @@ $$LIC$$
 #include "ipfix_col.h"
 #include "ipfix_def_fokus.h"
 #include "ipfix_fields_fokus.h"
-#include "misc.h"
+
+#include "mlog.h"
+#include "mpoll.h"
 
 /*------ globals ---------------------------------------------------------*/
 

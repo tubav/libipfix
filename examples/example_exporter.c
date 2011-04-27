@@ -11,7 +11,7 @@
 #include <errno.h>
 
 #include <ipfix.h>
-#include <mlog.h>
+#include "mlog.h"
 
 int main ( int argc, char **argv )
 {
