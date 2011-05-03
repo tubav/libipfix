@@ -208,7 +208,7 @@ err_occured:
 
 int ipfix_ssl_init_con( SSL *con )
 {
-    extern FILE *mlog_fp;
+    extern FILE *mlog_fp; // todo: see if this is working
     int i;
     char *str;
     long verify_error;
