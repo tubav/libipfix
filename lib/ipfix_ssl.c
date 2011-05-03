@@ -29,7 +29,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "misc.h"
+#include "mlog.h"
 #include "ipfix.h"
 #include "ipfix_col.h"
 #include "ipfix_ssl.h"
@@ -47,9 +47,8 @@ static const char cvsid[]="$Id: ipfix_ssl.c 96 2009-03-27 19:19:27Z csc $";
 
 /*----- globals ----------------------------------------------------------*/
 
-int openssl_is_init = 0;
-DH *dh512 = NULL;
-DH *dh1024 = NULL;
+static DH *dh512  = NULL;
+static DH *dh1024 = NULL;
 
 /*----- prototypes -------------------------------------------------------*/
 
@@ -57,6 +56,19 @@ extern DH *get_dh512();
 extern DH *get_dh1024();
 
 /*----- funcs ------------------------------------------------------------*/
+
+int ipfix_ssl_init()
+{
+  static int openssl_is_init = 0;
+  if ( ! openssl_is_init ) {
+      (void)SSL_library_init();
+      SSL_load_error_strings();
+      /* todo: seed prng? */
+      openssl_is_init ++;
+  }
+
+  return openssl_is_init;
+}
 
 void ipfix_ssl_opts_free( ipfix_ssl_opts_t *opts )
 {
@@ -142,7 +154,7 @@ long ipfix_ssl_post_connection_check(SSL *ssl, char *host)
             if (!strcmp(extstr, "subjectAltName"))
             {
                 int                  j;
-                unsigned char        *data;
+                const unsigned char  *data;
                 STACK_OF(CONF_VALUE) *val;
                 CONF_VALUE           *nval;
                 X509V3_EXT_METHOD    *meth;
@@ -220,16 +232,18 @@ int ipfix_ssl_init_con( SSL *con )
         return -1;
     }
 
-    if ( mlog_vlevel ) {
+    if ( 1 <= mlog_get_vlevel() ) {
         PEM_write_SSL_SESSION( mlog_fp, SSL_get_session(con));
 
-        if ( SSL_get_shared_ciphers(con, buf, sizeof buf) != NULL)
+        if ( SSL_get_shared_ciphers(con, buf, sizeof buf) != NULL) {
             mlogf( 3, "[ipfix] Shared ciphers:%s\n", buf);
+        }
         str=(char*)SSL_CIPHER_get_name( SSL_get_current_cipher(con) );
         mlogf( 3,  "[ipfix] CIPHER is %s\n",(str != NULL)?str:"(NONE)");
         if (SSL_ctrl(con,SSL_CTRL_GET_FLAGS,0,NULL) &
-            TLS1_FLAGS_TLS_PADDING_BUG)
+            TLS1_FLAGS_TLS_PADDING_BUG) {
             mlogf( 1, "[ipfix] Peer has incorrect TLSv1 block padding\n");
+        }
     }
 
     return 0;
@@ -360,16 +374,18 @@ int ipfix_ssl_setup_server_ctx( SSL_CTX **ssl_ctx,
     SSL_CTX *ctx;
 
     if ( ipfix_ssl_setup_ctx( &ctx, method?method:SSLv23_method(),
-                              ssl_details ) <0 )
+                              ssl_details ) <0 ) {
         return -1;
+    }
 
     SSL_CTX_set_verify( ctx, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
                         ipfix_ssl_verify_callback );
     SSL_CTX_set_verify_depth( ctx, 4 );
     SSL_CTX_set_options( ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 |
                          SSL_OP_SINGLE_DH_USE);
-    if (!dh512 || !dh1024)
+    if (!dh512 || !dh1024) {
         init_dhparams();
+    }
     SSL_CTX_set_tmp_dh_callback( ctx, ipfix_ssl_tmp_dh_callback );
     if (SSL_CTX_set_cipher_list( ctx, CIPHER_LIST) != 1) {
         mlogf( 0, "[ipfix] error setting cipher list (no valid ciphers)");

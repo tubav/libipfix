@@ -1793,26 +1793,19 @@ static int _ipfix_add_collector( ipfix_t *ifh, char *host, int port,
     if ( (ifh==NULL) || (host==NULL)  )
         return -1;
 
-#ifndef SSLSUPPORT
     if ( ssl_flag ) {
+#ifndef SSLSUPPORT
         errno = ENOTSUP;
         return -1;
-    }
 #else
-    if ( ssl_flag ) {
-        if ( ! openssl_is_init ) {
-            (void)SSL_library_init();
-            SSL_load_error_strings();
-            /* todo: seed prng? */
-            openssl_is_init ++;
-        }
+        ipfix_ssl_init();
         if ( (ssl_opts==NULL) || (ssl_opts->keyfile==NULL)
              || (ssl_opts->certfile==NULL) ) {
             errno = EINVAL;
             return -1;
         }
-    }
 #endif
+    }
 
     /* todo: support only one collector yet
      */

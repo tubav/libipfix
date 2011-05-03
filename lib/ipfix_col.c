@@ -1734,9 +1734,9 @@ void process_client_ssl( int fd, int mask, void *data )
 
         if ( (nbytes=ssl_readn( scon->ssl, buf, len )) !=len ) {
             mlogf( 0, "[%s] ipfix message read error (%d!=%d!\n",
-                   func, nbytes, len );
+                   func, (int)nbytes, len );
             mlogf( 0, "[%s] SSL_read() failed (%d/%d): %s\n",
-                   func, nbytes, SSL_get_error( scon->ssl, nbytes),
+                   func, (int)nbytes, SSL_get_error( scon->ssl, nbytes),
                    strerror(errno) );
             goto end;
         }
@@ -1799,7 +1799,7 @@ void accept_client_ssl_cb( int fd, int mask, void *data )
         return;
     }
 
-    if ( mlog_vlevel ) {
+    if ( 2 <= mlog_get_vlevel() ) {
         char   *str, addrbuf[INET6_ADDRSTRLEN+1];
         int    port;
 
@@ -2450,12 +2450,7 @@ int ipfix_col_listen_ssl( ipfix_col_t **handle, ipfix_proto_t protocol,
     ipfix_col_ssl_node_t *node, *nodes;
     char                 *func = "ipfix_col_listen_ssl";
 
-    if ( ! openssl_is_init ) {
-        (void)SSL_library_init();
-        SSL_load_error_strings();
-        /* todo: seed prng? */
-        openssl_is_init ++;
-    }
+    ipfix_ssl_init();
 
     if ( !handle || !ssl_details ) {
         errno = EINVAL;
