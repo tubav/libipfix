@@ -128,13 +128,13 @@
 #define PACKAGE_NAME "libipfix"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "libipfix 1.0"
+#define PACKAGE_STRING "libipfix 0.8.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "libipfix"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.0"
+#define PACKAGE_VERSION "0.8.1"
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #define RETSIGTYPE void
