@@ -29,7 +29,8 @@ CC = @CC@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE_NAME@
-VERSION = @PACKAGE_VERSION@
+#VERSION = @PACKAGE_VERSION@
+VERSION=$(shell head -1 ../debian/changelog | perl -nle 'm/\S+\s+\((\S+)-\S+\)/ and print $$1')
 install_sh = @install_sh@
 OPENSSL = @OPENSSL@
 
