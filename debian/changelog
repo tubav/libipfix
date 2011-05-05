@@ -1,3 +1,34 @@
+libipfix (0.8.1-1ubuntu2) lucid; urgency=low
+
+  [ Carsten Schmoll ]
+  * added two new fields: ProbeName and ProbeLocationName
+  * added odid field for ipfix_template_t and code to use odid when
+    exporting themplate definition as IPFIX
+
+  [ Ramón Masek ]
+  * [lib] a lot of correction making shared library build work;
+  * [libmisc] a lot of correction making shared library build work
+  * [libmisc] remove getopt sources, (not used)
+  * remove config.h - is created by configure
+  * correction of ssl source files; make compile
+  * [debian] add libpcap0.8 dependency
+  * [debian] change libpcap0.8 to libpcap0.8-dev
+  * [debian] add more control information for package generation
+  * [debian] adjust install-file content
+  * [debian] update standards-version; corrections to satisfy lintian
+  * [debian] corrections for package building; satisfy lintions
+  * [Makefile.in] modification of global Makefile
+  * [Makefile] rewriting, add default rules file, used in lib/ and
+    libmisc/
+  * [Makefile]  some correction to install rules; some documentation
+  * [Makefile.in] obtain version number from changelog
+  * [lib/Makefile.in] rewrite makefile with implicit rules
+  * [libmisc/Makefile.in] rewrite makefile with implicit rules
+  * minor correction in configure.ac; update configure
+  * add a TODO
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Thu, 05 May 2011 12:25:39 +0200
+
 libipfix (0.8.1-1ubuntu1) lucid; urgency=low
 
   [ PRISM User ]
