@@ -2,14 +2,12 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([libipfix],[1.0])
+AC_INIT([libipfix],[0.8.1])
+
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR([lib/ipfix.h])
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_TARGET
-
-VERSION=0.8.1
-PACKAGE=libipfix
 
 # Checks for programs.
 AC_PROG_CC
@@ -74,6 +72,7 @@ fi
 fi
 ] )
 
+#
 # specify libpcap
 #
 case "$target_os" in
@@ -105,6 +104,7 @@ AC_ARG_WITH(pcap,
    fi
 ] )
 
+#
 # enable ssl support
 #
 SSLLIBS=''
@@ -147,6 +147,7 @@ fi
 AC_SUBST(SSLLIBS)
 AC_SUBST(IPFIX_SSL_OBJ)
 
+#
 # os check
 #
 case "$target_os" in
@@ -156,6 +157,7 @@ freebsd*)
 	;;
 esac
 
+#
 # Checks for libraries.
 #
 AC_CHECK_LIB(mysqlclient, mysql_init, 
@@ -172,6 +174,7 @@ AC_SUBST(SCTPLIBS)
 AC_SUBST(IPFIX_DB_OBJ)
 AC_SUBST(IPFIX_DB_EXAMPLES)
 
+#
 # libpcap support
 #
 AC_CHECK_LIB([$PCAP], pcap_open_live,[pcapsupport="yes"], 
@@ -210,6 +213,7 @@ AC_CHECK_FUNCS([getopt_long],,
 [#FreeBSD has a gnugetopt library for this
   AC_CHECK_LIB([gnugetopt],[getopt_long],
   [LIBS="-lgnugetopt $LIBS";AC_DEFINE([HAVE_GETOPT_LONG])])])
+
 AC_CONFIG_FILES([Makefile \
            lib/Makefile \
            libmisc/Makefile \
