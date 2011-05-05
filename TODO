@@ -1,0 +1,2 @@
+* remove misc library --> compile into libipfix
+* is mpoll.h mlog.h really needed for other binaries NOT rely on IPFIX
