@@ -23,16 +23,26 @@ examples collector probe: lib libmisc
 
 # rule how to build each subdirectory
 $(SUBDIRS):
-	@if [ -n "$(filter $(MAKECMDGOALS),$(SUBDIRS))" ]; then \
-		echo $(MAKE) -C $@; \
-		$(MAKE) -C $@; \
-	else \
-		echo $(MAKE) -C $@ $(MAKECMDGOALS); \
-		$(MAKE) -C $@ $(MAKECMDGOALS); \
-	fi
+ifneq ($(filter $(MAKECMDGOALS),$(SUBDIRS)),"")
+	$(MAKE) -C $@;
+else
+	$(MAKE) -C $@ $(MAKECMDGOALS);
+endif
 
 clean install uninstall: subdirs
 
 distclean: subdirs
 	rm -rf config.status config.log Makefile
+
+# build binary package
+# to build signed package remove -us -uc
+binary-pkg:
+	debuild -i -I -us -uc
+
+# build source package; ready for uploading
+# to build signed package remove -us -uc
+source-pkg:
+	debuild -i -I -S -sa -us -uc
+
+# -------------------------------------------------------------
 
