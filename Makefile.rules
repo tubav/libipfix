@@ -16,6 +16,7 @@ OBJDIR = .object
 CLEANFILES += $(DEPDIR) $(OBJDIR)
 SRCS = $(SOURCES)
 OBJS = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJS_PIC = $(addprefix $(OBJDIR)/,$(OBJECTS:.o=.pic.o))
 
 all: $(TARGETS)
 
@@ -25,7 +26,7 @@ all: $(TARGETS)
 %.a: $(OBJS)
 	$(AR) rc $@ $?
 
-%.so: $(OBJS)
+%.so: $(OBJS_PIC)
 	$(CC) $(LDFLAGS) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^ $(LIBS)
 	@rm -f $@
 	ln -s $@.$(VERSION) $@
@@ -34,7 +35,11 @@ all: $(TARGETS)
 $(DEPDIR)/%.d: %.c | $(DEPDIR)
 	@set -e; rm -f $@; \
 	$(CC) -MM $(CFLAGS) $(CPPFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
+	> $@ \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g'               < $@.$$$$ >> $@; \
+	sed 's,\($*\)\.o[ :]*,\1.pic.o $@ : ,g'           < $@.$$$$ >> $@; \
+	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.o $@ : ,g'     < $@.$$$$ >> $@; \
+	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.pic.o $@ : ,g' < $@.$$$$ >> $@; \
 	rm -f $@.$$$$
 
 $(DEPDIR):
@@ -46,6 +51,13 @@ $(OBJDIR)/%.o: %.c | $(OBJDIR)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+# position independent code compiling
+$(OBJDIR)/%.pic.o: %.c | $(OBJDIR)
+	$(CC) -c -fPIC $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+%.pic.o: %.c
+	$(CC) -c -fPIC $(CFLAGS) $(CPPFLAGS) $< -o $@
 
 $(OBJDIR):
 	mkdir -p $@

@@ -23,11 +23,7 @@ examples collector probe: lib libmisc
 
 # rule how to build each subdirectory
 $(SUBDIRS):
-ifneq ($(filter $(MAKECMDGOALS),$(SUBDIRS)),"")
-	$(MAKE) -C $@;
-else
-	$(MAKE) -C $@ $(MAKECMDGOALS);
-endif
+	$(MAKE) -C $@ $(filter-out $(SUBDIRS),$(MAKECMDGOALS))
 
 clean install uninstall: subdirs
 
