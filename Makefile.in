@@ -32,13 +32,19 @@ distclean: subdirs
 
 # build binary package
 # to build signed package remove -us -uc
-binary-pkg:
+binary-pkg: switch-distribution
 	debuild -i -I -us -uc
 
 # build source package; ready for uploading
 # to build signed package remove -us -uc
-source-pkg:
+source-pkg: switch-distribution
 	debuild -i -I -S -sa -us -uc
 
+# replace distribution of last changlog entry with the given one
+# to build a destribution specific (ubuntu) source/binary packaget
+switch-distribution:
+ifdef DIST
+	 sed -i '1s/\(.*(.*-.*)\).*\(;.*\)/\1 $(DIST)\2/' ./debian/changelog
+endif
 # -------------------------------------------------------------
 
