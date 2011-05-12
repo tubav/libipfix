@@ -1,3 +1,14 @@
+libipfix (0.8.1-1ubuntu3) lucid; urgency=low
+
+  [ Ramón Masek ]
+  * [Makefile.in] add package building rules
+  * [Makefile] different compile rules for static/shared lib (PIC code)
+  * [Makefile.in] change distribution of changelog wiht env DIST=<dist>
+    when build pkg
+  * [debian] add missing header file to libipfix-dev.install
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Thu, 12 May 2011 12:42:49 +0200
+
 libipfix (0.8.1-1ubuntu2) lucid; urgency=low
 
   [ Carsten Schmoll ]
