@@ -1,7 +1,5 @@
-usr/lib/libipfix.a
-usr/lib/libmisc.a
-usr/lib/libipfix.so
-usr/lib/libmisc.so
-usr/include/ipfix_*.h
+usr/lib/lib*.a
+usr/lib/lib*.so
+usr/include/ipfix*.h
 usr/include/mlog.h
 usr/include/mpoll.h
