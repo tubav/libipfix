@@ -88,6 +88,10 @@
 392, IPFIX_FT_SYNC_FREQ,                         4, IPFIX_CODING_FLOAT, "freq",           "SYNC Frequency"
 
 
+# These information elements have been defined by FOKUS for the OpenEPC project
+396, IPFIX_FT_PT_APN,       256, IPFIX_CODING_STRING, "apn", "Access point name" 
+397, IPFIX_FT_PT_BEARER,    256, IPFIX_CODING_STRING, "bearerClass", "Bearer class [1-9]"
+398, IPFIX_FT_PT_IMSI,      256, IPFIX_CODING_STRING, "imsi", "International mobile subscriber identity"
 
 
 # these information elements have been defined by FOKUS for the Oracle project
