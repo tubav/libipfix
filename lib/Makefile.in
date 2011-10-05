@@ -42,7 +42,7 @@ CCOPT = -Wall -g
 INCLS = -I. -I.. -I../libmisc
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
-TARGETS = libipfix.a libipfix.so ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h 
+TARGETS = ipfix_reverse_fields.h ipfix_def_fokus.h ipfix_fields_fokus.h libipfix.a libipfix.so
 SOURCES = ipfix.c ipfix_col.c ipfix_col_db.c ipfix_col_files.c ipfix_print.c
 OBJECTS = $(SOURCES:.c=.o) @IPFIX_DB_OBJ@ @IPFIX_SSL_OBJ@
 DHPARAMS = dh512.pem dh1024.pem
