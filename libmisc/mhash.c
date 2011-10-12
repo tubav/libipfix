@@ -7,7 +7,7 @@ $$LIC$$
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Date: 2009-03-27 21:48:11 +0100 (Fr, 27. Mär 2009) $
+ * $Date: 2009-03-27 21:48:11 +0100 (Fri, 27 Mar 2009) $
  *
  * $Revision: 1.2 $
  *
@@ -23,8 +23,15 @@ $$LIC$$
 #include <fcntl.h>
 #include <sys/time.h>
 
-#include "misc.h"
+//#include "misc.h"
+#include "mhash.h"
 #include "hashtable.h"
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+static struct hashtable  *ht_globals;
+
+// ----------------------------------------------------------------------------
 
 static unsigned int dj2b_hash_from_char_fn( void *strp ) { /* char* */
   char * str = (char*) strp;

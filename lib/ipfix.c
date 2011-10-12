@@ -43,7 +43,7 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "libmisc/misc.h"
+#include "mlog.h"
 #include "ipfix.h"
 #include "ipfix_fields.h"
 #include "ipfix_reverse_fields.h"
@@ -1131,15 +1131,15 @@ int _ipfix_connect ( ipfix_collector_t *col )
                                                          tnode ) <0 )
                                   return -1;
 
-                                /* ugly hack: update sourceid in IPFIX handle right before sending */
-                                /*            but only of the current template has an odid set     */
-                                if (tnode->odid != 0) {
-                                    node->ifh->sourceid = tnode->odid;
-                                }
-                                /* Send each template immediately (only one template per message) */
-                                if (_ipfix_send_message(node->ifh, col,
-                                        (col->protocol == IPFIX_PROTO_SCTP) ? 1 : 0,
-                                        &col->message) < 0)
+			      /* ugly hack: update sourceid in IPFIX handle right before sending */
+			      /*            but only of the current template has an odid set     */
+			      if ( tnode->odid != 0 ) {
+				  node->ifh->sourceid = tnode->odid;
+			      }
+			      /* Send each template immediately (only one template per message) */
+                              if ( _ipfix_send_message( node->ifh, col,
+							(col->protocol==IPFIX_PROTO_SCTP)?1:0,
+							&col->message ) < 0 )
 				  return -1;
 
                               break;
@@ -1793,26 +1793,19 @@ static int _ipfix_add_collector( ipfix_t *ifh, char *host, int port,
     if ( (ifh==NULL) || (host==NULL)  )
         return -1;
 
-#ifndef SSLSUPPORT
     if ( ssl_flag ) {
+#ifndef SSLSUPPORT
         errno = ENOTSUP;
         return -1;
-    }
 #else
-    if ( ssl_flag ) {
-        if ( ! openssl_is_init ) {
-            (void)SSL_library_init();
-            SSL_load_error_strings();
-            /* todo: seed prng? */
-            openssl_is_init ++;
-        }
+        ipfix_ssl_init();
         if ( (ssl_opts==NULL) || (ssl_opts->keyfile==NULL)
              || (ssl_opts->certfile==NULL) ) {
             errno = EINVAL;
             return -1;
         }
-    }
 #endif
+    }
 
     /* todo: support only one collector yet
      */

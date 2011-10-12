@@ -54,10 +54,10 @@ clean:
 distclean:
 	rm -f $(CLEANFILES) $(DEPS)
 
-install: $(TARGETS)
-	[ -d $(bindir) ] || \
-	    (mkdir -p $(bindir); chmod 755 $(bindir))
-	$(INSTALL_PROGRAM) $(TARGETS) $(bindir)
+install:
+	@[ -d $(DESTDIR)${bindir} ] || (mkdir -p $(DESTDIR)${bindir}; chmod 755 $(DESTDIR)${bindir})
+	$(INSTALL_PROGRAM) $(TARGETS) $(DESTDIR)/${bindir}/
+	chmod 755 $(DESTDIR)${bindir}/$(TARGETS)
 
 ipfix_probe: $(OBJS) $(DEPS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
@@ -68,3 +68,4 @@ probe.o: probe.c $(DEPS)
 ipflow.o: ipflow.c $(DEPS) ipflow.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c ipflow.c
 
+uninstall:

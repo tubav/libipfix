@@ -7,31 +7,44 @@ SHELL = @SHELL@
 top_srcdir = @top_srcdir@
 prefix = @prefix@
 
-SUBDIRS       = lib libmisc examples collector probe
+SUBDIRS = lib libmisc examples collector probe
 
-all: compile
+.PHONY: subdirs $(SUBDIRS)
 
-rmtarget clean distclean:
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE) $@; \
-                ); \
-        done
+all: subdirs
 
-compile:
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE); \
-                ); \
-        done
+# build all subdirectories
+subdirs: $(SUBDIRS)
 
-install: 
-	@ for DIR in $(SUBDIRS) ; \
-        do \
-                ( \
-                cd ./$$DIR; $(MAKE) $@; \
-                ); \
-        done
+# ensure libmisc compiled before lib
+lib: libmisc
+# ensure lib, libmisc compiled before
+examples collector probe: lib libmisc 
+
+# rule how to build each subdirectory
+$(SUBDIRS):
+	$(MAKE) -C $@ $(filter-out $(SUBDIRS),$(MAKECMDGOALS))
+
+clean install uninstall: subdirs
+
+distclean: subdirs
+	rm -rf config.status config.log Makefile
+
+# build binary package
+# to build signed package remove -us -uc
+binary-pkg: switch-distribution
+	debuild -i -I -us -uc
+
+# build source package; ready for uploading
+# to build signed package remove -us -uc
+source-pkg: switch-distribution
+	debuild -i -I -S -sa -us -uc
+
+# replace distribution of last changlog entry with the given one
+# to build a destribution specific (ubuntu) source/binary packaget
+switch-distribution:
+ifdef DIST
+	 sed -i '1s/\(.*(.*-.*)\).*\(;.*\)/\1 $(DIST)\2/' ./debian/changelog
+endif
+# -------------------------------------------------------------
 

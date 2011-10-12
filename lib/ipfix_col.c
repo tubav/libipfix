@@ -6,9 +6,9 @@ $$LIC$$
 **
 **     Copyright Fraunhofer FOKUS
 **
-**     $Date$
+**     $Date: 2010-02-23 11:15:04 +0100 (Tue, 23 Feb 2010) $
 **
-**     $Revision$
+**     $Revision: 166 $
 **
 **     todo: 
 **     - check when to delete stored templates
@@ -40,7 +40,8 @@ $$LIC$$
 #include <fcntl.h>
 #include <netdb.h>
 
-#include "libmisc/misc.h"
+#include "mlog.h"
+#include "mpoll.h"
 #include "ipfix.h"
 #ifdef SSLSUPPORT
 #include "ipfix_ssl.h"
@@ -110,7 +111,7 @@ typedef struct ipfix_col_ssl
 
 /*----- revision id ------------------------------------------------------*/
 
-static const char cvsid[]="$Id$";
+static const char cvsid[]="$Id: ipfix_col.c 166 2010-02-23 10:15:04Z csc $";
 
 /*----- globals ----------------------------------------------------------*/
 
@@ -1006,7 +1007,7 @@ int ipfix_parse_msg( ipfix_input_t *input,
             goto end;
         }
 
-        if ( mlog_vlevel>2 )
+        if ( mlog_get_vlevel() > 2 )
             mlogf( 4, "[%s] set%d: sid=%u, setid=%d, setlen=%d\n", 
                    func, i+1, (u_int)hdr.sourceid, setid, setlen+4 );
 
@@ -1733,9 +1734,9 @@ void process_client_ssl( int fd, int mask, void *data )
 
         if ( (nbytes=ssl_readn( scon->ssl, buf, len )) !=len ) {
             mlogf( 0, "[%s] ipfix message read error (%d!=%d!\n",
-                   func, nbytes, len );
+                   func, (int)nbytes, len );
             mlogf( 0, "[%s] SSL_read() failed (%d/%d): %s\n",
-                   func, nbytes, SSL_get_error( scon->ssl, nbytes),
+                   func, (int)nbytes, SSL_get_error( scon->ssl, nbytes),
                    strerror(errno) );
             goto end;
         }
@@ -1798,7 +1799,7 @@ void accept_client_ssl_cb( int fd, int mask, void *data )
         return;
     }
 
-    if ( mlog_vlevel ) {
+    if ( 2 <= mlog_get_vlevel() ) {
         char   *str, addrbuf[INET6_ADDRSTRLEN+1];
         int    port;
 
@@ -1911,7 +1912,7 @@ void cb_maintenance ( void *user )
                 tn = t;
                 t  = t->next;
                 if ( now > tn->expire_time ) {
-                    if ( mlog_vlevel>2 ) {
+                    if ( mlog_get_vlevel() > 2 ) {
                         mlogf( 0, "[ipfix_col] drop template %u:%d\n", 
                                (unsigned int)s->odid, tn->ipfixt->tid );
                     }
@@ -2449,12 +2450,7 @@ int ipfix_col_listen_ssl( ipfix_col_t **handle, ipfix_proto_t protocol,
     ipfix_col_ssl_node_t *node, *nodes;
     char                 *func = "ipfix_col_listen_ssl";
 
-    if ( ! openssl_is_init ) {
-        (void)SSL_library_init();
-        SSL_load_error_strings();
-        /* todo: seed prng? */
-        openssl_is_init ++;
-    }
+    ipfix_ssl_init();
 
     if ( !handle || !ssl_details ) {
         errno = EINVAL;

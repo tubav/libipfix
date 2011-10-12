@@ -37,11 +37,13 @@ $$LIC$$
 #include <pcap.h>
 
 #include <../config.h>
-#include <misc.h>
 #include <ipfix.h>
 #include <ipfix_def_fokus.h>
 #include <ipfix_fields_fokus.h>
 #include "ipflow.h"
+
+#include "mlog.h"
+#include "mpoll.h"
 
 /*------ defines ---------------------------------------------------------*/
 
@@ -272,7 +274,7 @@ static int export_biflows( probe_t *probe, time_t now, int flag )
              || (g_par.ipflow_timeout && (idlesec > g_par.ipflow_timeout))
              || (g_par.ipflow_lifetime
                  && (duration > g_par.ipflow_lifetime)) ) {
-            if ( mlog_vlevel>2 ) {
+            if ( mlog_get_vlevel() > 2 ) {
                 if ( g_par.ipflow_timeout 
                      && (idlesec > g_par.ipflow_timeout) ) {
                     mlogf( 3, "[%s] %ds idle timeout expired! "
@@ -381,7 +383,7 @@ static int export_ipflows( probe_t *probe, time_t now, int flag )
              || (g_par.ipflow_lifetime
                  && ((node->tlast.tv_sec-node->tstart.tv_sec)
                      > g_par.ipflow_lifetime)) ) {
-            if ( mlog_vlevel>2 ) {
+            if ( mlog_get_vlevel() > 2 ) {
                 if ( g_par.ipflow_timeout 
                      && ((now - node->tlast.tv_sec) > g_par.ipflow_timeout) ) {
                     mlogf( 3, "[%s] %ds idle timeout expired! "
@@ -490,7 +492,7 @@ void cb_packet( u_char *args,
     probe_t        *data = (probe_t*)args;
     ipflowinfo_t   *finfo=NULL;
 
-    if (mlog_vlevel>4) {
+    if (mlog_get_vlevel() > 4) {
         mlogf( 4, "[%s] cb_packet() called. caplen=%d/%d offset=%d\n",
                data->device, header->caplen, header->len, data->offset );
     }
@@ -564,7 +566,7 @@ void cb_packet( u_char *args,
     }
     flowid = finfo?finfo->flowid:0;
 
-    if ( finfo && (mlog_vlevel > 4) ) {
+    if ( finfo && (mlog_get_vlevel() > 4) ) {
         mlogf( 4, "[%s] flowid=%d (start=%ld, duration=%ld)\n",
                data->device, flowid, finfo->tstart.tv_sec,
                finfo->tlast.tv_sec-finfo->tstart.tv_sec );

@@ -1,0 +1,75 @@
+libipfix (0.8.1-1ubuntu3) lucid; urgency=low
+
+  [ Ramón Masek ]
+  * [Makefile.in] add package building rules
+  * [Makefile] different compile rules for static/shared lib (PIC code)
+  * [Makefile.in] change distribution of changelog wiht env DIST=<dist>
+    when build pkg
+  * [debian] add missing header file to libipfix-dev.install
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Thu, 12 May 2011 12:42:49 +0200
+
+libipfix (0.8.1-1ubuntu2) lucid; urgency=low
+
+  [ Carsten Schmoll ]
+  * added two new fields: ProbeName and ProbeLocationName
+  * added odid field for ipfix_template_t and code to use odid when
+    exporting themplate definition as IPFIX
+
+  [ Ramón Masek ]
+  * [lib] a lot of correction making shared library build work;
+  * [libmisc] a lot of correction making shared library build work
+  * [libmisc] remove getopt sources, (not used)
+  * remove config.h - is created by configure
+  * correction of ssl source files; make compile
+  * [debian] add libpcap0.8 dependency
+  * [debian] change libpcap0.8 to libpcap0.8-dev
+  * [debian] add more control information for package generation
+  * [debian] adjust install-file content
+  * [debian] update standards-version; corrections to satisfy lintian
+  * [debian] corrections for package building; satisfy lintions
+  * [Makefile.in] modification of global Makefile
+  * [Makefile] rewriting, add default rules file, used in lib/ and
+    libmisc/
+  * [Makefile]  some correction to install rules; some documentation
+  * [Makefile.in] obtain version number from changelog
+  * [lib/Makefile.in] rewrite makefile with implicit rules
+  * [libmisc/Makefile.in] rewrite makefile with implicit rules
+  * minor correction in configure.ac; update configure
+  * add a TODO
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Thu, 05 May 2011 12:25:39 +0200
+
+libipfix (0.8.1-1ubuntu1) lucid; urgency=low
+
+  [ PRISM User ]
+  * fixed ntohll+htonll bug on MIPS machines (hopefully)
+  * type fix
+  * fixed sequence number bug
+
+  [ Robert Wuttke ]
+  * fixed ht_globals include problem
+  * bleeding edge - synced with current developer-version
+
+  [ Carsten Schmoll ]
+  * makedist script fix
+  * removed Makedfiles from repo.
+  * updated README
+  * changed contact mail
+  * added two new IEs for geo location longitude and latitude (String
+    type)
+
+  [ Ramón Masek ]
+  * add VERSION file
+  * add DESTDIR to makefiles
+  * [debian] add debian directory for package building
+  * [debian] remove shared library installation
+  * [debian] adjust library installation
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Mon, 28 Mar 2011 17:09:03 +0200
+
+libipfix (0.8.1-1) unstable; urgency=low
+
+  * Initial release 
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Wed, 16 Mar 2011 15:40:50 +0100

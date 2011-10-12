@@ -26,7 +26,7 @@ $$LIC$$
 #include <netinet/ip6.h>
 #endif
 
-#include <misc.h>
+#include "mlog.h"
 #include "ipflow.h"
 
 /*----- defines ----------------------------------------------------------*/
@@ -425,7 +425,7 @@ int flow_update( ipflow_t *flows, ipflow_elems_t *elems,
             }
         }
 
-        if ( mlog_vlevel>2 )
+        if ( mlog_get_vlevel() > 2 )
             mlogf( 4, "[ipflow] new flow%p, nflows=%d, hash=%u\n",
                    finfo, flows->nflows, hash );
     }

@@ -7,23 +7,26 @@ $$LIC$$
  *
  * Copyright Fraunhoer FOKUS
  *
- * $Date: 2010-02-24 15:32:09 +0100 (Mi, 24. Feb 2010) $
+ * $Date: 2010-02-24 15:32:09 +0100 (Wed, 24 Feb 2010) $
  *
  *
  **************************************************************************/
 
+#include "config.h"
+#include "misc.h"
+
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <sys/types.h>
+#include <sys/time.h>
+
 #include <string.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <sys/time.h>
 #include <sys/param.h>
-
-#include "misc.h"
 
 /*------ revision id -----------------------------------------------------*/
 

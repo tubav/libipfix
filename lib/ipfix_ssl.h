@@ -5,7 +5,7 @@ $$LIC$$
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Id$
+ * $Id: ipfix_ssl.h 22 2008-08-12 08:34:40Z tor $
  *
  */
 #ifndef IPFIX_SSL_H
@@ -19,7 +19,7 @@ $$LIC$$
 
 #define CIPHER_LIST "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 
-extern int openssl_is_init;
+int  ipfix_ssl_init();
 
 void ipfix_ssl_opts_free( ipfix_ssl_opts_t *opts );
 int  ipfix_ssl_opts_new( ipfix_ssl_opts_t **opts,

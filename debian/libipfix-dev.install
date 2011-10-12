@@ -1,0 +1,5 @@
+usr/lib/lib*.a
+usr/lib/lib*.so
+usr/include/ipfix*.h
+usr/include/mlog.h
+usr/include/mpoll.h

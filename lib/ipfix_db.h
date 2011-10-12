@@ -3,7 +3,7 @@
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id$
+** $Id: ipfix_db.h 23 2008-08-14 11:30:44Z tor $
 **
 ** Remarks:
 **

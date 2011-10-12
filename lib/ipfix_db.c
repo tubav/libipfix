@@ -5,9 +5,9 @@ $$LIC$$
  *
  * Copyright Fraunhofer FOKUS
  *
- * $Date$
+ * $Date: 2010-03-18 10:39:32 +0100 (Thu, 18 Mar 2010) $
  *
- * $Revision$
+ * $Revision: 187 $
  *
  * Remarks: make this funcs mysql independent
  *
@@ -20,7 +20,7 @@ $$LIC$$
 #include <errno.h>
 #include <sys/time.h>
 
-#include "libmisc/misc.h"
+#include "misc.h"
 #include "ipfix_db.h"
 
 /*------ defines ---------------------------------------------------------*/
@@ -35,7 +35,7 @@ static char    query[MAXQUERYLEN+1];
 
 /*------ revision id -----------------------------------------------------*/
 
-static char const cvsid[]="$Id$";
+static char const cvsid[]="$Id: ipfix_db.c 187 2010-03-18 09:39:32Z csc $";
 
 /*------ static funcs ----------------------------------------------------*/
 

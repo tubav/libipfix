@@ -6,7 +6,7 @@ $$LIC$$
 **
 ** Copyright Fraunhofer FOKUS
 **
-** $Id$
+** $Id: ipfix.h 231 2011-03-29 17:02:12Z csc $
 **
 */
 #ifndef IPFIX_H

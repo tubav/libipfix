@@ -55,6 +55,7 @@ distclean:
 	rm -f $(CLEANFILES) Makefile
 
 install:
+	#--> examples will not be installed!
 
 example_exporter: example_exporter.o Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ example_exporter.o $(LDFLAGS) $(LIBS)
@@ -74,3 +75,4 @@ example_collector_db.o: example_collector_db.c Makefile
 example_exporter.o: example_exporter.c Makefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c example_exporter.c
 
+uninstall:
