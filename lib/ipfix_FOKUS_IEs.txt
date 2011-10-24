@@ -119,14 +119,14 @@
 
 # These information elements have been defined by FOKUS for the OpenEPC project
 
-440, IPFIX_FT_PT_APN, 65535, IPFIX_CODING_STRING, "APN", "Access point name" 
+440, IPFIX_FT_PT_APN, 65535, IPFIX_CODING_STRING, "APN", "Access point name"
 441, IPFIX_FT_PT_RULE, 65535, IPFIX_CODING_STRING, "RuleName", "Rule name"
 442, IPFIX_FT_PT_IMSI, 65535, IPFIX_CODING_STRING, "IMSI", "International mobile subscriber identity"
-443, IPFIX_FT_PT_QCI, 4, IPFIX_CODING_UINT, "QCI",
-444, IPFIX_FT_PT_MAX_DL 4, IPFIX_CODING_UINT, "MaxDownload", "Maximum downloadrate"
-445, IPFIX_FT_PT_MAX_UL 4, IPFIX_CODING_UINT, "MaxUpload", "Maximum uploadrate"
-446, IPFIX_FT_PT_GUARANTEED_DL, 4 IPFIX_CODING_UINT, "GuaranteedDownload", "Guaranteed downloadrate"
-447, IPFIX_FT_PT_GUARANTEED_UL, 4 IPFIX_CODING_UINT, "GuaranteedUpload", "Guaranteed uploadrate"
+443, IPFIX_FT_PT_QCI, 4, IPFIX_CODING_UINT, "QCI", "QCI"
+444, IPFIX_FT_PT_MAX_DL, 4, IPFIX_CODING_UINT, "MaxDownload", "Maximum downloadrate"
+445, IPFIX_FT_PT_MAX_UL, 4, IPFIX_CODING_UINT, "MaxUpload", "Maximum uploadrate"
+446, IPFIX_FT_PT_GUARANTEED_DL, 4, IPFIX_CODING_UINT, "GuaranteedDownload", "Guaranteed downloadrate"
+447, IPFIX_FT_PT_GUARANTEED_UL, 4, IPFIX_CODING_UINT, "GuaranteedUpload", "Guaranteed uploadrate"
 448, IPFIX_FT_PT_APN_DL, 4, IPFIX_CODING_UINT, "APNDownload", "APN downloadrate"
 449, IPFIX_FT_PT_APN_UL, 4, IPFIX_CODING_UINT, "APNUpload", "APN uploadrate"
 
