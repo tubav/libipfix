@@ -129,6 +129,7 @@
 447, IPFIX_FT_PT_GUARANTEED_UL, 4, IPFIX_CODING_UINT, "GuaranteedUpload", "Guaranteed uploadrate"
 448, IPFIX_FT_PT_APN_DL, 4, IPFIX_CODING_UINT, "APNDownload", "APN downloadrate"
 449, IPFIX_FT_PT_APN_UL, 4, IPFIX_CODING_UINT, "APNUpload", "APN uploadrate"
+450, IPFIX_FT_PT_RULE_FLAG, 1, IPFIX_CODING_UINT, "RuleFlag", "Is the rule set or removed"
 
 
 
