@@ -87,13 +87,6 @@
 391, IPFIX_FT_SYNC_BOTTLENECK,                   4, IPFIX_CODING_FLOAT, "bottleneck",     "SYNC Bottleneck"
 392, IPFIX_FT_SYNC_FREQ,                         4, IPFIX_CODING_FLOAT, "freq",           "SYNC Frequency"
 
-
-# These information elements have been defined by FOKUS for the OpenEPC project
-396, IPFIX_FT_PT_APN,       65535, IPFIX_CODING_STRING, "apn", "Access point name" 
-397, IPFIX_FT_PT_BEARER,    65535, IPFIX_CODING_STRING, "bearerClass", "Bearer class [1-9]"
-398, IPFIX_FT_PT_IMSI,      65535, IPFIX_CODING_STRING, "imsi", "International mobile subscriber identity"
-
-
 # these information elements have been defined by FOKUS for the Oracle project
 
 402, IPFIX_FT_ORsignalBandwidth, 4, IPFIX_CODING_UINT, "ORsignalBandwidth", "signal bandwidth" 
@@ -123,4 +116,19 @@
 434, IPFIX_FT_Bandwidth_of_CAP, 2, IPFIX_CODING_UINT, "Bandwidth_of_CAP", "Bandwidth of the spectral allocation profile"
 435, IPFIX_FT_ORmodulation, 1, IPFIX_CODING_UINT, "ORmodulation", "CREST factor"
 436, IPFIX_FT_ORprofileRecord, 65535, IPFIX_CODING_STRING, "ORprofileRecord", "profile record has variable length, First 8 bits in data describe the length (in bytes) of the field"
+
+# These information elements have been defined by FOKUS for the OpenEPC project
+
+440, IPFIX_FT_PT_APN, 65535, IPFIX_CODING_STRING, "APN", "Access point name" 
+441, IPFIX_FT_PT_RULE, 65535, IPFIX_CODING_STRING, "RuleName", "Rule name"
+442, IPFIX_FT_PT_IMSI, 65535, IPFIX_CODING_STRING, "IMSI", "International mobile subscriber identity"
+443, IPFIX_FT_PT_QCI, 4, IPFIX_CODING_UINT, "QCI",
+444, IPFIX_FT_PT_MAX_DL 4, IPFIX_CODING_UINT, "MaxDownload", "Maximum downloadrate"
+445, IPFIX_FT_PT_MAX_UL 4, IPFIX_CODING_UINT, "MaxUpload", "Maximum uploadrate"
+446, IPFIX_FT_PT_GUARANTEED_DL, 4 IPFIX_CODING_UINT, "GuaranteedDownload", "Guaranteed downloadrate"
+447, IPFIX_FT_PT_GUARANTEED_UL, 4 IPFIX_CODING_UINT, "GuaranteedUpload", "Guaranteed uploadrate"
+448, IPFIX_FT_PT_APN_DL, 4, IPFIX_CODING_UINT, "APNDownload", "APN downloadrate"
+449, IPFIX_FT_PT_APN_UL, 4, IPFIX_CODING_UINT, "APNUpload", "APN uploadrate"
+
+
 
