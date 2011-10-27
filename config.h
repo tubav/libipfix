@@ -73,6 +73,9 @@
 /* Define to 1 if you have the `pcap_freecode' function. */
 #define HAVE_PCAP_FREECODE 1
 
+/* Define to 1 if you have the <pcap.h> header file. */
+#define HAVE_PCAP_H 1
+
 /* Define to 1 if you have the `select' function. */
 #define HAVE_SELECT 1
 
@@ -132,6 +135,9 @@
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "libipfix"
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "0.8.1"

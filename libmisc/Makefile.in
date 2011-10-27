@@ -40,7 +40,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@ -lm #@PCAPLIBS@ 
 CCOPT = -Wall -g
-INCLS = -I./ -I../ @PCAPINCLS@
+INCLS = -I./ -I../ #@PCAPINCLS@
 CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
 
 TARGETS = libmisc.a libmisc.so

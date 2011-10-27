@@ -593,17 +593,16 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+PCAPLIBS
 EGREP
 GREP
 CPP
-PCAPINCLS
-PCAPLIBS
 IPFIX_DB_EXAMPLES
 IPFIX_DB_OBJ
-SCTPLIBS
 MYSQLLIBS
 IPFIX_SSL_OBJ
 SSLLIBS
+SCTPLIBS
 OPENSSL
 INSTALL_DATA
 INSTALL_SCRIPT
@@ -670,9 +669,9 @@ ac_user_opts='
 enable_option_checking
 enable_ipv6
 enable_sctp
+with_ssl
 with_mysql
 with_pcap
-with_ssl
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1298,17 +1297,20 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+
   --enable-ipv6           enable ipv6 (with ipv4) support
   --disable-ipv6          disable ipv6 support
+
   --enable-sctp           enable sctp support
   --disable-sctp          disable sctp support
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-mysql=DIR        location of mysql installation
-  --with-pcap=DIR         location of libpcap installation
+
   --with-ssl[=DIR]        enable tls/dtls support (from DIR, if supplied)
+  --with-mysql=DIR        location of mysql installation}
+  --with-pcap=DIR         location of libpcap installation
 
 Some influential environment variables:
   CC          C compiler command
@@ -1588,48 +1590,6 @@ fi
 
 } # ac_fn_c_try_cpp
 
-# ac_fn_c_try_run LINENO
-# ----------------------
-# Try to link conftest.$ac_ext, and return whether this succeeded. Assumes
-# that executables *can* be run.
-ac_fn_c_try_run ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  if { { ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_link") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } && { ac_try='./conftest$ac_exeext'
-  { { case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_try") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }; then :
-  ac_retval=0
-else
-  $as_echo "$as_me: program exited with status $ac_status" >&5
-       $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-       ac_retval=$ac_status
-fi
-  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
-  eval $as_lineno_stack; test "x$as_lineno_stack" = x && { as_lineno=; unset as_lineno;}
-  as_fn_set_status $ac_retval
-
-} # ac_fn_c_try_run
-
 # ac_fn_c_check_header_mongrel LINENO HEADER VAR INCLUDES
 # -------------------------------------------------------
 # Tests whether HEADER exists, giving a warning if it cannot be compiled using
@@ -1716,6 +1676,48 @@ fi
   eval $as_lineno_stack; test "x$as_lineno_stack" = x && { as_lineno=; unset as_lineno;}
 
 } # ac_fn_c_check_header_mongrel
+
+# ac_fn_c_try_run LINENO
+# ----------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded. Assumes
+# that executables *can* be run.
+ac_fn_c_try_run ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && { ac_try='./conftest$ac_exeext'
+  { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+       $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+       ac_retval=$ac_status
+fi
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; test "x$as_lineno_stack" = x && { as_lineno=; unset as_lineno;}
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_run
 
 # ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
 # -------------------------------------------------------
@@ -3218,158 +3220,89 @@ fi
 
 
 #
-# IPv6 support
-#
-# Check whether --enable-ipv6 was given.
-if test "${enable_ipv6+set}" = set; then :
-  enableval=$enable_ipv6;  case "$enableval" in
-  yes) ipv6=yes;;
-  *)   ipv6=no ;;
-  esac
-else
-  ipv6=no
-fi
-
-
-if test $ipv6 = yes; then
-	CPPFLAGS="-DINET6 $CPPFLAGS"
-fi
-
-#
-# SCTP support
-#
-# Check whether --enable-sctp was given.
-if test "${enable_sctp+set}" = set; then :
-  enableval=$enable_sctp;  case "$enableval" in
-  yes) sctp=yes;;
-  *)   sctp=no ;;
-  esac
-else
-  sctp=no
-fi
-
-
-if test $sctp = yes; then
-	CPPFLAGS="-DSCTPSUPPORT $CPPFLAGS"
-        SCTPLIBS="-lsctp"
-fi
-
-#
-# specify mysqldir
-#
-withval=""
-
-# Check whether --with-mysql was given.
-if test "${with_mysql+set}" = set; then :
-  withval=$with_mysql;
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libmysqlclient in $withval/lib" >&5
-$as_echo_n "checking for libmysqlclient in $withval/lib... " >&6; }
-if test -f $withval/libmysqlclient.a -o -f $withval/libmysqlclient.so ; then
-    LDFLAGS="$LDFLAGS -L$withval "
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-if test -f $withval/lib/libmysqlclient.a -o -f $withval/lib/libmysqlclient.so ; then
-    LDFLAGS="$LDFLAGS -L$withval/lib "
-    CPPFLAGS="-I$withval/include $CPPFLAGS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-if test -f $withval/lib/mysql/libmysqlclient.a -o -f $withval/lib/mysql/libmysqlclient.so ; then
-    LDFLAGS="$LDFLAGS -L$withval/lib/mysql "
-    CPPFLAGS="-I$withval/include $CPPFLAGS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-fi
-fi
-
-fi
-
-
-#
-# specify libpcap
-#
+# os check
+#################################################
 case "$target_os" in
-cygwin)
-	CPPFLAGS="-DWINNT $CPPFLAGS"
-        PCAP="wpcap"
-        PCAPLIBS="-lwpcap"
-        ;;
-*)
-        PCAP="pcap"
-        PCAPLIBS="-lpcap"
-        ;;
+freebsd*)
+	LDFLAGS="$LDFLAGS -L/usr/local/lib "
+	CPPFLAGS="$CPPFLAGS -I/usr/local/include "
+	;;
 esac
 
-withval=""
 
-# Check whether --with-pcap was given.
-if test "${with_pcap+set}" = set; then :
-  withval=$with_pcap;
-   if test $withval != no
-   then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lib$PCAP in $withval/lib" >&5
-$as_echo_n "checking for lib$PCAP in $withval/lib... " >&6; }
-      if test -f $withval/lib/lib$PCAP.a -o -f $withval/lib/lib$PCAP.so ; then
-         LDFLAGS="$LDFLAGS -L$withval/lib "
-         PCAPINCLS="-I$withval/include"
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      else
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      fi
+#################################################
+#################################################
+
+#
+# IPv6 support
+#################################################
+# Check whether --enable-ipv6 was given.
+if test "${enable_ipv6+set}" = set; then :
+  enableval=$enable_ipv6;
+   if test $enableval != "no" ; then
+      CPPFLAGS="-DINET6 $CPPFLAGS"
    fi
 
 fi
+
+
+
+#
+# SCTP support
+#################################################
+# Check whether --enable-sctp was given.
+if test "${enable_sctp+set}" = set; then :
+  enableval=$enable_sctp;
+   if test $enableval != "no" ; then
+      CPPFLAGS="-DSCTPSUPPORT $CPPFLAGS"
+      SCTPLIBS="-lsctp"
+   fi
+
+fi
+
 
 
 #
 # enable ssl support
-#
-SSLLIBS=''
+#################################################
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking enable tls/dtls support" >&5
 $as_echo_n "checking enable tls/dtls support... " >&6; }
 
+
 # Check whether --with-ssl was given.
 if test "${with_ssl+set}" = set; then :
-  withval=$with_ssl;  case "x$withval" in
-  xyes) ssl=yes;ssldir="";;
-  xno)  ssl=yes;;
-  *)    ssl=yes;ssldir=$withval ;;
-  esac
-else
-  ssl=no
-fi
-
-if test "$ssl" = "yes";  then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  withval=$with_ssl;
+   if test "$withval" != "no"; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-   if test "x$ssldir" != "x"; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libssl in $ssldir/lib" >&5
-$as_echo_n "checking for libssl in $ssldir/lib... " >&6; }
-      if test -f $ssldir/lib/libssl.a -o -f $ssldir/lib/libssl.so ; then
-         SSLLIBS="-L$ssldir/lib "
-         CPPFLAGS="-I$ssldir/include $CPPFLAGS"
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+      if test "$withval" != "yes"; then
+         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libssl in $withval/lib" >&5
+$as_echo_n "checking for libssl in $withval/lib... " >&6; }
+         if test -f $withval/lib/libssl.a -o -f $withval/lib/libssl.so ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-      elif test -f $ssldir/libssl.a -o -f $ssldir/libssl.so ; then
-         SSLLIBS="-L$ssldir "
-         CPPFLAGS="-I$ssldir/include $CPPFLAGS"
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      else
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+            LDFLAGS="$LDFLAGS -L$withval/lib"
+            CPPFLAGS="$CPPFLAGS -I$withval/include"
+         else
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libssl in $withval" >&5
+$as_echo_n "checking for libssl in $withval... " >&6; }
+            if test -f $withval/libssl.a -o -f $withval/libssl.so ; then
+               { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+               LDFLAGS="$LDFLAGS -L$withval"
+               CPPFLAGS="$CPPFLAGS -I$withval"
+            else
+               { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+            fi
+         fi
       fi
-   fi
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
+      SAVELIBS=$LIBS
+      LIBS=
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
 $as_echo_n "checking for SSL_new in -lssl... " >&6; }
 if test "${ac_cv_lib_ssl_SSL_new+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -3407,37 +3340,69 @@ fi
 $as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
 if test "x$ac_cv_lib_ssl_SSL_new" = x""yes; then :
 
-      SSLLIBS="$SSLLIBS -lssl -lcrypto"
-      CPPFLAGS="-DSSLSUPPORT $CPPFLAGS"
-      IPFIX_SSL_OBJ="ipfix_ssl.o dhparams.o"
+         SSLLIBS="-lssl -lcrypto"
+         CPPFLAGS="$CPPFLAGS -DSSLSUPPORT"
+         IPFIX_SSL_OBJ="ipfix_ssl.o dhparams.o"
 
 else
 
-      as_fn_error "SSL support was requested, but is not available" "$LINENO" 5
+         as_fn_error "SSL support was requested, but is not available" "$LINENO" 5
 
 fi
 
+      SSLLIBS="$LIBS $SSLLIBS"
+      LIBS=$SAVELIBS
+   else
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+   fi
+
 else
+
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+
 fi
+ # no sll
 
 
 
 #
-# os check
-#
-case "$target_os" in
-freebsd*)
-	LDFLAGS="$LDFLAGS -L/usr/local/lib "
-	CPPFLAGS="$CPPFLAGS -I/usr/local/include "
-	;;
-esac
+# specify mysqldir
+#################################################
 
-#
-# Checks for libraries.
-#
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient" >&5
+# Check whether --with-mysql was given.
+if test "${with_mysql+set}" = set; then :
+  withval=$with_mysql;
+   if test "$withval" != "no"; then
+      if test "$withval" != "yes"; then
+         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libmysqlclient in $withval/lib" >&5
+$as_echo_n "checking for libmysqlclient in $withval/lib... " >&6; }
+         if test -f $withval/libmysqlclient.a -o -f $withval/libmysqlclient.so ; then
+             LDFLAGS="$LDFLAGS -L$withval "
+             { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+         else
+         if test -f $withval/lib/libmysqlclient.a -o -f $withval/lib/libmysqlclient.so ; then
+             LDFLAGS="$LDFLAGS -L$withval/lib "
+             CPPFLAGS="$CPPFLAGS -I$withval/include"
+             { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+         else
+         if test -f $withval/lib/mysql/libmysqlclient.a -o -f $withval/lib/mysql/libmysqlclient.so ; then
+             LDFLAGS="$LDFLAGS -L$withval/lib/mysql "
+             CPPFLAGS="$CPPFLAGS -I$withval/include"
+             { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+         else
+             { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+         fi
+         fi
+         fi
+      fi
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient" >&5
 $as_echo_n "checking for mysql_init in -lmysqlclient... " >&6; }
 if test "${ac_cv_lib_mysqlclient_mysql_init+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -3474,17 +3439,21 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_mysql_init" >&5
 $as_echo "$ac_cv_lib_mysqlclient_mysql_init" >&6; }
 if test "x$ac_cv_lib_mysqlclient_mysql_init" = x""yes; then :
-  dbsupport="yes"
+
+         MYSQLLIBS="-lmysqlclient"
+         IPFIX_DB_OBJ="ipfix_db.o"
+         IPFIX_DB_EXAMPLES="example_collector_db"
+         CPPFLAGS="$CPPFLAGS -DDBSUPPORT"
+
 else
-  dbsupport="no"; { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot find mysql library" >&5
+
+         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot find mysql library" >&5
 $as_echo "$as_me: WARNING: cannot find mysql library" >&2;}
+
 fi
 
-if test $dbsupport = yes; then
-        MYSQLLIBS="-lmysqlclient"
-        IPFIX_DB_OBJ="ipfix_db.o"
-        IPFIX_DB_EXAMPLES="example_collector_db"
-        CPPFLAGS="-DDBSUPPORT $CPPFLAGS"
+   fi
+
 fi
 
 
@@ -3493,7 +3462,38 @@ fi
 
 #
 # libpcap support
-#
+#################################################
+case "$target_os" in
+cygwin)
+	CPPFLAGS="-DWINNT $CPPFLAGS"
+   PCAP="wpcap"
+   ;;
+*)
+   PCAP="pcap"
+   ;;
+esac
+
+
+# Check whether --with-pcap was given.
+if test "${with_pcap+set}" = set; then :
+  withval=$with_pcap;
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: pcap path given" >&5
+$as_echo "$as_me: WARNING: pcap path given" >&2;}
+   #AC_MSG_CHECKING(for lib$PCAP in $withval/lib)
+   #if test -f $withval/lib/lib$PCAP.a -o -f $withval/lib/lib$PCAP.so ; then
+   #   LDFLAGS="$LDFLAGS -L$withval/lib "
+   #   PCAPINCLS="-I$withval/include"
+   #   AC_MSG_RESULT(yes)
+   #else
+   #   AC_MSG_RESULT(no)
+   #fi
+   LDFLAGS="$LDFLAGS -L$withval/lib"
+   CPPFLAGS="$CPPFLAGS -I$withval/include"
+
+fi
+
+SAVELIBS=$LIBS
+LIBS=
 as_ac_Lib=`$as_echo "ac_cv_lib_$PCAP''_pcap_open_live" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcap_open_live in -l$PCAP" >&5
 $as_echo_n "checking for pcap_open_live in -l$PCAP... " >&6; }
@@ -3534,16 +3534,18 @@ eval ac_res=\$$as_ac_Lib
 $as_echo "$ac_res" >&6; }
 eval as_val=\$$as_ac_Lib
    if test "x$as_val" = x""yes; then :
-  pcapsupport="yes"
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_LIB$PCAP" | $as_tr_cpp` 1
+_ACEOF
+
+  LIBS="-l$PCAP $LIBS"
+
 else
-  pcapsupport="no"; { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot find libpcap" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot find libpcap" >&5
 $as_echo "$as_me: WARNING: cannot find libpcap" >&2;}
 fi
 
-if test $pcapsupport = yes; then
-    SAVELIBS=$LIBS
-    LIBS="$LIBS $PCAPLIBS"
-    for ac_func in pcap_breakloop pcap_freecode
+for ac_func in pcap_breakloop pcap_freecode
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -3556,14 +3558,6 @@ _ACEOF
 fi
 done
 
-    LIBS=$SAVELIBS
-else
-    PCAPLIBS=""
-fi
-
-
-
-# Checks for header files.
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -3961,6 +3955,139 @@ fi
 
 done
 
+
+for ac_header in pcap.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "pcap.h" "ac_cv_header_pcap_h" "$ac_includes_default"
+if test "x$ac_cv_header_pcap_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PCAP_H 1
+_ACEOF
+
+fi
+
+done
+
+PCAPLIBS=$LIBS
+LIBS=$SAVELIBS
+
+
+
+#################################################
+#################################################
+
+# Checks for header files.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
+$as_echo_n "checking for ANSI C header files... " >&6; }
+if test "${ac_cv_header_stdc+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <float.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_header_stdc=yes
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test $ac_cv_header_stdc = yes; then
+  # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <string.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "memchr" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "free" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # /bin/cc in Irix-4.0.5 gets non-ANSI ctype macros unless using -ansi.
+  if test "$cross_compiling" = yes; then :
+  :
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+#include <stdlib.h>
+#if ((' ' & 0x0FF) == 0x020)
+# define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
+# define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
+#else
+# define ISLOWER(c) \
+		   (('a' <= (c) && (c) <= 'i') \
+		     || ('j' <= (c) && (c) <= 'r') \
+		     || ('s' <= (c) && (c) <= 'z'))
+# define TOUPPER(c) (ISLOWER(c) ? ((c) | 0x40) : (c))
+#endif
+
+#define XOR(e, f) (((e) && !(f)) || (!(e) && (f)))
+int
+main ()
+{
+  int i;
+  for (i = 0; i < 256; i++)
+    if (XOR (islower (i), ISLOWER (i))
+	|| toupper (i) != TOUPPER (i))
+      return 2;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_header_stdc" >&5
+$as_echo "$ac_cv_header_stdc" >&6; }
+if test $ac_cv_header_stdc = yes; then
+
+$as_echo "#define STDC_HEADERS 1" >>confdefs.h
+
+fi
 
 for ac_header in arpa/inet.h fcntl.h inttypes.h limits.h netdb.h netinet/in.h stdlib.h string.h sys/socket.h sys/time.h unistd.h getopt.h libgen.h
 do :
