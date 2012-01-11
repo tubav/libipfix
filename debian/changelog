@@ -1,3 +1,29 @@
+libipfix (0.8.1-1ubuntu4) lucid; urgency=low
+
+  [ Ramón Masek ]
+  * merge of a git repository of a former svn repository
+  * add build script for git-buildpackage
+  * bugfix Makefile
+  * bugfix configure.ac
+
+  [ Julian Vetter ]
+  * Added README file for the ReExporter
+  * Added GPL info to script
+  * Added new information elements for the OpenEPC+PT project (IMSI, APN
+    and BearerClass)
+  * Changed the OpenEPC entries length from 256 to 65535 (deafault for
+    strings)
+  * Changed the numbers of the OpenEPC elements, because I had to add
+    some more elements and they didn't fit into the gap between 392 and
+    402
+  * Fixed a small bug, now every information element should be
+    recognized
+  * Another new information element for the OpenEPC stuff
+  * Added yet another ipfix elment (rule ID) to identify which packet
+    belongs to which rule
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Wed, 11 Jan 2012 17:48:40 +0100
+
 libipfix (0.8.1-1ubuntu3) lucid; urgency=low
 
   [ Ramón Masek ]
