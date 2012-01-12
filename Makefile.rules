@@ -83,7 +83,7 @@ install:
 	$(INSTALL_DATA) $(INST_STC) $(DESTDIR)/${libdir}/
 	#install shared library
 	$(INSTALL_DATA) $(INST_SHD).$(VERSION) $(DESTDIR)${libdir}/
-	ln -sf $(DESTDIR)${libdir}/$(INST_SHD).$(VERSION) $(DESTDIR)${libdir}/$(INST_SHD)
+	ln -sf $(INST_SHD).$(VERSION) $(DESTDIR)${libdir}/$(INST_SHD)
 
 uninstall:
 	rm -f $(addprefix $(DESTDIR)${includedir}/, $(INST_HDR))
