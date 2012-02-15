@@ -22,7 +22,19 @@ Package: libipfix
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: libipfix-tools (= ${binary:Version})
 Description: A C-Library for the IPFIX protocol
  The libipfix is used to export and collect measurement data. 
  Libipfix is a C-library implementing the IPFIX protocol defined by 
  the IP Flow Information Export working group of the IETF. 
+
+Package: libipfix-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A collection of tools using the IPFIX library
+ This package contains a collection of tools to use with the IPFIX library
+ (e.g. for testing)
+ It contains the following tools:
+  - ipfix_collector: a simple collector (prints collected data to terminal)
+  - ipfix_probe: a simple probe (capture packets using libpcap, 
+                                 and sends it via IPFIX protocol)
