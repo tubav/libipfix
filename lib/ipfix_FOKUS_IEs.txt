@@ -82,6 +82,8 @@
 355, IPFIX_FT_PT_PROBE_NAME,          65535, IPFIX_CODING_STRING, "probeName",    "PT probe name"
 356, IPFIX_FT_PT_PROBE_LOCATION_NAME, 65535, IPFIX_CODING_STRING, "probeLocationName",    "PT probe location name"
 
+357, IPFIX_FT_PT_SYSTEM_MEM_TOTAL,   8, IPFIX_CODING_UINT,  "sysMemTotal",  "PT system total  memory in kilobytes"
+
 #---[ Queue Sync ]-------------------------------------------------------------
 390, IPFIX_FT_SYNC_QUEUE_FILL_LEVEL,             4, IPFIX_CODING_FLOAT, "queueFillLevel", "SYNC QueueFillLevel"
 391, IPFIX_FT_SYNC_BOTTLENECK,                   4, IPFIX_CODING_FLOAT, "bottleneck",     "SYNC Bottleneck"
