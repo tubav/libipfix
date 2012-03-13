@@ -1,3 +1,12 @@
+libipfix (0.8.1-1ubuntu6) lucid; urgency=low
+
+  [ Ramón Masek ]
+  * add new information element for 'total memory'
+  * put ipfix_collector and probe into a separate pkg: libipfix-tools
+  * add manpages for ipfix_collector and ipfix_probe
+
+ -- Ramon Masek <ramon.masek@fokus.fraunhofer.de>  Tue, 13 Mar 2012 15:19:04 +0100
+
 libipfix (0.8.1-1ubuntu5) lucid; urgency=low
 
   [ Ramón Masek ]
