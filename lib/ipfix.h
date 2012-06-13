@@ -71,6 +71,8 @@ typedef struct {
 
 } ipfix_hdr_t;
 
+#define IPFIX_DEFAULT_BUFLEN  1400
+
 #define IPFIX_VERSION_NF9           0x09
 #define IPFIX_HDR_BYTES_NF9         20
 #define IPFIX_SETID_TEMPLATE_NF9    0
@@ -133,12 +135,42 @@ typedef struct ipfix_template
     uint32_t                odid;  /* observation domain id */
 } ipfix_template_t;
 
+typedef struct ipfix_message
+{
+    char        buffer[IPFIX_DEFAULT_BUFLEN];   /* message buffer */
+    int         nrecords;                       /* no. of records in buffer */
+    size_t      offset;                         /* output buffer fill level */
+} ipfix_message_t;
+
+typedef struct collector_node
+{
+    struct collector_node *next;
+    int                   usecount;
+
+    char            *chost;       /* collector hostname */
+    int             cport;        /* collector port */
+    ipfix_proto_t   protocol;     /* used protocol (e.g. tcp) */
+    int             fd;           /* open socket */
+    int             ssl_flag;     /* ipfix over tls/ssl */
+#ifdef SSLSUPPORT
+    ipfix_ssl_opts_t *ssl_opts;
+    BIO             *bio;
+    SSL_CTX         *ctx;
+    SSL             *ssl;
+#endif
+    struct sockaddr *to;          /* collector address */
+    socklen_t       tolen;        /* collector address length */
+    time_t          lastaccess;   /* last use of this connection */
+    ipfix_message_t message;      /* used only for sctp templates */
+
+} ipfix_collector_t;
+
 typedef struct
 {
-    int              sourceid;    /* domain id of the exporting process */
-    int              version;     /* ipfix version to export */
-    void             *collectors; /* list of collectors */
-    ipfix_template_t *templates;  /* list of templates  */
+    int                sourceid;    /* domain id of the exporting process */
+    int                version;     /* ipfix version to export */
+    ipfix_collector_t *collectors;  /* list of collectors */
+    ipfix_template_t  *templates;   /* list of templates  */
 
     char        *buffer;          /* output buffer */
     int         nrecords;         /* no. of records in buffer */

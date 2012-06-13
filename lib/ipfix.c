@@ -54,7 +54,6 @@ $$LIC$$
 /*----- defines ----------------------------------------------------------*/
 
 #define NODEBUG
-#define IPFIX_DEFAULT_BUFLEN  1400
 
 #ifndef NTOHLL
 uint8_t g_isLittleEndian = 0;
@@ -87,42 +86,12 @@ typedef struct ipfixiobuf
     char               buffer[IPFIX_DEFAULT_BUFLEN+IPFIX_HDR_BYTES_NF9]; /*!!*/
 } iobuf_t;
 
-typedef struct ipfix_message
-{
-    char        buffer[IPFIX_DEFAULT_BUFLEN];   /* message buffer */
-    int         nrecords;                       /* no. of records in buffer */
-    size_t      offset;                         /* output buffer fill level */
-} ipfix_message_t;
-
 typedef struct ipfix_node
 {
     struct ipfix_node   *next;
     ipfix_t             *ifh;
 
 } ipfix_node_t;
-
-typedef struct collector_node
-{
-    struct collector_node *next;
-    int                   usecount;
-
-    char            *chost;       /* collector hostname */
-    int             cport;        /* collector port */
-    ipfix_proto_t   protocol;     /* used protocol (e.g. tcp) */
-    int             fd;           /* open socket */
-    int             ssl_flag;     /* ipfix over tls/ssl */
-#ifdef SSLSUPPORT
-    ipfix_ssl_opts_t *ssl_opts;
-    BIO             *bio;
-    SSL_CTX         *ctx;
-    SSL             *ssl;
-#endif
-    struct sockaddr *to;          /* collector address */
-    socklen_t       tolen;        /* collector address length */
-    time_t          lastaccess;   /* last use of this connection */
-    ipfix_message_t message;      /* used only for sctp templates */
-
-} ipfix_collector_t;
 
 static time_t             g_tstart = 0;
 static iobuf_t            g_iobuf[2], *g_buflist =NULL;
