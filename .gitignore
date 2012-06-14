@@ -1,2 +1,12 @@
 Makefile
 config.status
+collector/ipfix_collector
+examples/example_collector
+examples/example_exporter
+lib/ipfix_def_fokus.h
+lib/ipfix_fields_fokus.h
+lib/ipfix_reverse_fields.h
+lib/libipfix.so*
+libmisc/libmisc.so*
+probe/ipfix_probe
+
