@@ -31,8 +31,7 @@ EXEEXT = @EXEEXT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE_NAME@
-#VERSION = @PACKAGE_VERSION@
-VERSION=$(shell head -1 ../debian/changelog | perl -nle 'm/\S+\s+\((\S+)-\S+\)/ and print $$1')
+VERSION = @PACKAGE_VERSION@
 install_sh = @install_sh@
 
 DEFS = @DEFS@ 

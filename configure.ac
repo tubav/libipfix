@@ -1,8 +1,12 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+# read version number from changelog file
+m4_define([v_ver], m4_esyscmd([head -1 ./debian/changelog | perl -nle 'm/\S+\s+\((\S+)-\S+\)/ and print $1' | tr -d '\n']) )
+
 AC_PREREQ(2.57)
-AC_INIT([libipfix],[0.8.1])
+#AC_INIT([libipfix],[0.8.1])
+AC_INIT([libipfix], [v_ver])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR([lib/ipfix.h])
