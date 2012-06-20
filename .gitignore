@@ -9,4 +9,4 @@ lib/ipfix_reverse_fields.h
 lib/libipfix.so*
 libmisc/libmisc.so*
 probe/ipfix_probe
-
+config.h
